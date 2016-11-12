@@ -50,4 +50,4 @@ The **choose courses** page of a student's application for a TA position. The pa
 
 The **administrator dashboard** page, allowing an administrator to perform a host of actions, such as searching/filtering applicants (by various criteria), and matching TAs to courses (i.e. making TA offers). Again, this is not an exhaustive list of actions:
 
-<img src="/proposal/img/sketch1.png" width="440px" height="550px"/>
+<img src="/proposal/img/sketch5.png" width="440px" height="550px"/>

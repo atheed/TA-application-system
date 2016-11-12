@@ -31,3 +31,23 @@ Below is _general_ overview of the interactions that the web app will handle fro
 
 ### Sketches
 Below are a few **rough** sketches of of what _some_ of our views will look like. Again, these are not exhaustive, and as such we will iterate on them -- nevertheless, they offer a general outline of what some of our app's views will look like:
+
+The **login page** allows a user to login as one of multiple roles (student, administrator, etc.):
+
+<img src="/proposal/img/sketch1.png" width="440px" height="550px"/>
+
+Choosing any of the above options will show a modal, allowing a user to **login** with their UTORid credentials
+
+<img src="/proposal/img/sketch2.png" width="440px" height="550px"/>
+
+The **student info** page of a student's application for a TA position. It will ask the relevant information (i.e. degree status, etc.) needed for professors to make informed decisions
+
+<img src="/proposal/img/sketch3.png" width="440px" height="550px"/>
+
+The **choose courses** page of a student's application for a TA position. The page will allow students to choose which courses they would like to apply for (with priorities), and view any additional info (i.e. responsibilities, etc.) relevant to any course
+
+<img src="/proposal/img/sketch4.png" width="440px" height="550px"/>
+
+The **administrator dashboard** page, allowing an administrator to perform a host of actions, such as searching/filtering applicants (by various criteria), and matching TAs to courses (i.e. making TA offers). Again, this is not an exhaustive list of actions.
+
+<img src="/proposal/img/sketch1.png" width="440px" height="550px"/>

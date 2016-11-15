@@ -1,0 +1,49 @@
+TEAM : The_Goof_Troop
+
+MARKS: 9
+
+WHAT:
+    2016 version of the 90s TA application system.
+
+POTENTIAL:
+    This is a real good problem you’re trying to solve, I found that painful
+    myself. I would like you to do a bit of research and list the shortcomings of
+    the current system and build over just that. Like maybe you wanna make the TA
+    course selection form smarter on the frontend. 
+
+
+NOTES:
+    - For the sake of this assignment, I guess it will be really helpful if you
+      can skip the user register option (until it's really important). I mean
+      there is nothing "fancy" about a signup form and you don't basically learn
+      anything new Consider the login/register functionality works or we can
+      borrow that from the acorn sso.
+    - For the major part, the proposal only shows the current TA application
+      system with a new design elements. You have the potential of introducing
+      new features, like:
+        - You can make trivial recommendations. So if a person is proficient in
+          Python then he might be a good fit for intro to programming, similarly
+          a proficient JS guy might be interested in CSC309.
+        - Also think about TA self evaluations (TA profile), make them smarter
+          and simpler. Adding design elements such as sliders can be really
+          helpful at times.
+        - The course selection screenshot looks like you just converted the list
+          elements (from the current TA application system) into html buttons.
+          What you can also do is. Show a selection box/cart on top. As soon as a
+          user selects on option it moves to the selection box and all remaining
+          options stay in the available course.
+    - Think about efficient data structures to store system objects, like the
+      course info, or TA info, etc.
+    - Think about why would anyone want to your system from the one they are
+      already using and build a MVP around it.
+
+TA Message:
+    This is my understanding about the project, you can use this to improve your
+    proposal and slides to convey more effectively what you want to present.
+
+Looking forward to meet you guys to discuss this further.
+
+Nishant
+PS: I always love beautifully written, maintainable code that follows standard
+    coding style guides. The ideal code actually walks you through itself and is
+    efficient at the same time.

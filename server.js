@@ -63,7 +63,15 @@ app.set('db', db);
 
 loginRoutes(app, passport);
 
-app.get('/applicants', applicantRoutes.getAllApplicants);
+app.get('/all-applicants', applicantRoutes.getAllApplicants);
+
+app.get('/applicants-for-course', applicantRoutes.getApplicantsForCourse);
+
+app.get('/applicants-for-course-with-degree', applicantRoutes.getApplicantsForCourseWithDegree);
+
+app.get('/applicant-info', applicantRoutes.getApplicantInfo);
+
+app.post('/add-applicant', applicantRoutes.addApplicant);
 
 app.listen(port);
 console.log('Listening on port ' + port);

@@ -7,24 +7,18 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var bcrypt = require('bcrypt-nodejs');
 
 // set up for DB
 var promise = require('bluebird');
-
+var dbConfig = require('./config/database');
 var options = {
     promiseLib: promise
 };
 
 // set up db
 var pgp = require('pg-promise')(options);
-var cn = {
-    host: 'localhost',
-    port: 5432,
-    database: 'tapp',
-    user: 'postgres',
-    password: 'superuser'
-}
-var db = pgp(cn);
+var db = pgp(dbConfig);
 
 // test connection to db
 var client = db.any("select * from Login")
@@ -35,9 +29,12 @@ var client = db.any("select * from Login")
         throw err;
     });
 
+
 // set up for passport
 var passport = require('passport');
 var flash = require('connect-flash');
+
+require('./config/passport')(passport, bcrypt);
 
 app.use(morgan('dev'));
 
@@ -64,6 +61,18 @@ app.set('db', db);
 loginRoutes(app, passport);
 
 app.get('/applicants', applicantRoutes.getAllApplicants);
+
+app.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/profile', // redirect to the secure profile section
+    failureRedirect: '/signup', // redirect back to the signup page if there is an error
+    failureFlash: true // allow flash messages
+}));
+
+app.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/profile', // redirect to the secure profile section
+    failureRedirect: '/login', // redirect back to the signup page if there is an error
+    failureFlash: true // allow flash messages
+}));
 
 app.listen(port);
 console.log('Listening on port ' + port);

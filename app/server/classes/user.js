@@ -1,6 +1,55 @@
-class User {
-    constructor(studentnum, password) {
-        this.studentnum = studentnum;
-        this.password = password;
-    }
+// set up for DB
+var promise = require('bluebird');
+var dbConfig = require('../../../config/database.js');
+var options = {
+    promiseLib: promise
+};
+
+// set up db
+var pgp = require('pg-promise')(options);
+var db = pgp(dbConfig);
+
+function User(studentnumber, password) {
+    this.studentnumber = studentnumber;
+    this.password = password;
+
+    this.save = function(callback) {
+        console.log(this.studentnumber + ' will be saved');
+        db.any('INSERT INTO Login(studentnumber, password) VALUES($1, $2)', [this.studentnumber, this.password])
+            .then(function(data) {
+                console.log("Data added " + data);
+                callback(null);
+            })
+            .catch(function(error) {
+                console.log("There was an error " + error);
+                callback(null);
+            });
+    };
 }
+
+User.findOne = function(studentnumber, callback) {
+    // callback has 3 field (error, isStudentNumberAvailable, the User object)
+    db.oneOrNone('SELECT * FROM Login WHERE studentnumber = $1', [studentnumber])
+        .then(function(data) {
+            callback(false, (data === null), data);
+        })
+        .catch(function(error) {
+            console.log("There was an error " + error);
+            callback(error, false, this);
+        });
+};
+
+User.findById = function(studentnumber, callback) {
+    db.one('SELECT * FROM Login WHERE studentnumber = $1', [studentnumber])
+        .then(function(data) {
+            this.studentnumber = data.username;
+            this.password = data.password;
+            callback(null, data);
+        })
+        .catch(function(error) {
+            console.log("Throwing error " + error);
+            callback(error, null);
+        });
+};
+
+module.exports = User;

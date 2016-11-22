@@ -1,31 +1,41 @@
-var express = require('express');
-var routes = require('./routes');
-var bodyParser = require('body-parser');
 
-var app = express();
+// app.post('/applicants', routes.addApplicant);
 
-app.use(express.static(__dirname + '/assets'));
-app.use(express.static(__dirname + '/'));
+// app.delete('/applicants', routes.deleteApplicant);
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
-}));
-
-// Get the index page:
-app.get('/', function(req, res) {
-    res.sendfile('index.html');
-});
+// app.get('/courses', routes.getCourses);
 
 
-app.get('/applicants', routes.getApplicants);
+// using DB
 
-app.post('/applicants', routes.addApplicant);
 
-app.delete('/applicants', routes.deleteApplicant);
+// router.get('/api/puppies', db.getAllPuppies);
+// router.get('/api/puppies/:id', db.getSinglePuppy);
+// router.post('/api/puppies', db.createPuppy);
+// router.put('/api/puppies/:id', db.updatePuppy);
+// router.delete('/api/puppies/:id', db.removePuppy);
 
-app.get('/courses', routes.getCourses);
 
-// start the server
-app.listen(3000);
-console.log('Listening on port 3000');
+// app.get('/applicants', applicantRoutes.getApplicants);
+
+exports.getAllApplicants = function(req, res, next) {
+  db.any('select * from Applicants')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved ALL applicants'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+// router.post('/applicants', routes.addApplicant);
+
+// router.delete('/applicants', routes.deleteApplicant);
+
+// router.get('/courses', routes.getCourses);
+

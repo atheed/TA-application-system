@@ -46,5 +46,7 @@ app.use(flash());
 
 loginRoutes(app, passport);
 
+app.get('/applicants', applicantRoutes.getApplicants);
+
 app.listen(port);
 console.log('Listening on port ' + port);

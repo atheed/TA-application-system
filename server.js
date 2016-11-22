@@ -18,7 +18,8 @@ var options = {
 
 // set up db
 var pgp = require('pg-promise')(options);
-var db = pgp(dbConfig);
+var config = process.env.DATABASE_URL || dbConfig;
+var db = pgp(config);
 
 // test connection to db
 var client = db.any("select * from Login")

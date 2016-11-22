@@ -8,8 +8,19 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 // set up for DB
-var dbHost = process.env.DBHOST || "127.0.0.1";
-var dbPort = process.env.DBPORT || 6379;
+var pg = require('pg');
+
+pg.defaults.ssl = true;
+pg.connect(process.env.DATABASE_URL, function(err, client) {
+    if (err) throw err;
+    console.log('Connected to postgres! Getting schemas...');
+
+    client
+        .query('SELECT table_schema,table_name FROM information_schema.tables;')
+        .on('row', function(row) {
+            console.log(JSON.stringify(row));
+        });
+});
 
 // set up for passport
 var passport = require('passport');

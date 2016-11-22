@@ -15,20 +15,13 @@ module.exports = function(passport, bcrypt) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
-        console.log("Serializing user with id ");
-        console.log(user);
-        console.log(user.studentnumber);
         done(null, user.studentnumber);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        console.log("Deserializing user with id ");
-        console.log(id);
-
         User.findById(id, function(err, user) {
-            console.log(user);
-            console.log(err);
+            delete user.password;
             done(err, user);
         });
     });
@@ -91,8 +84,6 @@ module.exports = function(passport, bcrypt) {
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
             User.findOne(studentnumber, function(err, isUserNull, user) {
-                console.log(password);
-                console.log(user);
                 // if there are any errors, return the error before anything else
                 if (err)
                     return done(err);
@@ -106,7 +97,6 @@ module.exports = function(passport, bcrypt) {
                 if (!bcrypt.compareSync(password, user.password)) {
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
                 }
-
                 console.log("password matches!");
                 // all is well, return successful user
                 return done(null, user);

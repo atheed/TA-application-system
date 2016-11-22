@@ -10,7 +10,6 @@ var pgp = require('pg-promise')(options);
 var config = process.env.DATABASE_URL || dbConfig;
 var db = pgp(config);
 
-
 function User(studentnumber, password) {
     this.studentnumber = studentnumber;
     this.password = password;

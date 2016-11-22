@@ -18,19 +18,21 @@
 
 // app.get('/applicants', applicantRoutes.getApplicants);
 
+
 exports.getAllApplicants = function(req, res, next) {
-  db.any('select * from Applicants')
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved ALL applicants'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
+	var db = req.app.get('db');
+	db.any('select * from Applicants')
+		.then(function (data) {
+			res.status(200)
+				.json({
+					status: 'success',
+					data: data,
+					message: 'Retrieved ALL applicants'
+				});
+		})
+		.catch(function (err) {
+			return next(err);
+		});
 }
 
 // router.post('/applicants', routes.addApplicant);

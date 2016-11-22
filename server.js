@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
-var loginRoutes = require('./app/server/routes/login-routes.js')
+var loginRoutes = require('./app/server/routes/login-routes.js');
+var applicantRoutes = require('./app/server/routes/applicant-routes.js');
 var port = process.env.PORT || 8080;
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -58,9 +59,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.set('db', db);
+
 loginRoutes(app, passport);
 
-app.get('/applicants', applicantRoutes.getApplicants);
+app.get('/applicants', applicantRoutes.getAllApplicants);
 
 app.listen(port);
 console.log('Listening on port ' + port);

@@ -28,6 +28,8 @@ CREATE TABLE Courses (
 
 CREATE TABLE Offers (
   StudentNumber VARCHAR PRIMARY KEY,
+  ID SERIAL PRIMARY KEY,
+  StudentNumber VARCHAR UNIQUE,
   CourseCode VARCHAR UNIQUE
 );
 

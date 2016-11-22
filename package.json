@@ -1,6 +1,7 @@
 {
     "name": "ta-application-platform",
     "main": "server.js",
+    "version": "1.0.0",
     "dependencies": {
         "bcrypt-nodejs": "latest",
         "bluebird": "^3.3.4",

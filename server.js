@@ -11,14 +11,28 @@ var session = require('express-session');
 var promise = require('bluebird');
 
 var options = {
-    // Initialization Options
     promiseLib: promise
 };
 
+// set up db
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://localhost:5432/courses';
-var db = pgp(connectionString);
+var cn = {
+    host: 'localhost',
+    port: 5432,
+    database: 'tapp',
+    user: 'postgres',
+    password: 'superuser'
+}
+var db = pgp(cn);
 
+// test connection to db
+var client = db.any("select * from Login")
+    .then(function(data) {
+        console.log(data);
+    })
+    .catch(function(err) {
+        throw err;
+    });
 
 // set up for passport
 var passport = require('passport');

@@ -10,7 +10,7 @@ CREATE TABLE Applicants (
   GivenName VARCHAR,
   Year INTEGER,
   Degree VARCHAR,
-  Qualifications VARCHAR,
+  Qualifications VARCHAR
 );
 
 CREATE TABLE Courses (
@@ -19,13 +19,13 @@ CREATE TABLE Courses (
   Description VARCHAR,
   Instructor VARCHAR,
   NumberOfTAs INTEGER,
-  Degree VARCHAR,
+  Degree VARCHAR
 );
 
 CREATE TABLE Offers (
   ID SERIAL PRIMARY KEY,
   StudentNumber VARCHAR UNIQUE,
-  CourseCode VARCHAR UNIQUE,
+  CourseCode VARCHAR UNIQUE
 );
 
 CREATE TABLE Applications (
@@ -33,5 +33,5 @@ CREATE TABLE Applications (
   StudentNumber VARCHAR,
   CourseCode VARCHAR,
   Rank INTEGER,
-  Experience INTEGER,
+  Experience INTEGER
 );

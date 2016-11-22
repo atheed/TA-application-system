@@ -3,35 +3,37 @@ CREATE DATABASE tapp;
 
 \c tapp;
 
+CREATE TABLE Login (
+  StudentNumber VARCHAR PRIMARY KEY,
+  Type VARCHAR,
+  Password VARCHAR
+);
+
 CREATE TABLE Applicants (
-  ID SERIAL PRIMARY KEY,
-  StudentNumber VARCHAR UNIQUE,
+  StudentNumber VARCHAR PRIMARY KEY,
   FamilyName VARCHAR,
   GivenName VARCHAR,
   Year INTEGER,
   Degree VARCHAR,
-  Qualifications VARCHAR,
+  Qualifications VARCHAR
 );
 
 CREATE TABLE Courses (
-  ID SERIAL PRIMARY KEY,
-  Code VARCHAR UNIQUE,
+  Code VARCHAR PRIMARY KEY,
   Description VARCHAR,
   Instructor VARCHAR,
   NumberOfTAs INTEGER,
-  Degree VARCHAR,
+  Degree VARCHAR
 );
 
 CREATE TABLE Offers (
-  ID SERIAL PRIMARY KEY,
-  StudentNumber VARCHAR UNIQUE,
-  CourseCode VARCHAR UNIQUE,
+  StudentNumber VARCHAR PRIMARY KEY,
+  CourseCode VARCHAR UNIQUE
 );
 
 CREATE TABLE Applications (
-  ID SERIAL PRIMARY KEY,
-  StudentNumber VARCHAR,
+  StudentNumber VARCHAR PRIMARY KEY,
   CourseCode VARCHAR,
   Rank INTEGER,
-  Experience INTEGER,
+  Experience INTEGER
 );

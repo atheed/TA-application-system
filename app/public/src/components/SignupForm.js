@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Form from './Form';
 
-class LoginForm extends Component {
+class SignupForm extends Component {
     constructor() {
         super();
     }
@@ -9,13 +9,13 @@ class LoginForm extends Component {
     render() {
         return (
             <div>
-            <h1>Login</h1>
+            <h1>Signup</h1>
             <Form 
-                action="/login"
+                action="/signup"
             />
             </div>
         );
     }
 }
 
-export default LoginForm;
+export default SignupForm;

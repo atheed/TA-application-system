@@ -27,7 +27,7 @@ var config = {
         root: [
             path.join(__dirname, 'node_modules'),
         ],
-    },
+    }
 };
 
 module.exports = config;

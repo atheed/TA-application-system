@@ -1,4 +1,4 @@
-/*
+
 var express = require('express');
 var app = express();
 var loginRoutes = require('./app/server/routes/login-routes.js');
@@ -9,6 +9,23 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var bcrypt = require('bcrypt-nodejs');
+
+// React (webpack) compilation
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config.js');
+var compiler = webpack(webpackConfig);
+
+app.use(express.static(__dirname + '/app/public/client'));
+app.use(webpackDevMiddleware(compiler, {
+    hot: true,
+    filename: 'bundle.js',
+    publicPath: '/',
+    stats: {
+        colors: true,
+    },
+    historyApiFallback: true,
+}));
 
 // set up for DB
 var promise = require('bluebird');
@@ -86,30 +103,3 @@ app.post('/login', passport.authenticate('local-login', {
 
 app.listen(port);
 console.log('Listening on port ' + port);
-*/
-
-var express = require('express');
-var webpackDevMiddleware = require('webpack-dev-middleware');
-var webpack = require('webpack');
-var webpackConfig = require('./webpack.config.js');
-var app = express();
-
-var compiler = webpack(webpackConfig);
-
-app.use(express.static(__dirname + '/app/public/www'));
-
-app.use(webpackDevMiddleware(compiler, {
-    hot: true,
-    filename: 'bundle.js',
-    publicPath: '/',
-    stats: {
-        colors: true,
-    },
-    historyApiFallback: true,
-}));
-
-var server = app.listen(3000, function() {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log('Example app listening at http://%s:%s', host, port);
-});

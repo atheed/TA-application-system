@@ -18,7 +18,7 @@ class LoginForm extends Component {
         return (
             <div>
                 <h1>Login</h1>
-                Login as: 
+                Login as:
                 <select defaultValue={this.state.selectedValue} onChange={this.handleChange}>
                     <option value="student">Student</option>
                     <option value="admin">Administrator</option>

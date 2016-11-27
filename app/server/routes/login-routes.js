@@ -1,4 +1,5 @@
 module.exports = function(app, passport) {
+
     app.get('/', function(req, res) {
         res.render('index.ejs');
     });
@@ -12,6 +13,8 @@ module.exports = function(app, passport) {
     });
 
     app.get('/profile', isLoggedIn, function(req, res) {
+        console.log("Request user is");
+        console.log(req.user);
         res.render('profile.ejs', {
             user: req.user
         });

@@ -1,3 +1,5 @@
-# Apple macOS system files
-*.DS_Store
 node_modules
+
+www/bundle.js
+
+*.DS_Store

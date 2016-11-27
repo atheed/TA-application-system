@@ -1,3 +1,4 @@
+
 var express = require('express');
 var app = express();
 var loginRoutes = require('./app/server/routes/login-routes.js');
@@ -8,6 +9,23 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var bcrypt = require('bcrypt-nodejs');
+
+// React (webpack) compilation
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config.js');
+var compiler = webpack(webpackConfig);
+
+app.use(express.static(__dirname + '/app/public/client'));
+app.use(webpackDevMiddleware(compiler, {
+    hot: true,
+    filename: 'bundle.js',
+    publicPath: '/',
+    stats: {
+        colors: true,
+    },
+    historyApiFallback: true,
+}));
 
 // set up for DB
 var promise = require('bluebird');

@@ -49,4 +49,3 @@ insert into rankings values('1000831745', 'CSC108', 1, 0);
 insert into rankings values('1000123456', 'CSC120', 1, 0);
 
 insert into rankings values('1000123456', 'CSC108', 2, 0);
-

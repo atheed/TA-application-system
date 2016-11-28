@@ -12,7 +12,7 @@ CREATE TABLE Login (
 );
 
 CREATE TABLE Applicants (
-  StudentNumber VARCHAR PRIMARY KEY REFERENCES Applicants(StudentNumber),
+  StudentNumber VARCHAR PRIMARY KEY REFERENCES Login(StudentNumber),
   FamilyName VARCHAR,
   GivenName VARCHAR,
   Year INTEGER,
@@ -22,7 +22,7 @@ CREATE TABLE Applicants (
 
 CREATE TABLE Courses (
   Code VARCHAR PRIMARY KEY,
-  Description VARCHAR,
+  Title VARCHAR,
   Instructor VARCHAR,
   NumberOfTAs INTEGER
 );

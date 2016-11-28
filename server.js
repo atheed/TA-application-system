@@ -103,7 +103,7 @@ app.get('/courses-in-cart', applicantRoutes.getCoursesInCart);
 app.post('/rank-course', applicantRoutes.rankCourse);
 
 app.post('/update-experience-in-course', applicantRoutes.updateExperienceInCourse);
-
+app.get('/all-qualifications', applicantRoutes.getAllQualifications);
 
 app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/profile', // redirect to the secure profile section

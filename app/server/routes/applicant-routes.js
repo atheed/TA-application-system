@@ -1,25 +1,6 @@
-// app.post('/applicants', routes.addApplicant);
-
-// app.delete('/applicants', routes.deleteApplicant);
-
-// app.get('/courses', routes.getCourses);
-
-
-// using DB
-
-
-// router.get('/api/puppies', db.getAllPuppies);
-// router.get('/api/puppies/:id', db.getSinglePuppy);
-// router.post('/api/puppies', db.createPuppy);
-// router.put('/api/puppies/:id', db.updatePuppy);
-// router.delete('/api/puppies/:id', db.removePuppy);
-
-
-// app.get('/applicants', applicantRoutes.getApplicants);
 'use strict';
 
 // ------ APIs FOR TA COORDINATOR -----
-
 
 exports.getAllApplicants = function(req, res, next) {
     var db = req.app.get('db');
@@ -80,12 +61,15 @@ exports.getCourseInfo = function(req, res, next) {
                 FROM Courses \
                 WHERE Code=${course}", req.query);
 
-                // let rankingList = yield t.any(
-                //     "SELECT CourseCode, Rank, Experience \
-                // FROM rankings \
-                // WHERE StudentNumber=${stunum}", req.query);
+                // let applicantList = yield t.any(
+                //    'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                //     FROM Applicants a \
+                //     INNER JOIN Rankings r \
+                //     ON a.StudentNumber=r.StudentNumber \
+                //     WHERE CourseCode = ${course}',   
+                // req.query);
 
-                // let rankings = { "rankings": rankingList }
+                // let applicants = { "applicants": applicantList }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \
@@ -102,6 +86,7 @@ exports.getCourseInfo = function(req, res, next) {
                 // let considerations = { "considerations": considerList }
 
                 return Object.assign(info, qualifications);
+                // return Object.assign(info, qualifications, applicants);
                 // return Object.assign(info, rankings, offers, considerations);
             })
             .then(function(applicantInfo) {
@@ -125,6 +110,8 @@ exports.getCourseInfo = function(req, res, next) {
         res.send("Error: unrecognized query");
     }
 }
+
+
 
 /* Get all the applicants for a particular course */
 exports.getApplicantsForCourse = function(req, res, next) {
@@ -506,6 +493,22 @@ exports.updateExperienceInCourse = function(req, res, next) {
         res.status(400);
         res.send("Error: unrecognized query");
     }
+}
+
+exports.getAllQualifications = function(req, res, next) {
+    var db = req.app.get('db');
+    db.any('SELECT DISTINCT Qualification FROM CourseQualifications')
+        .then(function(data) {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    data: flattenArray(data),
+                    message: 'Retrieved ALL qualifications'
+                });
+        })
+        .catch(function(err) {
+            return next(err);
+        });
 }
 
 /* Flatten an array of objects with only one field into an array of just 

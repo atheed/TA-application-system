@@ -1,4 +1,3 @@
-
 var express = require('express');
 var app = express();
 var loginRoutes = require('./app/server/routes/login-routes.js');
@@ -78,32 +77,33 @@ app.use(flash());
 app.set('db', db);
 
 loginRoutes(app, passport);
+applicantRoutes(app, passport);
 
-app.get('/all-applicants', applicantRoutes.getAllApplicants);
+// app.get('/all-applicants', applicantRoutes.getAllApplicants);
 
-app.get('/all-courses', applicantRoutes.getAllCourses);
+// app.get('/all-courses', applicantRoutes.getAllCourses);
 
-app.get('/course-info', applicantRoutes.getCourseInfo);
+// app.get('/course-info', applicantRoutes.getCourseInfo);
 
-app.get('/applicants-for-course', applicantRoutes.getApplicantsForCourse);
-app.get('/applicants-for-course-with-degree', applicantRoutes.getApplicantsForCourseWithDegree);
-app.get('/applicant-info', applicantRoutes.getApplicantInfo);
-app.post('/add-applicant', applicantRoutes.addApplicant);
+// app.get('/applicants-for-course', applicantRoutes.getApplicantsForCourse);
+// app.get('/applicants-for-course-with-degree', applicantRoutes.getApplicantsForCourseWithDegree);
+// app.get('/applicant-info', applicantRoutes.getApplicantInfo);
+// app.post('/add-applicant', applicantRoutes.addApplicant);
 
-app.post('/make-offer', applicantRoutes.makeOffer);
+// app.post('/make-offer', applicantRoutes.makeOffer);
 
-app.post('/consider-applicant', applicantRoutes.considerApplicant);
+// app.post('/consider-applicant', applicantRoutes.considerApplicant);
 
-app.post('/add-course-to-cart', applicantRoutes.addCourseToCart);
+// app.post('/add-course-to-cart', applicantRoutes.addCourseToCart);
 
-app.delete('/remove-course-from-cart', applicantRoutes.removeCourseFromCart);
+// app.delete('/remove-course-from-cart', applicantRoutes.removeCourseFromCart);
 
-app.get('/courses-in-cart', applicantRoutes.getCoursesInCart);
+// app.get('/courses-in-cart', applicantRoutes.getCoursesInCart);
 
-app.post('/rank-course', applicantRoutes.rankCourse);
+// app.post('/rank-course', applicantRoutes.rankCourse);
 
-app.post('/update-experience-in-course', applicantRoutes.updateExperienceInCourse);
-app.get('/all-qualifications', applicantRoutes.getAllQualifications);
+// app.post('/update-experience-in-course', applicantRoutes.updateExperienceInCourse);
+// app.get('/all-qualifications', applicantRoutes.getAllQualifications);
 
 app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/profile', // redirect to the secure profile section

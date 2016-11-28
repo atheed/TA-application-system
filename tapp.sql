@@ -52,6 +52,9 @@ CREATE TABLE Rankings (
   PRIMARY KEY (StudentNumber, CourseCode)
 );
 
+insert into login values ('1000831745', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
+insert into login values ('1000123456', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
+
 insert into applicants values('1000831745', 'Klein', 'Evan', 4, 'Undergrad', '');
 insert into applicants values('1000123456', 'Chaudhary', 'Rahul', 4, 'Grad', '');
 

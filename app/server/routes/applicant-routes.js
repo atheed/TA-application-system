@@ -1,8 +1,98 @@
 'use strict';
 
-// ------ APIs FOR TA COORDINATOR -----
+module.exports = function(app, passport) {
+    // ------ APIs FOR TA COORDINATOR -----
 
-exports.getAllApplicants = function(req, res, next) {
+    app.get('/all-applicants', getAllApplicants);
+
+    app.get('/all-courses', getAllCourses);
+
+    app.get('/course-info', function(req, res, next) {
+        var db = req.app.get('db');
+        console.log(req.isAuthenticated());
+        console.log(req.user);
+        if (!req.user) {
+            return;
+        }
+        let type = req.user.type;
+        if (req.query.course) {
+            db.task(function*(t) {
+
+                    let info = yield t.one(
+                        "SELECT * \
+                FROM Courses \
+                WHERE Code=${course}", req.query);
+
+                    let qualificationList = yield t.any(
+                        "SELECT Qualification \
+                FROM CourseQualifications \
+                WHERE Code=${course}", req.query);
+
+                    let qualifications = { "qualifications": flattenArray(qualificationList) }
+
+                    if (type === "admin") {
+                        // display the course info, as well as the applicants
+
+                        let applicantList = yield t.any(
+                            'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                        FROM Applicants a \
+                        INNER JOIN Rankings r \
+                        ON a.StudentNumber=r.StudentNumber \
+                        WHERE CourseCode = ${course} \
+                        ORDER BY Rank', // TODO: order by something else probably
+                            req.query);
+
+                        let applicants = { "applicants": applicantList }
+                        return Object.assign(info, qualifications, applicants);
+
+                    } else {
+                        return Object.assign(info, qualifications);
+                    }
+                })
+                .then(function(applicantInfo) {
+                    // success;
+                    console.log(applicantInfo);
+                    res.status(200)
+                        .json({
+                            status: 'success',
+                            data: applicantInfo,
+                            message: 'Retrieved applicant info'
+                        });
+                })
+                .catch(function(err) {
+                    return next(err);
+                });
+
+        } else {
+            // unrecognized query, send 400 error code
+            console.log("error");
+            res.status(400);
+            res.send("Error: unrecognized query");
+        }
+    });
+
+    app.get('/applicants-for-course', getApplicantsForCourse);
+    app.get('/applicants-for-course-with-degree', getApplicantsForCourseWithDegree);
+    app.get('/applicant-info', getApplicantInfo);
+    app.post('/add-applicant', addApplicant);
+
+    app.post('/make-offer', makeOffer);
+
+    app.post('/consider-applicant', considerApplicant);
+
+    app.post('/add-course-to-cart', addCourseToCart);
+
+    app.delete('/remove-course-from-cart', removeCourseFromCart);
+
+    app.get('/courses-in-cart', getCoursesInCart);
+
+    app.post('/rank-course', rankCourse);
+
+    app.post('/update-experience-in-course', updateExperienceInCourse);
+    app.get('/all-qualifications', getAllQualifications);
+}
+
+var getAllApplicants = function(req, res, next) {
     var db = req.app.get('db');
     db.any('select * from Applicants')
         .then(function(data) {
@@ -34,7 +124,8 @@ exports.getAllApplicants = function(req, res, next) {
     }
   ]
 */
-exports.getAllCourses = function(req, res, next) {
+var getAllCourses = function(req, res, next) {
+    console.log(req.user);
     var db = req.app.get('db');
     db.any('SELECT * FROM Courses')
         .then(function(data) {
@@ -61,9 +152,9 @@ exports.getAllCourses = function(req, res, next) {
     ]
   },
 */
-exports.getCourseInfo = function(req, res, next) {
+var getCourseInfo = function(req, res, next) {
     var db = req.app.get('db');
-
+    console.log(req.user);
     let type = req.user.type;
     if (req.query.course) {
         db.task(function*(t) {
@@ -84,13 +175,13 @@ exports.getCourseInfo = function(req, res, next) {
                     // display the course info, as well as the applicants
 
                     let applicantList = yield t.any(
-                       'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                        'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
                         FROM Applicants a \
                         INNER JOIN Rankings r \
                         ON a.StudentNumber=r.StudentNumber \
                         WHERE CourseCode = ${course} \
                         ORDER BY Rank', // TODO: order by something else probably
-                    req.query);
+                        req.query);
 
                     let applicants = { "applicants": applicantList }
                     return Object.assign(info, qualifications, applicants);
@@ -124,7 +215,7 @@ exports.getCourseInfo = function(req, res, next) {
 
 
 /* Get all the applicants for a particular course */
-exports.getApplicantsForCourse = function(req, res, next) {
+var getApplicantsForCourse = function(req, res, next) {
     var db = req.app.get('db');
 
     if (req.query.course) {
@@ -156,7 +247,7 @@ exports.getApplicantsForCourse = function(req, res, next) {
 }
 
 /* Get all the applicants for a particular course */
-exports.getApplicantsForCourseWithDegree = function(req, res, next) {
+var getApplicantsForCourseWithDegree = function(req, res, next) {
     var db = req.app.get('db');
 
     if (req.query.course && req.query.degree) {
@@ -214,7 +305,7 @@ exports.getApplicantsForCourseWithDegree = function(req, res, next) {
 
  */
 /* Get all the info for a particular applicant */
-exports.getApplicantInfo = function(req, res, next) {
+var getApplicantInfo = function(req, res, next) {
     var db = req.app.get('db');
 
     if (req.query.stunum) {
@@ -269,7 +360,7 @@ exports.getApplicantInfo = function(req, res, next) {
     }
 }
 
-exports.makeOffer = function(req, res, next) {
+var makeOffer = function(req, res, next) {
     var db = req.app.get('db');
     // TODO : maybe it should be req.body?
     if (req.query.stunum && req.query.course) {
@@ -280,16 +371,16 @@ exports.makeOffer = function(req, res, next) {
                 VALUES(${stunum}, ${course}, 'offered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'offered'",
                 req.query)
-        .then(function() {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: 'Made offer to applicant'
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+            .then(function() {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: 'Made offer to applicant'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -298,7 +389,7 @@ exports.makeOffer = function(req, res, next) {
     }
 }
 
-exports.considerApplicant = function(req, res, next) {
+var considerApplicant = function(req, res, next) {
     var db = req.app.get('db');
     // TODO : maybe it should be req.body?
     if (req.query.stunum && req.query.course) {
@@ -309,16 +400,16 @@ exports.considerApplicant = function(req, res, next) {
                 VALUES(${stunum}, ${course}, 'considered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'considered'",
                 req.query)
-        .then(function() {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: 'Considered applicant for course'
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+            .then(function() {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: 'Considered applicant for course'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -330,7 +421,7 @@ exports.considerApplicant = function(req, res, next) {
 
 // ----------- APIs FOR APPLICANT VIEW ------------
 
-exports.addApplicant = function(req, res, next) {
+var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
     db.task(function*(t) {
@@ -361,7 +452,7 @@ exports.addApplicant = function(req, res, next) {
         });
 }
 
-exports.addCourseToCart = function(req, res, next) {
+var addCourseToCart = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.body.studentnumber;
     // var stunum = req.user.studentnumber;
@@ -371,18 +462,17 @@ exports.addCourseToCart = function(req, res, next) {
         db.none(
                 "INSERT INTO Rankings \
                 VALUES($1, $2, 0, 0)\
-                ",
-                [stunum, req.body.course])
-        .then(function() {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: 'Added course to cart'
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+                ", [stunum, req.body.course])
+            .then(function() {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: 'Added course to cart'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -391,7 +481,7 @@ exports.addCourseToCart = function(req, res, next) {
     }
 }
 
-exports.removeCourseFromCart = function(req, res, next) {
+var removeCourseFromCart = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.query.studentnumber;
     // var stunum = req.user.studentnumber;
@@ -400,18 +490,17 @@ exports.removeCourseFromCart = function(req, res, next) {
         // check if there is already an entry there, if so overwrite it
         db.result(
                 "DELETE FROM Rankings \
-                WHERE StudentNumber=$1 AND CourseCode=$2",
-                [stunum, req.query.course])
-        .then(function(result) {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: `Removed ${result.rowCount} course from cart`
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+                WHERE StudentNumber=$1 AND CourseCode=$2", [stunum, req.query.course])
+            .then(function(result) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: `Removed ${result.rowCount} course from cart`
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -421,13 +510,13 @@ exports.removeCourseFromCart = function(req, res, next) {
 }
 
 /* Get all the applicants for a particular course */
-exports.getCoursesInCart = function(req, res, next) {
+var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.query.studentnumber;
     // var stunum = req.user.studentnumber;
 
     db.any(
-        'SELECT CourseCode, Rank, Experience\
+            'SELECT CourseCode, Rank, Experience\
         FROM Rankings \
         WHERE StudentNumber=$1',
             stunum)
@@ -445,7 +534,7 @@ exports.getCoursesInCart = function(req, res, next) {
 }
 
 /* Get all the applicants for a particular course */
-exports.rankCourse = function(req, res, next) {
+var rankCourse = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.body.studentnumber;
     // var stunum = req.user.studentnumber;
@@ -455,18 +544,17 @@ exports.rankCourse = function(req, res, next) {
         db.none(
                 "UPDATE Rankings \
                 SET Rank=$1\
-                WHERE StudentNumber=$2 AND CourseCode=$3",
-                [req.body.rank, stunum, req.body.course])
-        .then(function() {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: 'Ranked course'
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+                WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.rank, stunum, req.body.course])
+            .then(function() {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: 'Ranked course'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -476,7 +564,7 @@ exports.rankCourse = function(req, res, next) {
 }
 
 /* Get all the applicants for a particular course */
-exports.updateExperienceInCourse = function(req, res, next) {
+var updateExperienceInCourse = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.body.studentnumber;
     // var stunum = req.user.studentnumber;
@@ -485,18 +573,17 @@ exports.updateExperienceInCourse = function(req, res, next) {
         db.none(
                 "UPDATE Rankings \
                 SET Experience=$1\
-                WHERE StudentNumber=$2 AND CourseCode=$3",
-                [req.body.experience, stunum, req.body.course])
-        .then(function() {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    message: 'Updated Experience in course'
-                });
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+                WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.experience, stunum, req.body.course])
+            .then(function() {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: 'Updated Experience in course'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
@@ -505,7 +592,7 @@ exports.updateExperienceInCourse = function(req, res, next) {
     }
 }
 
-exports.getAllQualifications = function(req, res, next) {
+var getAllQualifications = function(req, res, next) {
     var db = req.app.get('db');
     db.any('SELECT DISTINCT Qualification FROM CourseQualifications')
         .then(function(data) {

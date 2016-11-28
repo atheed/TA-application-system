@@ -76,7 +76,7 @@ class Course extends Component {
 
         if (this.state.expanded) {
             courseinfo = <CourseInfo code={code} />;
-        } else if (this.state.expanded && this.state.finishedloading) {} else {
+        } else {
             courseinfo =
                 <div className="course-info">
                     <button onClick={() => this.setState({expanded: ! this.state.expanded})}>

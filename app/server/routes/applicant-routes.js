@@ -19,19 +19,29 @@ exports.getAllApplicants = function(req, res, next) {
 }
 
 /* Returns data of the form:
-    "data": [
-      "CSC108",
-      "CSC120"
-    ]
+  "data": [
+    {
+      "code": "CSC108",
+      "title": "Intro to CS",
+      "instructor": "J Smith",
+      "numberoftas": 50
+    },
+    {
+      "code": "CSC120",
+      "title": "Intro to CS for Science",
+      "instructor": "Prof 2",
+      "numberoftas": 25
+    }
+  ]
 */
 exports.getAllCourses = function(req, res, next) {
     var db = req.app.get('db');
-    db.any('SELECT Code FROM Courses')
+    db.any('SELECT * FROM Courses')
         .then(function(data) {
             res.status(200)
                 .json({
                     status: 'success',
-                    data: flattenArray(data),
+                    data: data,
                     message: 'Retrieved ALL courses'
                 });
         })

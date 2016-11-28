@@ -22,7 +22,7 @@ CREATE TABLE Applicants (
 
 CREATE TABLE Courses (
   Code VARCHAR PRIMARY KEY,
-  Description VARCHAR,
+  Title VARCHAR,
   Instructor VARCHAR,
   NumberOfTAs INTEGER
 );

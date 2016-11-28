@@ -12,6 +12,47 @@ function status(response) {
     }
 }
 
+class CourseInfo extends Component {
+    constructor() {
+        super();
+        this.state = {
+            instructor: null,
+            numberOfTAs: null,
+            qualifications: null,
+        }
+    }
+
+    componentDidMount() {
+        var t = this;
+
+        fetch('/course-info?course=' + this.props.code, { method: 'GET', credentials: 'include' })
+            .then(json)
+            .then(function(data) {
+                const courses = data.data;
+                t.setState({
+                    instructor: courses.instructor,
+                    numberOfTAs: courses.numberoftas,
+                    qualifications: courses.qualifications,
+                });
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
+            });
+    }
+
+    render() {
+        return (
+            <div className="course-info">
+                <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                            Hide
+                        </button>
+                {this.state.instructor}: {this.state.numberOfTAs}
+                <br /><br />
+            </div>);
+    }
+}
+
 
 class Course extends Component {
     constructor() {
@@ -22,48 +63,20 @@ class Course extends Component {
             numberOfTAs: null,
             qualifications: null,
             expanded: false,
-            alreadyexpanded: false,
-            finishedloading: false
         }
     }
 
     render() {
+
         const { code, title } = this.props;
         let courseinfo, t = this;
 
-        if (this.state.expanded && !this.state.alreadyexpanded) {
-            this.state.alreadyexpanded = true;
-            fetch('/course-info?course=' + code, { method: 'GET', credentials: 'include' })
-                .then(json)
-                .then(function(data) {
-                    const courses = data.data;
-                    console.log(data);
-                    t.setState({
-                        instructor: courses.instructor,
-                        numberOfTAs: courses.numberoftas,
-                        qualifications: courses.qualifications,
-                        finishedloading: true,
-                    });
-                })
-                .catch(function(err) {
-                    // Error :(
-                    throw err;
-                });
+        courseinfo =
+            <div className="course-info" />;
 
-            courseinfo =
-                <div className="course-info" />;
-        } else if (this.state.expanded && this.state.finishedloading) {
-            console.log(this.state);
-            courseinfo =
-                <div className="course-info">
-                    <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
-                            Hide
-                    </button>
-                    {this.state.instructor}
-                    {this.state.numberOfTAs}
-                    {this.state.qualifications}
-                </div>;
-        } else {
+        if (this.state.expanded) {
+            courseinfo = <CourseInfo code={code} />;
+        } else if (this.state.expanded && this.state.finishedloading) {} else {
             courseinfo =
                 <div className="course-info">
                     <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
@@ -93,7 +106,6 @@ class CourseSelection extends Component {
             .then(function(data) {
                 const courses = data.data;
                 t.setState({ courses: courses });
-                console.log(t);
             })
             .catch(function(err) {
                 // Error :(
@@ -106,8 +118,10 @@ class CourseSelection extends Component {
             <div className="all-course-info">
                 <ul>
                     {this.state.courses.map(course =>
-                        <Course key={course.code} code={course.code} title={course.title} />
-                    )
+                        <Course key={course.code} 
+                                code={course.code} 
+                                title={course.title} />
+                        )
                     }
                 </ul>
             </div>

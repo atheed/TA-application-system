@@ -54,22 +54,14 @@ exports.getAllCourses = function(req, res, next) {
 exports.getCourseInfo = function(req, res, next) {
     var db = req.app.get('db');
 
+    let type = req.user.type;
     if (req.query.course) {
         db.task(function*(t) {
+
                 let info = yield t.one(
                     "SELECT * \
                 FROM Courses \
                 WHERE Code=${course}", req.query);
-
-                // let applicantList = yield t.any(
-                //    'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
-                //     FROM Applicants a \
-                //     INNER JOIN Rankings r \
-                //     ON a.StudentNumber=r.StudentNumber \
-                //     WHERE CourseCode = ${course}',   
-                // req.query);
-
-                // let applicants = { "applicants": applicantList }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \
@@ -78,16 +70,24 @@ exports.getCourseInfo = function(req, res, next) {
 
                 let qualifications = { "qualifications": flattenArray(qualificationList) }
 
-                // let considerList = yield t.any(
-                //     "SELECT CourseCode \
-                // FROM Offers \
-                // WHERE StudentNumber=${stunum} AND Status='considered'", req.query);
+                if (type === "admin") {
+                    // display the course info, as well as the applicants
 
-                // let considerations = { "considerations": considerList }
+                    let applicantList = yield t.any(
+                       'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                        FROM Applicants a \
+                        INNER JOIN Rankings r \
+                        ON a.StudentNumber=r.StudentNumber \
+                        WHERE CourseCode = ${course} \
+                        ORDER BY Rank', // TODO: order by something else probably
+                    req.query);
 
-                return Object.assign(info, qualifications);
-                // return Object.assign(info, qualifications, applicants);
-                // return Object.assign(info, rankings, offers, considerations);
+                    let applicants = { "applicants": applicantList }
+                    return Object.assign(info, qualifications, applicants);
+
+                } else {
+                    return Object.assign(info, qualifications);
+                }
             })
             .then(function(applicantInfo) {
                 // success;

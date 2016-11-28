@@ -221,11 +221,13 @@ var getApplicantsForCourse = function(req, res, next) {
     if (req.query.course) {
         console.log("course");
         db.any(
-                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Rank, Experience, Status \
 	    	FROM Applicants a \
-	    	INNER JOIN Rankings r \
+	    	JOIN Rankings r \
 			ON a.StudentNumber=r.StudentNumber \
-	    	WHERE CourseCode = $1',
+            LEFT JOIN Offers o \
+            ON r.StudentNumber=o.StudentNumber \
+            WHERE r.CourseCode=$1',
                 req.query.course)
             .then(function(data) {
                 res.status(200)

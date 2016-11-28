@@ -5,6 +5,7 @@ import { Router, Route, Link, IndexRoute,
 import Home from './Home';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import Applicants from './Applicants';
 
 class App extends Component {
     constructor() {
@@ -17,6 +18,7 @@ class App extends Component {
                 <Route path='/' component={Home}/>
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
+                <Route path='/applicants' component={Applicants} />
             </Router>
         );
     }

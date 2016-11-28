@@ -86,11 +86,8 @@ app.get('/all-courses', applicantRoutes.getAllCourses);
 app.get('/course-info', applicantRoutes.getCourseInfo);
 
 app.get('/applicants-for-course', applicantRoutes.getApplicantsForCourse);
-
 app.get('/applicants-for-course-with-degree', applicantRoutes.getApplicantsForCourseWithDegree);
-
 app.get('/applicant-info', applicantRoutes.getApplicantInfo);
-
 app.post('/add-applicant', applicantRoutes.addApplicant);
 
 app.post('/make-offer', applicantRoutes.makeOffer);

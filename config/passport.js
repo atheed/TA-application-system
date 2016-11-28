@@ -7,12 +7,6 @@ var User = require('../app/server/classes/user.js');
 // expose this function to our app using module.exports
 module.exports = function(passport, bcrypt) {
 
-    // =========================================================================
-    // passport session setup ==================================================
-    // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
-
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
         done(null, user.studentnumber);
@@ -40,7 +34,6 @@ module.exports = function(passport, bcrypt) {
         function(req, studentnumber, password, done) {
             // asynchronous User.findOne wont fire unless data is sent back
             process.nextTick(function() {
-
                 User.findOne(studentnumber, function(err, isStudentNumberAvailable, user) {
                     // if there are any errors, return the error
                     if (err)
@@ -57,6 +50,7 @@ module.exports = function(passport, bcrypt) {
 
                         // set the user's local credentials
                         newUser.studentnumber = studentnumber;
+                        newUser.type = req.body.type;
                         newUser.password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 
                         // save the user
@@ -94,13 +88,12 @@ module.exports = function(passport, bcrypt) {
                 }
 
                 // if the user is found but the password is wrong
-                if (!bcrypt.compareSync(password, user.password)) {
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                if (req.body.type != user.type || !bcrypt.compareSync(password, user.password)) {
+                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password or account type.'));
                 }
                 console.log("password matches!");
                 // all is well, return successful user
                 return done(null, user);
             });
-
         }));
 };

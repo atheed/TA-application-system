@@ -3,6 +3,8 @@ CREATE DATABASE tapp;
 
 \c tapp;
 
+CREATE TYPE OfferStatus AS ENUM ('offered', 'considered', 'rejected');
+
 CREATE TABLE Login (
   StudentNumber VARCHAR PRIMARY KEY,
   Type VARCHAR,
@@ -26,8 +28,10 @@ CREATE TABLE Courses (
 );
 
 CREATE TABLE Offers (
-  StudentNumber VARCHAR PRIMARY KEY REFERENCES Applicants(StudentNumber),
-  CourseCode VARCHAR REFERENCES Courses(Code)
+  StudentNumber VARCHAR REFERENCES Applicants(StudentNumber),
+  CourseCode VARCHAR REFERENCES Courses(Code),
+  Status OfferStatus,
+  PRIMARY KEY (StudentNumber, CourseCode)
 );
 
 CREATE TABLE Rankings (

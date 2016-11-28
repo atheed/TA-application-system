@@ -10,13 +10,13 @@ var pgp = require('pg-promise')(options);
 var config = process.env.DATABASE_URL || dbConfig;
 var db = pgp(config);
 
-function User(studentnumber, password) {
+function User(studentnumber, password, type) {
     this.studentnumber = studentnumber;
     this.password = password;
-
+    this.type = type;
     this.save = function(callback) {
         console.log(this.studentnumber + ' will be saved');
-        db.any('INSERT INTO Login(studentnumber, password) VALUES($1, $2)', [this.studentnumber, this.password])
+        db.any('INSERT INTO Login(studentnumber, password, type) VALUES($1, $2, $3)', [this.studentnumber, this.password, this.type])
             .then(function(data) {
                 console.log("Data added " + data);
                 callback(null);

@@ -17,7 +17,7 @@ CREATE TABLE Applicants (
   GivenName VARCHAR,
   Year INTEGER,
   Degree VARCHAR,
-  Qualifications VARCHAR
+  OtherInfo VARCHAR
 );
 
 CREATE TABLE Courses (
@@ -25,6 +25,16 @@ CREATE TABLE Courses (
   Description VARCHAR,
   Instructor VARCHAR,
   NumberOfTAs INTEGER
+);
+
+CREATE TABLE CourseQualifications (
+  Code VARCHAR REFERENCES Courses(Code),
+  Qualification VARCHAR
+);
+
+CREATE TABLE StudentQualifications (
+  StudentNumber VARCHAR REFERENCES Applicants(StudentNumber),
+  Qualification VARCHAR
 );
 
 CREATE TABLE Offers (
@@ -48,8 +58,10 @@ insert into applicants values('1000123456', 'Chaudhary', 'Rahul', 4, 'Grad', '')
 insert into courses values('CSC108', 'Intro to CS', 'J Smith', 50);
 insert into courses values('CSC120', 'Intro to CS for Science', 'Prof 2', 25);
 
+insert into coursequalifications values('CSC120', 'Python');
+insert into coursequalifications values('CSC120', 'Able to teach 1st years patiently');
+insert into coursequalifications values('CSC108', 'Able to teach 1st years patiently');
+
 insert into rankings values('1000831745', 'CSC108', 1, 0);
-
 insert into rankings values('1000123456', 'CSC120', 1, 0);
-
 insert into rankings values('1000123456', 'CSC108', 2, 0);

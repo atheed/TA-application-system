@@ -46,6 +46,12 @@ class ApplicantsHeader extends Component {
         <div
           style={styles.flexItem}
         >Experience</div>
+        <div
+          style={styles.flexItem}
+        >Offer</div>
+        <div
+          style={styles.flexItem}
+        >Consider</div>
       </div>
     );
   }

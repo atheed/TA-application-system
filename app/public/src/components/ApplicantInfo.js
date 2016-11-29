@@ -14,7 +14,7 @@ class ApplicantInfo extends Component {
 			rankings: {
 				first: null,
 				second: null,
-				third: null,			
+				third: null,
 			},
 
 		}
@@ -42,6 +42,10 @@ class ApplicantInfo extends Component {
 						// Error :(
 						throw err;
 				});
+	}
+
+	shouldComponentUpdate() {
+		return true;
 	}
 
 	render() {

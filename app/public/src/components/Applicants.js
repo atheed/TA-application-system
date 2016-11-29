@@ -43,6 +43,8 @@ class Applicants extends Component {
   render() {
 
     const applicants = this.state.applicants;
+    const course = "CSC108";
+    // const course = this.props.course;
     return (
       <div
         style={styles.container}
@@ -55,6 +57,7 @@ class Applicants extends Component {
               <ApplicantRow
                 key={`applicant-${i}`}
                 applicant={applicant}
+                course={course}
               />
             );
           })

@@ -7,69 +7,7 @@ module.exports = function(app, passport) {
 
     app.get('/all-courses', getAllCourses);
 
-    app.get('/course-info', function(req, res, next) {
-        var db = req.app.get('db');
-        console.log(req.isAuthenticated());
-        console.log(req.user);
-        if (!req.user) {
-            return;
-        }
-        let type = req.user.type;
-        if (req.query.course) {
-            db.task(function*(t) {
-
-                    let info = yield t.one(
-                        "SELECT * \
-                FROM Courses \
-                WHERE Code=${course}", req.query);
-
-                    let qualificationList = yield t.any(
-                        "SELECT Qualification \
-                FROM CourseQualifications \
-                WHERE Code=${course}", req.query);
-
-                    let qualifications = { "qualifications": flattenArray(qualificationList) }
-
-                    if (type === "admin") {
-                        // display the course info, as well as the applicants
-
-                        let applicantList = yield t.any(
-                            'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
-                        FROM Applicants a \
-                        INNER JOIN Rankings r \
-                        ON a.StudentNumber=r.StudentNumber \
-                        WHERE CourseCode = ${course} \
-                        ORDER BY Rank', // TODO: order by something else probably
-                            req.query);
-
-                        let applicants = { "applicants": applicantList }
-                        return Object.assign(info, qualifications, applicants);
-
-                    } else {
-                        return Object.assign(info, qualifications);
-                    }
-                })
-                .then(function(applicantInfo) {
-                    // success;
-                    console.log(applicantInfo);
-                    res.status(200)
-                        .json({
-                            status: 'success',
-                            data: applicantInfo,
-                            message: 'Retrieved applicant info'
-                        });
-                })
-                .catch(function(err) {
-                    return next(err);
-                });
-
-        } else {
-            // unrecognized query, send 400 error code
-            console.log("error");
-            res.status(400);
-            res.send("Error: unrecognized query");
-        }
-    });
+    app.get('/course-info', getCourseInfo);
 
     app.get('/applicants-for-course', getApplicantsForCourse);
     app.get('/applicants-for-course-with-degree', getApplicantsForCourseWithDegree);
@@ -227,7 +165,8 @@ var getApplicantsForCourse = function(req, res, next) {
 			ON a.StudentNumber=r.StudentNumber \
             LEFT JOIN Offers o \
             ON r.StudentNumber=o.StudentNumber \
-            WHERE r.CourseCode=$1',
+            WHERE r.CourseCode=$1 \
+            ORDER BY RANK',
                 req.query.course)
             .then(function(data) {
                 res.status(200)
@@ -388,15 +327,14 @@ var getApplicantInfo = function(req, res, next) {
 
 var makeOffer = function(req, res, next) {
     var db = req.app.get('db');
-    // TODO : maybe it should be req.body?
-    if (req.query.stunum && req.query.course) {
-        console.log(req.query);
+    if (req.body.stunum && req.body.course) {
+        console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
                 "INSERT INTO Offers \
                 VALUES(${stunum}, ${course}, 'offered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'offered'",
-                req.query)
+                req.body)
             .then(function() {
                 res.status(200)
                     .json({
@@ -418,14 +356,14 @@ var makeOffer = function(req, res, next) {
 var considerApplicant = function(req, res, next) {
     var db = req.app.get('db');
     // TODO : maybe it should be req.body?
-    if (req.query.stunum && req.query.course) {
-        console.log(req.query);
+    if (req.body.stunum && req.body.course) {
+        console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
                 "INSERT INTO Offers \
                 VALUES(${stunum}, ${course}, 'considered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'considered'",
-                req.query)
+                req.body)
             .then(function() {
                 res.status(200)
                     .json({

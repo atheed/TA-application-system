@@ -471,7 +471,7 @@ var addApplicant = function(req, res, next) {
 
 var addCourseToCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.studentnumber;
+    var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
     if (req.body.course) {
         console.log(req.body);
@@ -500,7 +500,7 @@ var addCourseToCart = function(req, res, next) {
 
 var removeCourseFromCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.studentnumber;
+    var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
     if (req.query.course) {
         console.log(req.query);
@@ -529,14 +529,14 @@ var removeCourseFromCart = function(req, res, next) {
 /* Get all the applicants for a particular course */
 var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.studentnumber;
+    var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
 
     db.any(
             'SELECT CourseCode, Rank, Experience\
         FROM Rankings \
         WHERE StudentNumber=$1',
-            stunum)
+            [stunum])
         .then(function(data) {
             res.status(200)
                 .json({

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
-function json(response) {
-    return response.json()
-}
+import Course from './Course';
+
+var utils = require('../utils.js');
+
+var json = utils.json;
 
 function status(response) {
     if (response.status >= 200 && response.status < 300) {
@@ -12,89 +14,12 @@ function status(response) {
     }
 }
 
-class CourseInfo extends Component {
-    constructor() {
-        super();
-        this.state = {
-            instructor: null,
-            numberOfTAs: null,
-            qualifications: null,
-        }
-    }
-
-    componentDidMount() {
-        var t = this;
-
-        fetch('/course-info?course=' + this.props.code, { method: 'GET', credentials: 'include' })
-            .then(json)
-            .then(function(data) {
-                const courses = data.data;
-                t.setState({
-                    instructor: courses.instructor,
-                    numberOfTAs: courses.numberoftas,
-                    qualifications: courses.qualifications,
-                });
-            })
-            .catch(function(err) {
-                // Error :(
-                throw err;
-            });
-    }
-
-    render() {
-        return (
-            <div className="course-info">
-                <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
-                            Hide
-                        </button>
-                {this.state.instructor}: {this.state.numberOfTAs}
-                <br /><br />
-            </div>);
-    }
-}
-
-
-class Course extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-            instructor: null,
-            numberOfTAs: null,
-            qualifications: null,
-            expanded: false,
-        }
-    }
-
-    render() {
-
-        const { code, title } = this.props;
-        let courseinfo, t = this;
-
-        courseinfo =
-            <div className="course-info" />;
-
-        if (this.state.expanded) {
-            courseinfo = <CourseInfo code={code} />;
-        } else {
-            courseinfo =
-                <div className="course-info">
-                    <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
-                        Expand
-                    </button>
-                    {this.props.code}: {this.props.title}
-                    <br /><br />
-                </div>;
-        }
-        return courseinfo;
-    }
-}
-
 class CourseSelection extends Component {
     constructor() {
         super();
         this.state = {
-            courses: []
+            courses: [],
+            cart: []
         };
         this.componentDidMount = this.componentDidMount.bind(this);
     }
@@ -105,22 +30,46 @@ class CourseSelection extends Component {
             .then(json)
             .then(function(data) {
                 const courses = data.data;
-                t.setState({ courses: courses });
+                fetch('/courses-in-cart?stunum=1000831745', { method: 'GET' })
+                    .then(json)
+                    .then(function(data) {
+                        const cart = data.data;
+                        t.setState({
+                            cart: cart.map(course => {
+                                    return course.coursecode;
+                                }
+                            ),
+                            courses: courses
+                            // cart: courses
+                        });
+                    })
+                    .catch(function(err) {
+                        // Error :(
+                        throw err;
+                    });
+                // t.setState({ courses: courses });
             })
             .catch(function(err) {
                 // Error :(
                 throw err;
             });
+
     }
 
     render() {
+        console.log(this.state.cart);
+        console.log("Calling render");
+        // console.log(this.state.courses);
+        // console.log(this.state.cart.indexOf(this.state.courses[0].code));
         return (
             <div className="all-course-info">
                 <ul>
                     {this.state.courses.map(course =>
                         <Course key={course.code} 
                                 code={course.code} 
-                                title={course.title} />
+                                title={course.title}
+                                type="student"
+                                inCart={this.state.cart.indexOf(course.code) !== -1} />
                         )
                     }
                 </ul>

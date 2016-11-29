@@ -158,13 +158,14 @@ class ApplicantRow extends Component {
 		let offer, consider;
 
 		offer = 
-		<button onClick={this.makeApplicantOffer}>
-			Make Offer
-		</button>;
+			<button onClick={this.makeApplicantOffer}>
+				Make Offer
+			</button>;
 		consider = 
-		<button onClick={this.considerApplicantForCourse}>
-			Consider
-		</button>;
+			<button onClick={this.considerApplicantForCourse}>
+				Consider
+			</button>;
+
 		if (offerStatus === 'offered') {
 			offer = 
 			<button onClick={this.unOffer}>
@@ -213,20 +214,6 @@ class ApplicantRow extends Component {
 				</div>				   
 			</div>);
 
-		// if (this.state.expanded) {
-		// 	return (
-		// 		<div className="applicant-row">
-		// 			{basicInfo}
-		// 			{ this.state.expanded ? <ApplicantInfo studentNumber={studentnumber}/>: null }
-		// 		</div>
-		// 	);
-		// } else {
-		// 	return (
-		// 		<div className="applicant-row">
-		// 			{basicInfo}
-		// 		</div>
-		// 	);
-		// }
 		return (
 			<div className="applicant-row">
 				{basicInfo}

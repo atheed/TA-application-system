@@ -26,7 +26,7 @@ class Applicants extends Component {
 
   componentDidMount() {
     var t = this;
-    fetch('/applicants-for-course?course=CSC108', { method: 'GET', credentials: 'include' })
+    fetch('/applicants-for-course?course=' + this.props.code, { method: 'GET', credentials: 'include' })
         .then(json)
         .then(function(data) {
             const applicants = data.data;
@@ -43,8 +43,8 @@ class Applicants extends Component {
   render() {
 
     const applicants = this.state.applicants;
-    const course = "CSC108";
-    // const course = this.props.course;
+    // const course = "CSC108";
+    const course = this.props.code;
     return (
       <div
         style={styles.container}

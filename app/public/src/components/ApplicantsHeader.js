@@ -19,6 +19,10 @@ const styles = {
 };
 
 class ApplicantsHeader extends Component {
+  constructor() {
+      super();
+  }
+  
   render() {
     return (
       <div

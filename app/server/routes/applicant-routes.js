@@ -287,22 +287,13 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
 		...
 		"rankings" : {
             1 : [
-                {
-                    "coursecode":
-                    "experience":
-                }                
+                "CSC108",
+                "CSC148"              
             ],
             2 : [
-                {
-                    "coursecode":
-                    "experience":
-                }    
+                "CSC120"   
             ],
             3 : [
-                {
-                    "coursecode":
-                    "experience":
-                }  
             ]
         }
 		],
@@ -329,24 +320,24 @@ var getApplicantInfo = function(req, res, next) {
 				WHERE StudentNumber=${stunum}", req.query);
 
                 let rankedFirst = yield t.any(
-                    "SELECT CourseCode, Experience \
+                    "SELECT CourseCode \
 				FROM rankings \
                 WHERE StudentNumber=${stunum} AND Rank=1", req.query);
 
                 let rankedSecond = yield t.any(
-                    "SELECT CourseCode, Experience \
+                    "SELECT CourseCode \
                 FROM rankings \
                 WHERE StudentNumber=${stunum} AND Rank=2", req.query);
 
                 let rankedThird = yield t.any(
-                    "SELECT CourseCode, Experience \
+                    "SELECT CourseCode \
                 FROM rankings \
                 WHERE StudentNumber=${stunum} AND Rank=3", req.query);
 
                 let rankings = { "rankings": {
-                        1 : rankedFirst,
-                        2 : rankedSecond,
-                        3 : rankedThird                    
+                        1 : flattenArray(rankedFirst),
+                        2 : flattenArray(rankedSecond),
+                        3 : flattenArray(rankedThird) 
                     }
                 }
 

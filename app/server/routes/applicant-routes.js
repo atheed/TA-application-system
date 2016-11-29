@@ -285,22 +285,33 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
 		"studentnumber" :
 		"familyname" :
 		...
-		"rankings" : [
-			{
-				"coursecode":
-				"rank":
-				"experience":
-			}
+		"rankings" : {
+            1 : [
+                {
+                    "coursecode":
+                    "experience":
+                }                
+            ],
+            2 : [
+                {
+                    "coursecode":
+                    "experience":
+                }    
+            ],
+            3 : [
+                {
+                    "coursecode":
+                    "experience":
+                }  
+            ]
+        }
 		],
 		"offers" : [
-            {
-                "coursecode":
-            }
+            "CSC108"
         ],
         "considerations" : [
-            {
-                "coursecode":
-            }
+            "CSC108",
+            "CSC120",
         ]
 	}
 }
@@ -317,28 +328,50 @@ var getApplicantInfo = function(req, res, next) {
 				FROM Applicants \
 				WHERE StudentNumber=${stunum}", req.query);
 
-                let rankingList = yield t.any(
-                    "SELECT CourseCode, Rank, Experience \
+                let rankedFirst = yield t.any(
+                    "SELECT CourseCode, Experience \
 				FROM rankings \
-                WHERE StudentNumber=${stunum}", req.query);
+                WHERE StudentNumber=${stunum} AND Rank=1", req.query);
 
-                let rankings = { "rankings": rankingList }
+                let rankedSecond = yield t.any(
+                    "SELECT CourseCode, Experience \
+                FROM rankings \
+                WHERE StudentNumber=${stunum} AND Rank=2", req.query);
+
+                let rankedThird = yield t.any(
+                    "SELECT CourseCode, Experience \
+                FROM rankings \
+                WHERE StudentNumber=${stunum} AND Rank=3", req.query);
+
+                let rankings = { "rankings": {
+                        1 : rankedFirst,
+                        2 : rankedSecond,
+                        3 : rankedThird                    
+                    }
+                }
 
                 let offerList = yield t.any(
                     "SELECT CourseCode \
                 FROM Offers \
                 WHERE StudentNumber=${stunum} AND Status='offered'", req.query);
 
-                let offers = { "offers": offerList }
+                let offers = { "offers": flattenArray(offerList) }
 
                 let considerList = yield t.any(
                     "SELECT CourseCode \
                 FROM Offers \
                 WHERE StudentNumber=${stunum} AND Status='considered'", req.query);
 
-                let considerations = { "considerations": considerList }
+                let considerations = { "considerations": flattenArray(considerList) }
 
-                return Object.assign(info, rankings, offers, considerations);
+                let qualificationList = yield t.any(
+                    "SELECT Qualification \
+                FROM StudentQualifications \
+                WHERE StudentNumber=${stunum}", req.query);
+
+                let qualifications = { "qualifications": flattenArray(qualificationList) }
+
+                return Object.assign(info, rankings, offers, considerations, qualifications);
             })
             .then(function(applicantInfo) {
                 // success;
@@ -613,8 +646,9 @@ var getAllQualifications = function(req, res, next) {
 /* Flatten an array of objects with only one field into an array of just 
 their values */
 function flattenArray(arr) {
-    console.log(arr);
-    console.log(Object.keys(arr[0]));
+    if (arr.length === 0) {
+        return [];
+    }
     let key = Object.keys(arr[0])[0];
     return arr.map(
         function(x) {

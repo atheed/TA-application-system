@@ -15,8 +15,10 @@ module.exports = function(app, passport) {
     app.post('/add-applicant', addApplicant);
 
     app.post('/make-offer', makeOffer);
+    app.delete('/unoffer', unOfferApplicant);
 
     app.post('/consider-applicant', considerApplicant);
+    app.delete('/unconsider-applicant', unConsiderApplicant);
 
     app.post('/add-course-to-cart', addCourseToCart);
 
@@ -353,6 +355,32 @@ var makeOffer = function(req, res, next) {
     }
 }
 
+var unOfferApplicant = function(req, res, next) {
+    var db = req.app.get('db');
+    if (req.query.stunum && req.query.course) {
+        console.log(req.query);
+        // check if there is already an entry there, if so overwrite it
+        db.result(
+                "DELETE FROM Offers \
+                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='offered'", req.query)
+            .then(function(result) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: `Removed ${result.rowCount} course from offers`
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
+}
+
 var considerApplicant = function(req, res, next) {
     var db = req.app.get('db');
     // TODO : maybe it should be req.body?
@@ -382,6 +410,31 @@ var considerApplicant = function(req, res, next) {
     }
 }
 
+var unConsiderApplicant = function(req, res, next) {
+    var db = req.app.get('db');
+    if (req.query.stunum && req.query.course) {
+        console.log(req.query);
+        // check if there is already an entry there, if so overwrite it
+        db.result(
+                "DELETE FROM Offers \
+                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='considered'", req.query)
+            .then(function(result) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: `Removed ${result.rowCount} course from offers`
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
+}
 
 // ----------- APIs FOR APPLICANT VIEW ------------
 

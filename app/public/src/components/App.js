@@ -11,6 +11,7 @@ import {
 import Home from './Home';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import Applicants from './Applicants';
 import CourseSelection from './CourseSelection';
 
 class App extends Component {
@@ -25,7 +26,8 @@ class App extends Component {
                 <Route path='/' component={Home}/>
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
-                <Route path='/courseselection' component={CourseSelection} />
+                <Route path='/applicants' component={Applicants} />
+                <Route path='/courseselection' component={() => (<CourseSelection course="CSC108"/>)} />
             </Router>
         );
     }

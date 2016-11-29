@@ -27,7 +27,7 @@ class App extends Component {
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
                 <Route path='/applicants' component={Applicants} />
-                <Route path='/courseselection' component={CourseSelection} />
+                <Route path='/courseselection' component={() => (<CourseSelection course="CSC108"/>)} />
             </Router>
         );
     }

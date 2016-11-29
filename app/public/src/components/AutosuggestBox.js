@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import Autosuggest from 'react-autosuggest';
 
-const languages = ['C', 'Java', 'Perl', 'Python'];
+var skillsList = require('./../skillsList.js');
 
 const getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? [] : languages.filter(lang =>
-        lang.toLowerCase().slice(0, inputLength) === inputValue
+    return inputLength === 0 ? [] : skillsList.skillsList.filter(skill =>
+        skill.toLowerCase().slice(0, inputLength) === inputValue
     );
 };
 
@@ -16,7 +16,7 @@ const getSuggestionValue = suggestion => suggestion;
 
 const renderSuggestion = suggestion => (
     <div>
-    {suggestion}
+        {suggestion}
     </div>
 );
 
@@ -25,7 +25,7 @@ class AutosuggestBox extends Component {
         super();
 
         this.state = {
-            value: '',
+            value: "",
             suggestions: []
         };
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import ApplicantsHeader from './ApplicantsHeader';
-import ApplicantInfo from './ApplicantInfo';
+import ApplicantRow from './ApplicantRow';
 
 const styles = {
   container: {
@@ -20,28 +20,24 @@ class Applicants extends Component {
   constructor() {
     super();
     this.state = {
-      applicants: [],
-      expanded: false,
+      applicants: []
     }
   }
 
   componentDidMount() {
     var t = this;
-    if (true) {
-      fetch('/applicants-for-course?course=CSC108', { method: 'GET', credentials: 'include' })
-          .then(json)
-          .then(function(data) {
-              const applicants = data.data;
-              t.setState({
-                applicants: applicants,
-                expanded: true
-              });
-          })
-          .catch(function(err) {
-              // Error :(
-              throw err;
-          });
-    }    
+    fetch('/applicants-for-course?course=CSC108', { method: 'GET', credentials: 'include' })
+        .then(json)
+        .then(function(data) {
+            const applicants = data.data;
+            t.setState({
+              applicants: applicants,
+            });
+        })
+        .catch(function(err) {
+            // Error :(
+            throw err;
+        });
   }
 
   render() {
@@ -56,7 +52,7 @@ class Applicants extends Component {
         {
           Object.values(applicants).map((applicant, i) => {
             return (
-              <ApplicantInfo
+              <ApplicantRow
                 key={`applicant-${i}`}
                 applicant={applicant}
               />

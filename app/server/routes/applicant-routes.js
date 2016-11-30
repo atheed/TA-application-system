@@ -25,6 +25,7 @@ module.exports = function(app, passport) {
     app.delete('/remove-course-from-cart', removeCourseFromCart);
 
     app.get('/courses-in-cart', getCoursesInCart);
+    app.get('/courses-in-cart-with-rank', getCoursesInCartWithRank);
 
     app.post('/submit-rankings', submitRankings);
 
@@ -552,6 +553,49 @@ var getCoursesInCart = function(req, res, next) {
         .catch(function(err) {
             return next(err);
         });
+}
+/* Returns data of the form
+{
+    "data": [
+        {
+          "code": "CSC108",
+          "title": "Intro to CS",
+        },             
+    ],
+}
+
+*/
+/* Get all the applicants for a particular course */
+var getCoursesInCartWithRank = function(req, res, next) {
+    var db = req.app.get('db');
+    var stunum = req.query.stunum;
+    // var stunum = req.user.studentnumber;
+    if (req.query.rank) {
+
+        db.any(
+                'SELECT Courses.Code, Title \
+            FROM Cart \
+            JOIN Courses \
+            ON Cart.CourseCode=Courses.Code \
+            WHERE StudentNumber=${stunum} AND Rank=${rank}',
+                req.query)
+            .then(function(data) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        data: data,
+                        message: 'Retrieved courses in cart'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
 }
 
 /* Get all the applicants for a particular course */

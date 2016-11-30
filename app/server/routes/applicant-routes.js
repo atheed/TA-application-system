@@ -535,10 +535,10 @@ var getCoursesInCart = function(req, res, next) {
     // var stunum = req.user.studentnumber;
 
     db.any(
-            'SELECT CourseCode as Code, Title, Rank, Experience\
+            'SELECT Courses.Code, Title, Rank, Experience \
         FROM Cart \
         JOIN Courses \
-        ON Courses.Code=Rankings.CourseCode \
+        ON Cart.CourseCode=Courses.Code \
         WHERE StudentNumber=$1',
             [stunum])
         .then(function(data) {
@@ -557,7 +557,7 @@ var getCoursesInCart = function(req, res, next) {
 /* Get all the applicants for a particular course */
 var rankCourse = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.studentnumber;
+    var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
     if (req.body.course && req.body.rank) {
         console.log(req.body);

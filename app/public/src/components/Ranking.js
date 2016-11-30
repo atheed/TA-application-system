@@ -43,6 +43,7 @@ class Ranking extends Component {
     }
 
     render() {
+        return (
             <form className="ranking-form">
               <input type="radio" name="rank" value="1" 
                     checked={this.state.rank === '1'}

@@ -52,6 +52,14 @@ CREATE TABLE Rankings (
   PRIMARY KEY (StudentNumber, CourseCode)
 );
 
+CREATE TABLE Cart (
+  StudentNumber VARCHAR REFERENCES Applicants(StudentNumber),
+  CourseCode VARCHAR REFERENCES Courses(Code),
+  Rank INTEGER,
+  Experience INTEGER,
+  PRIMARY KEY (StudentNumber, CourseCode)
+);
+
 insert into login values ('1000831745', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
 insert into login values ('1000123456', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
 
@@ -65,6 +73,8 @@ insert into coursequalifications values('CSC120', 'Python');
 insert into coursequalifications values('CSC120', 'Able to teach 1st years patiently');
 insert into coursequalifications values('CSC108', 'Able to teach 1st years patiently');
 
-insert into rankings values('1000831745', 'CSC108', 1, 0);
+-- insert into rankings values('1000831745', 'CSC108', 1, 0);
 insert into rankings values('1000123456', 'CSC120', 1, 0);
 insert into rankings values('1000123456', 'CSC108', 2, 0);
+
+insert into cart values('1000831745', 'CSC108', 0, 0);

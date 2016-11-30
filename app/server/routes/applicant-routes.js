@@ -26,6 +26,8 @@ module.exports = function(app, passport) {
 
     app.get('/courses-in-cart', getCoursesInCart);
 
+    app.post('/submit-rankings', submitRankings);
+
     app.post('/rank-course', rankCourse);
 
     app.post('/update-experience-in-course', updateExperienceInCourse);
@@ -477,7 +479,7 @@ var addCourseToCart = function(req, res, next) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
-                "INSERT INTO Rankings \
+                "INSERT INTO Cart \
                 VALUES($1, $2, 0, 0)\
                 ", [stunum, req.body.course])
             .then(function() {
@@ -506,7 +508,7 @@ var removeCourseFromCart = function(req, res, next) {
         console.log(req.query);
         // check if there is already an entry there, if so overwrite it
         db.result(
-                "DELETE FROM Rankings \
+                "DELETE FROM Cart \
                 WHERE StudentNumber=$1 AND CourseCode=$2", [stunum, req.query.course])
             .then(function(result) {
                 res.status(200)
@@ -533,8 +535,10 @@ var getCoursesInCart = function(req, res, next) {
     // var stunum = req.user.studentnumber;
 
     db.any(
-            'SELECT CourseCode, Rank, Experience\
-        FROM Rankings \
+            'SELECT CourseCode as Code, Title, Rank, Experience\
+        FROM Cart \
+        JOIN Courses \
+        ON Courses.Code=Rankings.CourseCode \
         WHERE StudentNumber=$1',
             [stunum])
         .then(function(data) {
@@ -559,7 +563,7 @@ var rankCourse = function(req, res, next) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
-                "UPDATE Rankings \
+                "UPDATE Cart \
                 SET Rank=$1\
                 WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.rank, stunum, req.body.course])
             .then(function() {
@@ -588,7 +592,7 @@ var updateExperienceInCourse = function(req, res, next) {
     if (req.body.course && req.body.experience) {
         console.log(req.body);
         db.none(
-                "UPDATE Rankings \
+                "UPDATE Cart \
                 SET Experience=$1\
                 WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.experience, stunum, req.body.course])
             .then(function() {
@@ -607,6 +611,34 @@ var updateExperienceInCourse = function(req, res, next) {
         res.status(400);
         res.send("Error: unrecognized query");
     }
+}
+
+var submitRankings = function(req, res, next) {
+    var db = req.app.get('db');
+    var stunum = req.body.stunum;
+    // var stunum = req.user.studentnumber;
+    db.task(function*(t) {
+            let deleteRankings = t.none(
+                'DELETE FROM Rankings \
+                WHERE Rankings.StudentNumber = $1',
+                [stunum]);
+
+            let addFromCart = t.none("INSERT INTO Rankings \
+            (SELECT * FROM Cart \
+            WHERE Cart.StudentNumber = $1)", [stunum]);
+
+            return t.batch([deleteRankings, addFromCart]);
+        })
+        .then(function() {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'Submitted Rankings'
+                });
+        })
+        .catch(function(err) {
+            return next(err);
+        });
 }
 
 var getAllQualifications = function(req, res, next) {

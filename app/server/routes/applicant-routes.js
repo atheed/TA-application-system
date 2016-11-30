@@ -166,7 +166,7 @@ var getApplicantsForCourse = function(req, res, next) {
 	    	JOIN Rankings r \
 			ON a.StudentNumber=r.StudentNumber \
             LEFT JOIN Offers o \
-            ON r.StudentNumber=o.StudentNumber \
+            ON r.StudentNumber=o.StudentNumber AND r.CourseCode=o.CourseCode \
             WHERE r.CourseCode=$1 \
             ORDER BY RANK',
                 req.query.course)

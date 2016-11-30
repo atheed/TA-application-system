@@ -12,7 +12,9 @@ import Home from './Home';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import Profile from './Profile';
+import Applicants from './Applicants';
 import CourseSelection from './CourseSelection';
+import AdminDashboard from './AdminDashboard';
 
 class App extends Component {
     constructor() {
@@ -27,6 +29,8 @@ class App extends Component {
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
                 <Route path='/profile' component={Profile} />
+                <Route path='/applicants' component={() => (<Applicants course="CSC108"/>)} />
+                <Route path='/admin-dashboard' component={AdminDashboard} />
                 <Route path='/courseselection' component={CourseSelection} />
             </Router>
         );

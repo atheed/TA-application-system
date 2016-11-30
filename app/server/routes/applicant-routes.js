@@ -7,69 +7,7 @@ module.exports = function(app, passport) {
 
     app.get('/all-courses', getAllCourses);
 
-    app.get('/course-info', function(req, res, next) {
-        var db = req.app.get('db');
-        console.log(req.isAuthenticated());
-        console.log(req.user);
-        if (!req.user) {
-            return;
-        }
-        let type = req.user.type;
-        if (req.query.course) {
-            db.task(function*(t) {
-
-                    let info = yield t.one(
-                        "SELECT * \
-                FROM Courses \
-                WHERE Code=${course}", req.query);
-
-                    let qualificationList = yield t.any(
-                        "SELECT Qualification \
-                FROM CourseQualifications \
-                WHERE Code=${course}", req.query);
-
-                    let qualifications = { "qualifications": flattenArray(qualificationList) }
-
-                    if (type === "admin") {
-                        // display the course info, as well as the applicants
-
-                        let applicantList = yield t.any(
-                            'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
-                        FROM Applicants a \
-                        INNER JOIN Rankings r \
-                        ON a.StudentNumber=r.StudentNumber \
-                        WHERE CourseCode = ${course} \
-                        ORDER BY Rank', // TODO: order by something else probably
-                            req.query);
-
-                        let applicants = { "applicants": applicantList }
-                        return Object.assign(info, qualifications, applicants);
-
-                    } else {
-                        return Object.assign(info, qualifications);
-                    }
-                })
-                .then(function(applicantInfo) {
-                    // success;
-                    console.log(applicantInfo);
-                    res.status(200)
-                        .json({
-                            status: 'success',
-                            data: applicantInfo,
-                            message: 'Retrieved applicant info'
-                        });
-                })
-                .catch(function(err) {
-                    return next(err);
-                });
-
-        } else {
-            // unrecognized query, send 400 error code
-            console.log("error");
-            res.status(400);
-            res.send("Error: unrecognized query");
-        }
-    });
+    app.get('/course-info', getCourseInfo);
 
     app.get('/applicants-for-course', getApplicantsForCourse);
     app.get('/applicants-for-course-with-degree', getApplicantsForCourseWithDegree);
@@ -77,8 +15,10 @@ module.exports = function(app, passport) {
     app.post('/add-applicant', addApplicant);
 
     app.post('/make-offer', makeOffer);
+    app.delete('/unoffer', unOfferApplicant);
 
     app.post('/consider-applicant', considerApplicant);
+    app.delete('/unconsider-applicant', unConsiderApplicant);
 
     app.post('/add-course-to-cart', addCourseToCart);
 
@@ -221,11 +161,14 @@ var getApplicantsForCourse = function(req, res, next) {
     if (req.query.course) {
         console.log("course");
         db.any(
-                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
+                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Rank, Experience, Status \
 	    	FROM Applicants a \
-	    	INNER JOIN Rankings r \
+	    	JOIN Rankings r \
 			ON a.StudentNumber=r.StudentNumber \
-	    	WHERE CourseCode = $1',
+            LEFT JOIN Offers o \
+            ON r.StudentNumber=o.StudentNumber \
+            WHERE r.CourseCode=$1 \
+            ORDER BY RANK',
                 req.query.course)
             .then(function(data) {
                 res.status(200)
@@ -283,22 +226,24 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
 		"studentnumber" :
 		"familyname" :
 		...
-		"rankings" : [
-			{
-				"coursecode":
-				"rank":
-				"experience":
-			}
+		"rankings" : {
+            1 : [
+                "CSC108",
+                "CSC148"              
+            ],
+            2 : [
+                "CSC120"   
+            ],
+            3 : [
+            ]
+        }
 		],
 		"offers" : [
-            {
-                "coursecode":
-            }
+            "CSC108"
         ],
         "considerations" : [
-            {
-                "coursecode":
-            }
+            "CSC108",
+            "CSC120",
         ]
 	}
 }
@@ -315,28 +260,50 @@ var getApplicantInfo = function(req, res, next) {
 				FROM Applicants \
 				WHERE StudentNumber=${stunum}", req.query);
 
-                let rankingList = yield t.any(
-                    "SELECT CourseCode, Rank, Experience \
+                let rankedFirst = yield t.any(
+                    "SELECT CourseCode \
 				FROM rankings \
-                WHERE StudentNumber=${stunum}", req.query);
+                WHERE StudentNumber=${stunum} AND Rank=1", req.query);
 
-                let rankings = { "rankings": rankingList }
+                let rankedSecond = yield t.any(
+                    "SELECT CourseCode \
+                FROM rankings \
+                WHERE StudentNumber=${stunum} AND Rank=2", req.query);
+
+                let rankedThird = yield t.any(
+                    "SELECT CourseCode \
+                FROM rankings \
+                WHERE StudentNumber=${stunum} AND Rank=3", req.query);
+
+                let rankings = { "rankings": {
+                        1 : flattenArray(rankedFirst),
+                        2 : flattenArray(rankedSecond),
+                        3 : flattenArray(rankedThird) 
+                    }
+                }
 
                 let offerList = yield t.any(
                     "SELECT CourseCode \
                 FROM Offers \
                 WHERE StudentNumber=${stunum} AND Status='offered'", req.query);
 
-                let offers = { "offers": offerList }
+                let offers = { "offers": flattenArray(offerList) }
 
                 let considerList = yield t.any(
                     "SELECT CourseCode \
                 FROM Offers \
                 WHERE StudentNumber=${stunum} AND Status='considered'", req.query);
 
-                let considerations = { "considerations": considerList }
+                let considerations = { "considerations": flattenArray(considerList) }
 
-                return Object.assign(info, rankings, offers, considerations);
+                let qualificationList = yield t.any(
+                    "SELECT Qualification \
+                FROM StudentQualifications \
+                WHERE StudentNumber=${stunum}", req.query);
+
+                let qualifications = { "qualifications": flattenArray(qualificationList) }
+
+                return Object.assign(info, rankings, offers, considerations, qualifications);
             })
             .then(function(applicantInfo) {
                 // success;
@@ -362,15 +329,14 @@ var getApplicantInfo = function(req, res, next) {
 
 var makeOffer = function(req, res, next) {
     var db = req.app.get('db');
-    // TODO : maybe it should be req.body?
-    if (req.query.stunum && req.query.course) {
-        console.log(req.query);
+    if (req.body.stunum && req.body.course) {
+        console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
                 "INSERT INTO Offers \
                 VALUES(${stunum}, ${course}, 'offered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'offered'",
-                req.query)
+                req.body)
             .then(function() {
                 res.status(200)
                     .json({
@@ -389,17 +355,43 @@ var makeOffer = function(req, res, next) {
     }
 }
 
+var unOfferApplicant = function(req, res, next) {
+    var db = req.app.get('db');
+    if (req.query.stunum && req.query.course) {
+        console.log(req.query);
+        // check if there is already an entry there, if so overwrite it
+        db.result(
+                "DELETE FROM Offers \
+                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='offered'", req.query)
+            .then(function(result) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: `Removed ${result.rowCount} course from offers`
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
+}
+
 var considerApplicant = function(req, res, next) {
     var db = req.app.get('db');
     // TODO : maybe it should be req.body?
-    if (req.query.stunum && req.query.course) {
-        console.log(req.query);
+    if (req.body.stunum && req.body.course) {
+        console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
                 "INSERT INTO Offers \
                 VALUES(${stunum}, ${course}, 'considered')\
                 ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'considered'",
-                req.query)
+                req.body)
             .then(function() {
                 res.status(200)
                     .json({
@@ -418,6 +410,31 @@ var considerApplicant = function(req, res, next) {
     }
 }
 
+var unConsiderApplicant = function(req, res, next) {
+    var db = req.app.get('db');
+    if (req.query.stunum && req.query.course) {
+        console.log(req.query);
+        // check if there is already an entry there, if so overwrite it
+        db.result(
+                "DELETE FROM Offers \
+                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='considered'", req.query)
+            .then(function(result) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        message: `Removed ${result.rowCount} course from offers`
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
+}
 
 // ----------- APIs FOR APPLICANT VIEW ------------
 
@@ -454,7 +471,7 @@ var addApplicant = function(req, res, next) {
 
 var addCourseToCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.studentnumber;
+    var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
     if (req.body.course) {
         console.log(req.body);
@@ -483,7 +500,7 @@ var addCourseToCart = function(req, res, next) {
 
 var removeCourseFromCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.studentnumber;
+    var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
     if (req.query.course) {
         console.log(req.query);
@@ -512,14 +529,14 @@ var removeCourseFromCart = function(req, res, next) {
 /* Get all the applicants for a particular course */
 var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.studentnumber;
+    var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
 
     db.any(
             'SELECT CourseCode, Rank, Experience\
         FROM Rankings \
         WHERE StudentNumber=$1',
-            stunum)
+            [stunum])
         .then(function(data) {
             res.status(200)
                 .json({
@@ -611,8 +628,9 @@ var getAllQualifications = function(req, res, next) {
 /* Flatten an array of objects with only one field into an array of just 
 their values */
 function flattenArray(arr) {
-    console.log(arr);
-    console.log(Object.keys(arr[0]));
+    if (arr.length === 0) {
+        return [];
+    }
     let key = Object.keys(arr[0])[0];
     return arr.map(
         function(x) {

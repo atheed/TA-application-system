@@ -52,8 +52,18 @@ class AutosuggestBox extends Component {
      * On each keystroke, update the list of suggestions
      */
     onSuggestionsFetchRequested({ value }) {
+        // remove from autosuggest dropdown list all elements that have already been chosen
+        var currentSuggestions = getSuggestions(value);
+        for(var i = 0; i < this.state.chosen.length; i++) {
+            var chosenIndex = currentSuggestions.indexOf(this.state.chosen[i]);
+            if (chosenIndex >= 0) {
+                // if element already chosen, remove it from suggestions
+                currentSuggestions.splice(chosenIndex, 1);
+            }
+        }
+
         this.setState({
-            suggestions: getSuggestions(value),
+            suggestions: currentSuggestions,
             chosen: this.state.chosen
         });
     };

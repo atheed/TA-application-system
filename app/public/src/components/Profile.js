@@ -2,10 +2,26 @@ import React, {Component} from 'react';
 import Autosuggest from 'react-autosuggest';
 
 import AutosuggestBox from './AutosuggestBox';
+import Skills from './Skills';
+
+let skillsList = [];
 
 class Profile extends Component {
     constructor() {
         super();
+
+        this.state = {
+            value: "",
+            suggestions: [],
+            skills: []
+        };
+
+        this.handleAutosuggestChoice = this.handleAutosuggestChoice.bind(this);
+    }
+
+    handleAutosuggestChoice(newSkill) {
+        skillsList.push(newSkill);
+        this.forceUpdate();
     }
 
     render() {
@@ -33,9 +49,15 @@ class Profile extends Component {
                     <p />
                     <div>
                         <label>Proficient in:</label>
-                        <br />
-                        <AutosuggestBox />
+                        <Skills skills={skillsList}/>
+                        <AutosuggestBox onChoose={this.handleAutosuggestChoice}/>
                     </div>
+                    <p />
+                    <div>
+                        <label>Additional Info:</label>
+                        <br />
+                        <textarea name="additional-info"></textarea>
+                        </div>
                     <p />
                     <button type="submit">Enter</button>
                 </form>

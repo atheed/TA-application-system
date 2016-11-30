@@ -3,5 +3,5 @@
  * autosuggest box
  */
 module.exports = {
-    skillsList: ['C', 'Java', 'Perl', 'Python']
+    skillsList: ['C', 'Erlang', 'Haskell', 'Java', 'Perl', 'Python', 'Scala']
 }

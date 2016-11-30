@@ -26,7 +26,8 @@ class AutosuggestBox extends Component {
 
         this.state = {
             value: "",
-            suggestions: []
+            suggestions: [],
+            chosen: []
         };
 
         this.onChange = this.onChange.bind(this);
@@ -41,7 +42,8 @@ class AutosuggestBox extends Component {
      */
     onChange(event, { newValue }) {
         this.setState({
-            value: newValue
+            value: newValue,
+            chosen: this.state.chosen
         });
     };
 
@@ -51,7 +53,8 @@ class AutosuggestBox extends Component {
      */
     onSuggestionsFetchRequested({ value }) {
         this.setState({
-            suggestions: getSuggestions(value)
+            suggestions: getSuggestions(value),
+            chosen: this.state.chosen
         });
     };
 
@@ -59,12 +62,13 @@ class AutosuggestBox extends Component {
     /**
      * Function that is responsible for behaviour upon user clicking a suggestion
      */
-     onSuggestionSelected(event, { suggestion, suggestionValue, sectionIndex, method }) {
-         this.setState({
-            value: ""
+    onSuggestionSelected(event, { suggestion, suggestionValue, sectionIndex, method }) {
+        this.setState({
+            value: "",
+            chosen: this.state.chosen.push(suggestion)
         });
-         console.log(suggestion);
-     }
+        this.props.onChoose(suggestion);
+    }
 
 
     /**
@@ -73,6 +77,7 @@ class AutosuggestBox extends Component {
     onSuggestionsClearRequested() {
         this.setState({
             suggestions: [],
+            chosen: this.state.chosen
         });
     };
 

@@ -20,7 +20,7 @@ class Form extends Component {
                 studentnumber: this.refs.studentnumber.value,
                 password: this.refs.password.value,
                 type: this.refs.type.value
-			})
+            })
         });
 
         /*
@@ -31,27 +31,27 @@ class Form extends Component {
         */
 
         /*
-		fetch('/login', { 
-			method: 'POST', 
-			//credentials: 'include',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-			  studentnumber: this.refs.studentnumber.value,
-			  password: this.refs.password.value,
-              type: this.refs.type.value
-			})
-		});
-		    .then(json)
-		    .then(function(data) {
-		        console.log(data);
-		    })
-		    .catch(function(err) {
-		        // Error
-		        throw err;
-		    });
+        fetch('/login', { 
+            method: 'POST', 
+            //credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                studentnumber: this.refs.studentnumber.value,
+                password: this.refs.password.value,
+                type: this.refs.type.value
+            })
+        });
+        .then(json)
+            .then(function(data) {
+            console.log(data);
+        })
+            .catch(function(err) {
+            // Error
+            throw err;
+        });
         */
     }
 

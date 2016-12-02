@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Autosuggest from 'react-autosuggest';
+import styles from './../../client/css/autosuggest.css';
 
 var skillsList = require('./../skillsList.js');
 
@@ -96,14 +97,15 @@ class AutosuggestBox extends Component {
 
         // props to be sent to Autosuggest
         const inputProps = {
-            placeholder: 'Type a proficiency',
+            placeholder: 'Enter a skill',
             value,
             onChange: this.onChange
         };
 
         return(
             <div>
-                <Autosuggest
+                <Autosuggest 
+                    theme={styles}
                     suggestions={suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}

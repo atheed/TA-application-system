@@ -9,6 +9,8 @@ import {
 } from 'react-router';
 
 import Home from './Home';
+import StudentEntry from './StudentEntry';
+import AdminEntry from './AdminEntry';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import Profile from './Profile';
@@ -26,6 +28,8 @@ class App extends Component {
         return (
             <Router history={hashHistory}>
                 <Route path='/' component={Home}/>
+                <Route path='/student' component={StudentEntry} />
+                <Route path='/admin' component={AdminEntry} />
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
                 <Route path='/profile' component={Profile} />

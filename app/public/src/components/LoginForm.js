@@ -10,6 +10,7 @@ class LoginForm extends Component {
         return (
             <div>
                 Welcome back!
+                <p />
                 <Form 
                     action="/login"
                     type={ this.props.type }

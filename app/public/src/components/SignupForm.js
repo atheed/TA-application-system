@@ -10,6 +10,7 @@ class SignupForm extends Component {
         return (
             <div>
                 Sign Up Below!
+                <p />
                 <Form 
                     action="/signup"
                     type={ this.props.type }

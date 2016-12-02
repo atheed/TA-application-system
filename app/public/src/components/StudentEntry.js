@@ -14,7 +14,6 @@ export default class StudentEntry extends Component {
     }
 
     entryTypeHandler(event) {
-        console.log(event.target.innerText);
         this.setState({entryType: event.target.innerText});
     }
 
@@ -22,7 +21,8 @@ export default class StudentEntry extends Component {
         return (
             <div>
                 <h1>Student</h1>
-                <span onClick={this.entryTypeHandler}>Login</span> | <span onClick={this.entryTypeHandler}>Sign Up</span>
+                <button onClick={this.entryTypeHandler}>Login</button> | <button onClick={this.entryTypeHandler}>Sign Up</button>
+                <p />
                 {
                     this.state.entryType === "Login" ? 
                     <LoginForm 

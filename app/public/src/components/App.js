@@ -30,8 +30,6 @@ class App extends Component {
                 <Route path='/' component={Home}/>
                 <Route path='/student' component={StudentEntry} />
                 <Route path='/admin' component={AdminEntry} />
-                <Route path='/login' component={LoginForm} />
-                <Route path='/signup' component={SignupForm} />
                 <Route path='/profile' component={Profile} />
                 <Route path='/applicants' component={() => (<Applicants course="CSC108"/>)} />
                 <Route path='/admin-dashboard' component={AdminDashboard} />

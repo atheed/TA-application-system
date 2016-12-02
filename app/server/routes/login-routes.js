@@ -15,7 +15,12 @@ module.exports = function(app, passport) {
     app.get('/profile', isLoggedIn, function(req, res) {
         console.log("Request user is");
         console.log(req.user);
+        /*
         res.render('profile.ejs', {
+            user: req.user
+        });
+        */
+        res.json({
             user: req.user
         });
     });

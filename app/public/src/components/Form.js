@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 
+import styles from './../../client/css/form.css';
+
 var utils = require('../utils.js');
 var json = utils.json;
 
@@ -8,13 +10,20 @@ class Form extends Component {
     constructor() {
         super();
 
+        this.state = {
+            errors: false
+        }
+
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.errorHandle = this.errorHandle.bind(this);
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
         const { action, type } = this.props;
+
+        var t = this;
 
         // build request for form submit
         var params = {
@@ -37,14 +46,35 @@ class Form extends Component {
         })
         .then(json)
         .then(function(data) {
+            // if unsuccessful form submit (i.e. incorrect credentials, etc.), throw an error
+            if (!data.success)
+                throw "error";
+
             if (action == '/login')
                 hashHistory.push('/profile');
-            else
+            else        // if == '/signup'
                 hashHistory.push('/');
         })
         .catch(function(err) {
-            throw err;
+            // if error is thrown, handle appropriately
+            t.setState({
+                errors: true
+            });
         });
+    }
+
+    /**
+     * Function to handle error messages upon form submission
+     */
+    errorHandle() {
+        if (!this.state.errors) {
+            return null;
+        } else {
+            if (this.props.action == "/login")
+                return "Your username and password do not match";
+            else 
+                return "An error occurred while trying to sign up";
+        }
     }
 
     render() {
@@ -62,6 +92,7 @@ class Form extends Component {
                 <div>
                     <input type="hidden" className="form-control" name="type" value={type} ref="type"></input>
                 </div>
+                <div id={styles.errorText}>{this.errorHandle()}</div>
                 <button type="submit">Enter</button>
             </form>
         );

@@ -11,8 +11,6 @@ import {
 import Home from './Home';
 import StudentEntry from './StudentEntry';
 import AdminEntry from './AdminEntry';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
 import Profile from './Profile';
 import Applicants from './Applicants';
 import CourseSelection from './CourseSelection';

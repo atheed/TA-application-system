@@ -7,17 +7,17 @@ class Home extends Component {
     constructor() {
         super();
 
-        this.loginLink = this.loginLink.bind(this);
-        this.signupLink = this.signupLink.bind(this);
+        this.studentEntry = this.studentEntry.bind(this);
+        this.adminEntry = this.adminEntry.bind(this);
         this.courseSelectionLink = this.courseSelectionLink.bind(this);
     }
 
-    loginLink() {
-        hashHistory.push('/login');
+    studentEntry() {
+        hashHistory.push('/student');
     }
 
-    signupLink() {
-        hashHistory.push('/signup');
+    adminEntry() {
+        hashHistory.push('/admin');
     }
 
     courseSelectionLink() {
@@ -28,12 +28,12 @@ class Home extends Component {
         return (
             <div id="home-div">
                 <h1>TA App</h1>
-                <button className={styles.homeNavBtn} onClick={this.loginLink}>
-                    Login
+                <button className={styles.homeNavBtn} onClick={this.studentEntry}>
+                    Enter as Student
                 </button>
                 <p />
-                <button className={styles.homeNavBtn} onClick={this.signupLink}>
-                    Sign Up
+                <button className={styles.homeNavBtn} onClick={this.adminEntry}>
+                    Enter as Administrator
                 </button>
                 <p />
                 <button className={styles.homeNavBtn} onClick={this.courseSelectionLink}>

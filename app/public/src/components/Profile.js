@@ -28,7 +28,7 @@ class Profile extends Component {
     render() {
         return (
             <div id={styles.formEntry}>
-                <h1>Student Profile</h1>
+                <h1 id={styles.profileHeading}>Student Profile</h1>
                 <form action="/TODO" method="post">
                     <div>
                         <label className={styles.formLabel}>Degree Status</label>

@@ -1,4 +1,8 @@
 import React, {Component} from 'react';
+import { hashHistory } from 'react-router';
+
+var utils = require('../utils.js');
+var json = utils.json;
 
 class Form extends Component {
     constructor() {
@@ -8,51 +12,36 @@ class Form extends Component {
     }
 
     handleSubmit(event) {
-		event.preventDefault();
+        event.preventDefault();
 
-        //var form = new FormData(document.getElementById('loginform'));
-        var form = document.querySelector('form');
-        console.log(this.refs.type.value);
-        
-        fetch('/login', {
+        const { action, type } = this.props;
+
+        // build request for form submit
+        var params = {
+            studentnumber: this.refs.studentnumber.value,
+            password: this.refs.password.value,
+            type: this.refs.type.value
+        };
+        const searchParams = Object.keys(params).map((key) => {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }).join('&');
+
+        // make form submit (POST) request
+        fetch(action, {
             method: 'POST',
-            body: JSON.stringify({
-                studentnumber: this.refs.studentnumber.value,
-                password: this.refs.password.value,
-                type: this.refs.type.value
-            })
-        });
-
-        /*
-        fetch("/login", {
-            method: "POST",
-            body: form
-        });
-        */
-
-        /*
-        fetch('/login', { 
-            method: 'POST', 
-            //credentials: 'include',
+            credentials: 'include',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
             },
-            body: JSON.stringify({
-                studentnumber: this.refs.studentnumber.value,
-                password: this.refs.password.value,
-                type: this.refs.type.value
-            })
-        });
-        .then(json)
-            .then(function(data) {
-            console.log(data);
+            body: searchParams
         })
-            .catch(function(err) {
-            // Error
+        .then(json)
+        .then(function(data) {
+            hashHistory.push('/profile');
+        })
+        .catch(function(err) {
             throw err;
         });
-        */
     }
 
     render() {

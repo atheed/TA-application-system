@@ -37,7 +37,10 @@ class Form extends Component {
         })
         .then(json)
         .then(function(data) {
-            hashHistory.push('/profile');
+            if (action == '/login')
+                hashHistory.push('/profile');
+            else
+                hashHistory.push('/');
         })
         .catch(function(err) {
             throw err;

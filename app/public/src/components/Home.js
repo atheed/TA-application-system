@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
-import { Router, Route, Link, IndexRoute, 
-    hashHistory, browserHistory } from 'react-router';
-import styles from './../../client/css/home.css';
+import {
+    Button,
+    ButtonGroup
+} from 'reactstrap';
+
+import {
+    Router,
+    Route,
+    Link,
+    IndexRoute,
+    hashHistory,
+    browserHistory
+} from 'react-router';
+
+import commoncss from './../../client/css/common.css';
+import homecss from './../../client/css/home.css';
 
 class Home extends Component {
     constructor() {
@@ -26,19 +39,20 @@ class Home extends Component {
 
     render() {
         return (
-            <div id="home-div">
-                <h1>TA App</h1>
-                <button className={styles.homeNavBtn} onClick={this.loginLink}>
-                    Login
-                </button>
-                <p />
-                <button className={styles.homeNavBtn} onClick={this.signupLink}>
-                    Sign Up
-                </button>
-                <p />
-                <button className={styles.homeNavBtn} onClick={this.courseSelectionLink}>
-                    Course Selection
-                </button>
+            <div className={commoncss.center}>
+                <h1 className={homecss.heading}>TA App</h1>
+                <Button color="danger" size="lg">Coo</Button>
+                <ButtonGroup size="lg">
+                    <Button onClick={this.loginLink}>
+                        Login
+                    </Button>
+                    <Button onClick={this.signupLink}>
+                        Sign Up
+                    </Button>
+                    <Button onClick={this.courseSelectionLink}>
+                        Course Selection
+                    </Button>
+                </ButtonGroup>
             </div>
         );
     }

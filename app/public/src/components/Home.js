@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-    Button,
-    ButtonGroup
-} from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 
 import {
     Router,
@@ -13,8 +10,8 @@ import {
     browserHistory
 } from 'react-router';
 
-import commoncss from './../../client/css/common.css';
-import homecss from './../../client/css/home.css';
+var commoncss = require('./../../client/css/common.css')
+var homecss = require('./../../client/css/home.css');
 
 class Home extends Component {
     constructor() {
@@ -39,17 +36,22 @@ class Home extends Component {
 
     render() {
         return (
-            <div className={commoncss.center}>
-                <h1 className={homecss.heading}>TA App</h1>
-                <Button color="danger" size="lg">Coo</Button>
-                <ButtonGroup size="lg">
-                    <Button onClick={this.loginLink}>
+            <div className="center">
+                <h1 className="heading">TA App</h1>
+                <ButtonGroup>
+                    <Button color="primary" size="lg" onClick={this.loginLink} block>
                         Login
                     </Button>
-                    <Button onClick={this.signupLink}>
+                </ButtonGroup>
+                
+                <ButtonGroup>
+                    <Button color="primary" size="lg"  onClick={this.signupLink} block>
                         Sign Up
                     </Button>
-                    <Button onClick={this.courseSelectionLink}>
+                </ButtonGroup>
+
+                <ButtonGroup>
+                    <Button color="primary" size="lg"  onClick={this.courseSelectionLink} block>
                         Course Selection
                     </Button>
                 </ButtonGroup>

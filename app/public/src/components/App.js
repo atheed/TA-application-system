@@ -7,7 +7,6 @@ import {
     hashHistory,
     browserHistory
 } from 'react-router';
-
 import Home from './Home';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';

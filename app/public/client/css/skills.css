@@ -1,13 +1,24 @@
-.chosen {
-    display: inline-block;
+.choice {
+    display: block;
+}
+
+.removeChoice {
+    cursor: pointer;
+    text-align: right;
+    display: inline;
+    padding-left: 4%;
+    padding-top: 5px;
+    padding-bottom: 6px;
     background-color: #e8e8e8;
-    margin: 0 auto;
-    margin-bottom: 3%;
-    margin-right: 5%;
-    padding-top: 1.2%;
-    padding-bottom: 1.2%;
-    padding-left: 7%;
-    padding-right: 7%;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    color: #707070;
+    font-weight: bold;
+}
+
+.removeChoice:hover {
+    color: #680500;
+    transition: 0.3s ease;
 }
 
 .chosenContainer {
@@ -16,4 +27,19 @@
     margin: 0 auto;
     width: 25%;
     padding-bottom: 1%;
+}
+
+.chosen {
+    display: inline-block;
+    background-color: #e8e8e8;
+    margin: 0 auto;
+    margin-bottom: 3%;
+    margin-right: 5%;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 7%;
+    padding-right: 7%;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    font-family: 'Lato', sans-serif;
 }

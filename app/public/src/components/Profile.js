@@ -10,7 +10,7 @@ var json = utils.json;
 
 let skillsList = [];
 
-class Profile extends Component {
+export default class Profile extends Component {
     constructor() {
         super();
 
@@ -21,12 +21,24 @@ class Profile extends Component {
         };
 
         this.handleAutosuggestChoice = this.handleAutosuggestChoice.bind(this);
+        this.handleRemoveChoice = this.handleRemoveChoice.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    /**
+     * Function to handle when a new skill is chosen from the autosuggest dropdown
+     */
     handleAutosuggestChoice(newSkill) {
         skillsList.push(newSkill);
         this.forceUpdate();
+    }
+
+    /**
+     * Function to handle when an already-chosen skill is removed
+     */
+    handleRemoveChoice(skillToRemove) {
+        let index = skillsList.indexOf(skillToRemove);
+        skillsList.splice(index, 1);
     }
 
     handleSubmit(event) {
@@ -115,7 +127,7 @@ class Profile extends Component {
                     <p />
                     <div>
                         <label className="formLabel">Proficient in:</label>
-                        <Skills skills={skillsList}/>
+                        <Skills skills={skillsList} removeHandler={this.handleRemoveChoice}/>
                         <AutosuggestBox onChoose={this.handleAutosuggestChoice}/>
                     </div>
                     <p />
@@ -131,5 +143,3 @@ class Profile extends Component {
         );
     }
 }
-
-export default Profile;

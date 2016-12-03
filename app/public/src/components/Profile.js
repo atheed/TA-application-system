@@ -29,7 +29,7 @@ class Profile extends Component {
         return (
             <div id={styles.formEntry}>
                 <h1 id={styles.profileHeading}>Student Profile</h1>
-                <form action="/TODO" method="post">
+                <form action="/courseselection" method="post">
                     <div>
                         <label className={styles.formLabel}>Degree Status</label>
                         <br />

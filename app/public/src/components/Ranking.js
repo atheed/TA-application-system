@@ -8,14 +8,17 @@ class Ranking extends Component {
     constructor(props) {
         super();
         this.state = {
-            rank: props.rank !== 0 ? String(props.rank) : "5",
+            rank: String(props.rank),
+            // rank: props.rank !== 0 ? String(props.rank) : "5",
         }
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(event) {
+        let oldRank = this.state.rank;
+        let newRank = event.target.value;
         this.setState({
-          rank: event.target.value
+          rank: newRank
         });
         var t = this;
 
@@ -29,17 +32,18 @@ class Ranking extends Component {
             body: JSON.stringify({
               stunum: "1000831745", // TODO: 
               course: this.props.course,
-              rank: event.target.value
+              rank: newRank
             })          
         })
             .then(json)
             .then(function(data) {
+                t.props.refreshRanks(oldRank, newRank);
                 return;
             })
             .catch(function(err) {
                 // Error :(
                 throw err;
-            });   
+            });
     }
 
     render() {

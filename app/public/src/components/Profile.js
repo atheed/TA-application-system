@@ -43,7 +43,6 @@ export default class Profile extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-
         // make form submit (POST) request
         fetch("/add-applicant", {
                 method: 'POST',

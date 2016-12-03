@@ -16,7 +16,7 @@
     font-size: 36pt;
 }
 
-#profileHeading::after {
+#profileHeading:after {
     content: ' ';
     display: block;
     border: 0;

@@ -89,7 +89,7 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Degree Status</label>
                         <br />
-                        <label className="wide"><span className="dropdown dropdown-large">
+                        <label><span className="dropdown dropdown-large">
                         <select className="dropdown-select" name="status" ref="degree">
                             <option value="undergrad">Undergraduate</option>
                             <option value="grad">Graduate</option>
@@ -100,9 +100,9 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Year</label>
                         <br />
-                        <label className="wide"><span className="dropdown dropdown-large">
+                        <label ><span className="dropdown dropdown-large">
                         <select className="dropdown-select" name="year" ref="year">
-                            <option value="1">1</option>
+                            <option value="1">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
@@ -114,7 +114,7 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Work Eligibility</label>
                         <br />
-                        <label className="wide"><span className="dropdown dropdown-large">
+                        <label ><span className="dropdown dropdown-large">
                         <select className="dropdown-select" name="eligibility" ref="eligibility">
                             <option value="Legally Entitled">Legally Entitled</option>
                             <option value="Student Visa">Student Visa</option>

@@ -63,8 +63,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.set('views', './app/server/views');
-app.set('view engine', 'ejs');
 app.use(session({
     secret: 'randomtho',
     resave: true,

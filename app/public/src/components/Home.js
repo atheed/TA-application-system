@@ -17,17 +17,17 @@ class Home extends Component {
     constructor() {
         super();
 
-        this.loginLink = this.loginLink.bind(this);
-        this.signupLink = this.signupLink.bind(this);
+        this.studentEntry = this.studentEntry.bind(this);
+        this.adminEntry = this.adminEntry.bind(this);
         this.courseSelectionLink = this.courseSelectionLink.bind(this);
     }
 
-    loginLink() {
-        hashHistory.push('/login');
+    studentEntry() {
+        hashHistory.push('/student');
     }
 
-    signupLink() {
-        hashHistory.push('/signup');
+    adminEntry() {
+        hashHistory.push('/admin');
     }
 
     courseSelectionLink() {
@@ -39,14 +39,14 @@ class Home extends Component {
             <div className="center">
                 <h1 className="heading">TA App</h1>
                 <ButtonGroup>
-                    <Button color="primary" size="lg" onClick={this.loginLink} block>
-                        Login
+                    <Button color="primary" size="lg" onClick={this.studentEntry}>
+                    Enter as Student
                     </Button>
                 </ButtonGroup>
                 
                 <ButtonGroup>
-                    <Button color="primary" size="lg"  onClick={this.signupLink} block>
-                        Sign Up
+                    <Button color="primary" size="lg" onClick={this.adminEntry} block>
+                    Enter as Administrator
                     </Button>
                 </ButtonGroup>
 

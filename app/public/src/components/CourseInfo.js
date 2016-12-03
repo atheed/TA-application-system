@@ -12,12 +12,13 @@ class CourseInfo extends Component {
         this.state = {
             instructor: null,
             numberOfTAs: null,
-            qualifications: null,
+            qualifications: [],
             applicants: null
         }
     }
 
     componentDidMount() {
+        var t = this;
         fetch('/course-info?course=' + this.props.code, { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
@@ -40,13 +41,19 @@ class CourseInfo extends Component {
         return (
             <div className="course-info">
                 <div>
-                Instructor:
+                Instructor: {instructor}
                 </div>
                 <div>
-                Number of TAs:
+                Number of TAs: {numberOfTAs}
                 </div>
                 <div>
-                Qualifications:
+                Qualifications: {qualifications.map((qualification, i) => {
+                        if (i < qualifications.length - 1) {
+                            return qualification + ", ";
+                        } else {
+                            return qualification;
+                        }
+                    })}
                 </div>
                 { this.props.type == 'admin' ? <Applicants code={this.props.code}/>: null }
                 <br /><br />

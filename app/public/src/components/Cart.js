@@ -18,10 +18,12 @@ class Cart extends Component {
                 4: [],
                 5: [],
                 0: []                
-            }
+            },
+            submitted: false,
         };
-        // this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
         this.refreshRankGroups = this.refreshRankGroups.bind(this);
+        this.submitRankings = this.submitRankings.bind(this);
     }
 
 
@@ -82,6 +84,30 @@ class Cart extends Component {
                 });
     }
 
+    submitRankings() {
+        var t = this;
+        fetch('/submit-rankings', { 
+            method: 'POST', 
+            credentials: 'include',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ // TODO: remove this, it's in credentials
+              stunum: "1000831745",
+            })          
+        })
+            .then(json)
+            .then(function(data) {
+                t.setState({
+                  submitted: true,
+                });
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
+            });
+    }
     render() {
         const rankings = this.state.rankings;
         // console.log(this.state.rankings);
@@ -93,6 +119,8 @@ class Cart extends Component {
                 <RankGroup rank={4} courses={rankings[4]} refreshRanks={this.refreshRankGroups}/>
                 <RankGroup rank={5} courses={rankings[5]} refreshRanks={this.refreshRankGroups}/>
                 <RankGroup rank={0} courses={rankings[0]} refreshRanks={this.refreshRankGroups}/>
+                <button onClick={this.submitRankings}>Submit Rankings</button>
+                {this.state.submitted ? "Your rankings have been submitted!" : null}
             </div>
         );
     }

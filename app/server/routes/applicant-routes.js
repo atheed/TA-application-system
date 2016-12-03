@@ -70,7 +70,35 @@ var getAllApplicants = function(req, res, next) {
 var getAllCourses = function(req, res, next) {
     console.log(req.user);
     var db = req.app.get('db');
-    db.any('SELECT * FROM Courses')
+    let type = "student";
+    // let type = req.user.type;
+
+    db.task(function*(t) {
+
+            if (type === "student") {
+                // display the course info, as well as the applicants
+                let stunum = req.query.studentnumber;
+                // let stunum = req.user.studentnumber;
+
+                return t.any(
+                    'SELECT Code, Title, NumberOfTAs, Instructor, InCart \
+                    FROM Courses c \
+                    LEFT JOIN \
+                    (SELECT CourseCode, true as InCart \
+                    FROM Cart \
+                    WHERE StudentNumber = $1) AS CartInfo \
+                    ON c.Code=CartInfo.CourseCode',
+                    [stunum]);
+                    // 'SELECT CourseCode, true as InCart \
+                    // FROM Cart \
+                    // WHERE StudentNumber = $1',
+                    // [stunum]);
+
+            } else {
+                return t.any('SELECT * FROM Courses');
+
+            }
+        })
         .then(function(data) {
             res.status(200)
                 .json({
@@ -98,7 +126,8 @@ var getAllCourses = function(req, res, next) {
 var getCourseInfo = function(req, res, next) {
     var db = req.app.get('db');
     console.log(req.user);
-    let type = req.user.type;
+    let type = "student";
+    // let type = req.user.type;
     if (req.query.course) {
         db.task(function*(t) {
 
@@ -445,19 +474,20 @@ var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
     db.task(function*(t) {
-            let rankings = req.body.rankings;
+            let qualifications = req.body.qualifications;
             console.log(req.body);
+            // req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
-                ${StudentNumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Qualifications})',
+                ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})',
                 req.body);
 
-            var queries = rankings.map(function(l) {
+            var queries = qualifications.map(function(l) {
                 console.log(l);
-                return t.none("INSERT INTO rankings(StudentNumber, CourseCode, Rank, Experience) VALUES($1, $2, $3, $4)", [req.body.StudentNumber, l.coursecode, l.rank, l.experience]);
+                return t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]);
             });
-            queries.push(addInfo);
+            queries.unshift(addInfo);
             return t.batch(queries);
         })
         .then(function() {

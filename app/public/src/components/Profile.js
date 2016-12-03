@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import Autosuggest from 'react-autosuggest';
-
 import AutosuggestBox from './AutosuggestBox';
 import Skills from './Skills';
 var styles = require('./../../client/css/profile.css');
@@ -33,19 +33,24 @@ class Profile extends Component {
                     <div>
                         <label className="formLabel">Degree Status</label>
                         <br />
-                        <select name="status">
-                            <option value="undergrad">Undergraduate</option>
-                            <option value="grad">Graduate</option>
-                        </select>
+                        
+                        <label><span className="dropdown dropdown-large">
+                            <select name="status" className="dropdown-select">
+                                <option value="undergrad">Undergraduate</option>
+                                <option value="grad">Graduate</option>
+                            </select>
+                        </span></label>
                     </div>
                     <p />
                     <div>
                         <label className="formLabel">Work Eligibility</label>
                         <br />
-                        <select name="eligibility">
-                            <option value="legal">Legally Entitled</option>
-                            <option value="student">Student Visa</option>
-                        </select>
+                        <label><span className="dropdown dropdown-large">
+                            <select name="eligibility" className="dropdown-select"> 
+                                <option value="legal">Legally Entitled</option>
+                                <option value="student">Student Visa</option>
+                            </select>
+                        </span></label>
                     </div>
                     <p />
                     <div>
@@ -57,10 +62,10 @@ class Profile extends Component {
                     <div>
                         <label className="formLabel">Additional Info:</label>
                         <br />
-                        <textarea name="additional-info"></textarea>
+                        <textarea className="textArea" name="additional-info"></textarea>
                         </div>
                     <p />
-                    <button type="submit">Enter</button>
+                    <Button color="primary" size="lg" type="submit">Enter</Button>
                 </form>
             </div>
         );

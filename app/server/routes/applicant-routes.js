@@ -473,21 +473,32 @@ var unConsiderApplicant = function(req, res, next) {
 var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401).send({ error: "You must be logged in to submit an application"});
+        return;      
+    }
+
     db.task(function*(t) {
             let qualifications = req.body.qualifications;
             console.log(req.body);
-            // req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
                 ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})',
                 req.body);
 
-            var queries = qualifications.map(function(l) {
+            var queries = [];
+            queries.push(addInfo);
+            // var queries = qualifications.map(function(l) {
+            //     console.log(l);
+            //     return t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]);
+            // });
+            qualifications.forEach(function(l) {
                 console.log(l);
-                return t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]);
+                queries.push(t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]));
             });
-            queries.unshift(addInfo);
+            // queries.unshift(addInfo);
             return t.batch(queries);
         })
         .then(function() {
@@ -498,6 +509,8 @@ var addApplicant = function(req, res, next) {
                 });
         })
         .catch(function(err) {
+            console.log(err);
+            console.log(err.message);
             return next(err);
         });
 }

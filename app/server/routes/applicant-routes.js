@@ -1,5 +1,6 @@
 'use strict';
 
+var DUPLICATE_KEY_ERR_CODE = '23505';
 module.exports = function(app, passport) {
     // ------ APIs FOR TA COORDINATOR -----
 
@@ -479,9 +480,10 @@ var addApplicant = function(req, res, next) {
         return;      
     }
 
-    db.task(function*(t) {
+    db.tx(function*(t) {
             let qualifications = req.body.qualifications;
             console.log(req.body);
+            req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
@@ -490,15 +492,10 @@ var addApplicant = function(req, res, next) {
 
             var queries = [];
             queries.push(addInfo);
-            // var queries = qualifications.map(function(l) {
-            //     console.log(l);
-            //     return t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]);
-            // });
             qualifications.forEach(function(l) {
                 console.log(l);
                 queries.push(t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]));
             });
-            // queries.unshift(addInfo);
             return t.batch(queries);
         })
         .then(function() {
@@ -509,9 +506,15 @@ var addApplicant = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            console.log(err);
-            console.log(err.message);
-            return next(err);
+            if (error.code == DUPLICATE_KEY_ERR_CODE) { // duplicate key
+                res.status(409).send({ error: "This student number already exists"});
+                return;                 
+            } else {
+                console.log(err);
+                console.log(err.message);
+                return next(err);                
+            }
+
         });
 }
 

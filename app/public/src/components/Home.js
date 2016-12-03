@@ -43,16 +43,12 @@ class Home extends Component {
                     Enter as Student
                     </Button>
                 </ButtonGroup>
+
+                <br /><br /><br />
                 
                 <ButtonGroup>
                     <Button color="primary" size="lg" onClick={this.adminEntry} block>
                     Enter as Administrator
-                    </Button>
-                </ButtonGroup>
-
-                <ButtonGroup>
-                    <Button color="primary" size="lg"  onClick={this.courseSelectionLink} block>
-                        Course Selection
                     </Button>
                 </ButtonGroup>
             </div>

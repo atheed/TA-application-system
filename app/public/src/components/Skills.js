@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import styles from './../../client/css/skills.css';
+import React, { Component } from 'react';
+var styles = require('./../../client/css/skills.css');
 
 class Skills extends Component {
     constructor() {
@@ -7,17 +7,16 @@ class Skills extends Component {
     }
 
     render() {
-        var chosen = this.props.skills.map((skill, i) =>
-                    {
-                        return <div className={styles.chosen} key={`skill-${i}`}>{skill}</div>
-                    });
+        var chosen = this.props.skills.map((skill, i) => {
+            return <div className="chosen" key={`skill-${i}`}>{skill}</div>
+        });
 
-        return(
+        return (
             <div>
             {
                 this.props.skills.length == 0 ? 
                 null : 
-                <div className={styles.chosenContainer}>
+                <div className="chosenContainer">
                     {chosen}
                 </div>
             }

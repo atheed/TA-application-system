@@ -77,13 +77,13 @@ export default class Profile extends Component {
                 <h1 id="profileHeading">Student Profile</h1>
                 <form onSubmit={this.handleSubmit} className="form-horizontal">
                     <div>
-                        <label className="formLabel">Family Name</label>
-                        <input className="lessWide" type="text" className="form-control" name="familyname" ref="familyname"></input>
+                        <label className="formLabel">Family Name</label><br/>
+                        <input type="text" className="form-control lessWide" name="familyname" ref="familyname"></input>
                     </div>
                     <p></p>
                     <div>
-                        <label className="formLabel">First Name</label>
-                        <input className="lessWide" type="text" className="form-control" name="givenname" ref="givenname"></input>
+                        <label className="formLabel">First Name</label><br/>
+                        <input type="text" className="form-control lessWide" name="givenname" ref="givenname"></input>
                     </div>
                     <p />
                     <div>

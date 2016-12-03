@@ -28,8 +28,6 @@ class App extends Component {
         return (
             <Router history={hashHistory}>
                 <Route path='/' component={Home}/>
-                <Route path='/login' component={LoginForm} />
-                <Route path='/signup' component={SignupForm} />
                 <Route path='/student' component={StudentEntry} />
                 <Route path='/admin' component={AdminEntry} />
                 <Route path='/profile' component={Profile} />

@@ -34,6 +34,7 @@ class AutosuggestBox extends Component {
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.shouldRenderSuggestions = this.shouldRenderSuggestions.bind(this);
     }
 
 
@@ -91,6 +92,10 @@ class AutosuggestBox extends Component {
         });
     };
 
+    shouldRenderSuggestions(value) {
+        return value.trim().length >= 0;
+    }
+
     render() {
         const { value, suggestions } = this.state;
 
@@ -111,6 +116,7 @@ class AutosuggestBox extends Component {
                     onSuggestionSelected={this.onSuggestionSelected}
                     getSuggestionValue={getSuggestionValue}
                     renderSuggestion={renderSuggestion}
+                    shouldRenderSuggestions={this.shouldRenderSuggestions}
                     inputProps={inputProps}
                 />
             </div>

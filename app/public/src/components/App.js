@@ -7,7 +7,6 @@ import {
     hashHistory,
     browserHistory
 } from 'react-router';
-
 import Home from './Home';
 import StudentEntry from './StudentEntry';
 import AdminEntry from './AdminEntry';

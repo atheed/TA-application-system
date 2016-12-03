@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
-import styles from './../../client/css/autosuggest.css';
-
+import styles from './AutoSuggestStyles.js';
 var skillsList = require('./../skillsList.js');
 
 const getSuggestions = value => {
@@ -55,7 +54,7 @@ class AutosuggestBox extends Component {
     onSuggestionsFetchRequested({ value }) {
         // remove from autosuggest dropdown list all elements that have already been chosen
         var currentSuggestions = getSuggestions(value);
-        for(var i = 0; i < this.state.chosen.length; i++) {
+        for (var i = 0; i < this.state.chosen.length; i++) {
             var chosenIndex = currentSuggestions.indexOf(this.state.chosen[i]);
             if (chosenIndex >= 0) {
                 // if element already chosen, remove it from suggestions
@@ -102,9 +101,9 @@ class AutosuggestBox extends Component {
             onChange: this.onChange
         };
 
-        return(
+        return (
             <div>
-                <Autosuggest 
+                <Autosuggest
                     theme={styles}
                     suggestions={suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}

@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
 
 import AutosuggestBox from './AutosuggestBox';
 import Skills from './Skills';
-import styles from './../../client/css/profile.css';
+var styles = require('./../../client/css/profile.css');
 
 let skillsList = [];
 
@@ -27,11 +27,11 @@ class Profile extends Component {
 
     render() {
         return (
-            <div id={styles.formEntry}>
-                <h1 id={styles.profileHeading}>Student Profile</h1>
-                <form action="/courseselection" method="post">
+            <div id="formEntry">
+                <h1 id="profileHeading">Student Profile</h1>
+                <form action="/TODO" method="post">
                     <div>
-                        <label className={styles.formLabel}>Degree Status</label>
+                        <label className="formLabel">Degree Status</label>
                         <br />
                         <select name="status">
                             <option value="undergrad">Undergraduate</option>
@@ -40,7 +40,7 @@ class Profile extends Component {
                     </div>
                     <p />
                     <div>
-                        <label className={styles.formLabel}>Work Eligibility</label>
+                        <label className="formLabel">Work Eligibility</label>
                         <br />
                         <select name="eligibility">
                             <option value="legal">Legally Entitled</option>
@@ -49,20 +49,20 @@ class Profile extends Component {
                     </div>
                     <p />
                     <div>
-                        <label className={styles.formLabel}>Proficient in:</label>
+                        <label className="formLabel">Proficient in:</label>
                         <Skills skills={skillsList}/>
                         <AutosuggestBox onChoose={this.handleAutosuggestChoice}/>
                     </div>
                     <p />
                     <div>
-                        <label className={styles.formLabel}>Additional Info:</label>
+                        <label className="formLabel">Additional Info:</label>
                         <br />
                         <textarea name="additional-info"></textarea>
                         </div>
                     <p />
                     <button type="submit">Enter</button>
                 </form>
-            </div>          
+            </div>
         );
     }
 }

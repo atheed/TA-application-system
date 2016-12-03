@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
-import styles from './../../client/css/form.css';
+var styles = require('./../../client/css/form.css');
 
 var utils = require('../utils.js');
 var json = utils.json;
@@ -37,30 +37,30 @@ class Form extends Component {
 
         // make form submit (POST) request
         fetch(action, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-            },
-            body: searchParams
-        })
-        .then(json)
-        .then(function(data) {
-            // if unsuccessful form submit (i.e. incorrect credentials, etc.), throw an error
-            if (!data.success)
-                throw "error";
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: searchParams
+            })
+            .then(json)
+            .then(function(data) {
+                // if unsuccessful form submit (i.e. incorrect credentials, etc.), throw an error
+                if (!data.success)
+                    throw "error";
 
-            if (action == '/login')
-                hashHistory.push('/profile');
-            else        // if == '/signup'
-                hashHistory.push('/');
-        })
-        .catch(function(err) {
-            // if error is thrown, handle appropriately
-            t.setState({
-                errors: true
+                if (action == '/login')
+                    hashHistory.push('/profile');
+                else // if == '/signup'
+                    hashHistory.push('/');
+            })
+            .catch(function(err) {
+                // if error is thrown, handle appropriately
+                t.setState({
+                    errors: true
+                });
             });
-        });
     }
 
     /**
@@ -72,7 +72,7 @@ class Form extends Component {
         } else {
             if (this.props.action == "/login")
                 return "Your username and password do not match";
-            else 
+            else
                 return "An error occurred while trying to sign up";
         }
     }
@@ -92,7 +92,7 @@ class Form extends Component {
                 <div>
                     <input type="hidden" className="form-control" name="type" value={type} ref="type"></input>
                 </div>
-                <div id={styles.errorText}>{this.errorHandle()}</div>
+                <div id="errorText">{this.errorHandle()}</div>
                 <button type="submit">Enter</button>
             </form>
         );

@@ -38,6 +38,7 @@ CREATE TABLE CourseQualifications (
 CREATE TABLE StudentQualifications (
   StudentNumber VARCHAR REFERENCES Applicants(StudentNumber),
   Qualification VARCHAR
+  PRIMARY KEY (StudentNumber, Qualification)
 );
 
 CREATE TABLE Offers (

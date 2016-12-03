@@ -474,27 +474,35 @@ var unConsiderApplicant = function(req, res, next) {
 var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
-    if (!req.user) {
-        console.log("not logged in");
-        res.status(401).send({ error: "You must be logged in to submit an application"});
-        return;      
-    }
+    // if (!req.user) {
+    //     console.log("not logged in");
+    //     res.status(401).json({ error: "You must be logged in to submit an application"});
+    //     return;      
+    // }
 
     db.tx(function*(t) {
             let qualifications = req.body.qualifications;
             console.log(req.body);
-            req.body['studentnumber'] = req.user.studentnumber;
+            // req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
-                ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})',
+                ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})\
+                ON CONFLICT (StudentNumber) DO UPDATE \
+                SET StudentNumber=${studentnumber}, \
+                FamilyName=${FamilyName}, \
+                GivenName=${GivenName}, \
+                Year=${Year}, \
+                Degree=${Degree}, \
+                WorkEligibility=${Eligibility}, \
+                OtherInfo=${OtherInfo}',
                 req.body);
 
             var queries = [];
             queries.push(addInfo);
             qualifications.forEach(function(l) {
                 console.log(l);
-                queries.push(t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]));
+                queries.push(t.none("INSERT INTO StudentQualifications VALUES($1, $2) ON CONFLICT DO NOTHING", [req.body.studentnumber, l]));
             });
             return t.batch(queries);
         })
@@ -506,9 +514,11 @@ var addApplicant = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            if (error.code == DUPLICATE_KEY_ERR_CODE) { // duplicate key
-                res.status(409).send({ error: "This student number already exists"});
-                return;                 
+            if (err.code == DUPLICATE_KEY_ERR_CODE) { // duplicate key
+                res.status(409)
+                    .json({ 
+                        error: 'This student number already exists'
+                    });
             } else {
                 console.log(err);
                 console.log(err.message);

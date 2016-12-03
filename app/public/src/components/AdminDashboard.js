@@ -30,16 +30,19 @@ class AdminDashboard extends Component {
 
     render() {
         return (
-            <div className="all-course-info">
-                <ul>
-                    {this.state.courses.map(course =>
-                        <Course key={course.code} 
-                                code={course.code} 
-                                title={course.title} 
-                                type="admin"/>
-                        )
-                    }
-                </ul>
+            <div className="admin-dashboard">
+                <h1>Dashboard</h1>
+                <div className="all-course-info">
+                    <ul>
+                        {this.state.courses.map(course =>
+                            <Course key={course.code} 
+                                    code={course.code} 
+                                    title={course.title} 
+                                    type="admin"/>
+                            )
+                        }
+                    </ul>
+                </div>
             </div>
         );
     }

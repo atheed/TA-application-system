@@ -16,7 +16,6 @@ class Course extends Component {
             expanded: false,
             inCart: props.inCart,
         }
-        console.log(props.inCart);
         this.addToCart = this.addToCart.bind(this);
         this.removeFromCart = this.removeFromCart.bind(this);
     }
@@ -78,7 +77,6 @@ class Course extends Component {
     render() {
 
         const { code, title } = this.props;
-        console.log(code);
         let cart;
         if (this.props.type == 'student') {
             if (this.state.inCart) {

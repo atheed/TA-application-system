@@ -14,6 +14,8 @@ import Profile from './Profile';
 import Applicants from './Applicants';
 import CourseSelection from './CourseSelection';
 import AdminDashboard from './AdminDashboard';
+import Cart from './Cart';
+
 
 class App extends Component {
     constructor() {
@@ -28,9 +30,9 @@ class App extends Component {
                 <Route path='/student' component={StudentEntry} />
                 <Route path='/admin' component={AdminEntry} />
                 <Route path='/profile' component={Profile} />
-                <Route path='/applicants' component={() => (<Applicants course="CSC108"/>)} />
                 <Route path='/admin-dashboard' component={AdminDashboard} />
                 <Route path='/courseselection' component={CourseSelection} />
+                <Route path='/cart' component={Cart} />
             </Router>
         );
     }

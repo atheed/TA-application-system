@@ -25,6 +25,9 @@ module.exports = function(app, passport) {
     app.delete('/remove-course-from-cart', removeCourseFromCart);
 
     app.get('/courses-in-cart', getCoursesInCart);
+    app.get('/courses-in-cart-with-rank', getCoursesInCartWithRank);
+
+    app.post('/submit-rankings', submitRankings);
 
     app.post('/rank-course', rankCourse);
 
@@ -166,7 +169,7 @@ var getApplicantsForCourse = function(req, res, next) {
 	    	JOIN Rankings r \
 			ON a.StudentNumber=r.StudentNumber \
             LEFT JOIN Offers o \
-            ON r.StudentNumber=o.StudentNumber \
+            ON r.StudentNumber=o.StudentNumber AND r.CourseCode=o.CourseCode \
             WHERE r.CourseCode=$1 \
             ORDER BY RANK',
                 req.query.course)
@@ -477,7 +480,7 @@ var addCourseToCart = function(req, res, next) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
-                "INSERT INTO Rankings \
+                "INSERT INTO Cart \
                 VALUES($1, $2, 0, 0)\
                 ", [stunum, req.body.course])
             .then(function() {
@@ -506,7 +509,7 @@ var removeCourseFromCart = function(req, res, next) {
         console.log(req.query);
         // check if there is already an entry there, if so overwrite it
         db.result(
-                "DELETE FROM Rankings \
+                "DELETE FROM Cart \
                 WHERE StudentNumber=$1 AND CourseCode=$2", [stunum, req.query.course])
             .then(function(result) {
                 res.status(200)
@@ -525,18 +528,38 @@ var removeCourseFromCart = function(req, res, next) {
         res.send("Error: unrecognized query");
     }
 }
-
-/* Get all the applicants for a particular course */
+/*
+    "rankings" : {
+        1 : [
+            {
+              "code": "CSC108",
+              "title": "Intro to CS",
+            }, 
+        ],
+        2 : [
+        ],
+        3 : [
+        ]
+    }
+*/
 var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
+    db.task(function*(t) {
+            let rankings = { "rankings": {} }
+            for (let i = 0; i < 6; i++) {
+                let rankedIth = yield t.any(
+                    'SELECT Courses.Code, Title \
+                    FROM Cart \
+                    JOIN Courses \
+                    ON Cart.CourseCode=Courses.Code \
+                    WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
+                rankings["rankings"][i] = rankedIth;
+            }
 
-    db.any(
-            'SELECT CourseCode, Rank, Experience\
-        FROM Rankings \
-        WHERE StudentNumber=$1',
-            [stunum])
+            return rankings;
+        })
         .then(function(data) {
             res.status(200)
                 .json({
@@ -549,17 +572,60 @@ var getCoursesInCart = function(req, res, next) {
             return next(err);
         });
 }
+/* Returns data of the form
+{
+    "data": [
+        {
+          "code": "CSC108",
+          "title": "Intro to CS",
+        },             
+    ],
+}
+
+*/
+/* Get all the applicants for a particular course */
+var getCoursesInCartWithRank = function(req, res, next) {
+    var db = req.app.get('db');
+    var stunum = req.query.stunum;
+    // var stunum = req.user.studentnumber;
+    if (req.query.rank) {
+
+        db.any(
+                'SELECT Courses.Code, Title \
+            FROM Cart \
+            JOIN Courses \
+            ON Cart.CourseCode=Courses.Code \
+            WHERE StudentNumber=${stunum} AND Rank=${rank}',
+                req.query)
+            .then(function(data) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        data: data,
+                        message: 'Retrieved courses in cart'
+                    });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    } else {
+        // unrecognized query, send 400 error code
+        console.log("error");
+        res.status(400);
+        res.send("Error: unrecognized query");
+    }
+}
 
 /* Get all the applicants for a particular course */
 var rankCourse = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.studentnumber;
+    var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
     if (req.body.course && req.body.rank) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
-                "UPDATE Rankings \
+                "UPDATE Cart \
                 SET Rank=$1\
                 WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.rank, stunum, req.body.course])
             .then(function() {
@@ -588,7 +654,7 @@ var updateExperienceInCourse = function(req, res, next) {
     if (req.body.course && req.body.experience) {
         console.log(req.body);
         db.none(
-                "UPDATE Rankings \
+                "UPDATE Cart \
                 SET Experience=$1\
                 WHERE StudentNumber=$2 AND CourseCode=$3", [req.body.experience, stunum, req.body.course])
             .then(function() {
@@ -607,6 +673,34 @@ var updateExperienceInCourse = function(req, res, next) {
         res.status(400);
         res.send("Error: unrecognized query");
     }
+}
+
+var submitRankings = function(req, res, next) {
+    var db = req.app.get('db');
+    var stunum = req.body.stunum;
+    // var stunum = req.user.studentnumber;
+    db.task(function*(t) {
+            let deleteRankings = t.none(
+                'DELETE FROM Rankings \
+                WHERE Rankings.StudentNumber = $1',
+                [stunum]);
+
+            let addFromCart = t.none("INSERT INTO Rankings \
+            (SELECT * FROM Cart \
+            WHERE Cart.StudentNumber = $1)", [stunum]);
+
+            return t.batch([deleteRankings, addFromCart]);
+        })
+        .then(function() {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'Submitted Rankings'
+                });
+        })
+        .catch(function(err) {
+            return next(err);
+        });
 }
 
 var getAllQualifications = function(req, res, next) {

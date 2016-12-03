@@ -10,7 +10,7 @@ class ApplicantInfo extends Component {
 		this.state = {
 			offers: null,
 			considerations: null,
-			qualifications: null,
+			qualifications: [],
 			rankings: {
 				first: null,
 				second: null,
@@ -59,7 +59,13 @@ class ApplicantInfo extends Component {
 				Considered for: {considerations}
 				</div>
 				<div>
-				Qualifications: {qualifications}
+				Qualifications: {qualifications.map((qualification, i) => {
+				        if (i < qualifications.length - 1) {
+				            return qualification + ", ";
+				        } else {
+				            return qualification;
+				        }
+				    })}
 				</div>
 				<div>
 				Rankings:

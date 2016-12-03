@@ -19,35 +19,19 @@ class CourseSelection extends Component {
         super();
         this.state = {
             courses: [],
-            cart: []
         };
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
         var t = this;
-        fetch('/all-courses', { method: 'GET' })
+        fetch('/all-courses?studentnumber=1000831745', { method: 'GET', credentials: 'include'})
             .then(json)
             .then(function(data) {
                 const courses = data.data;
-                fetch('/courses-in-cart?stunum=1000831745', { method: 'GET' })
-                    .then(json)
-                    .then(function(data) {
-                        const cart = data.data;
-                        t.setState({
-                            cart: cart.map(course => {
-                                    return course.code;
-                                }
-                            ),
-                            courses: courses
-                            // cart: courses
-                        });
-                    })
-                    .catch(function(err) {
-                        // Error :(
-                        throw err;
-                    });
-                // t.setState({ courses: courses });
+                t.setState({
+                    courses: courses
+                });
             })
             .catch(function(err) {
                 // Error :(
@@ -55,23 +39,31 @@ class CourseSelection extends Component {
             });
     }
 
+    goToCart() {
+        // window.location = '/cart';
+    }
+
     render() {
-        console.log(this.state.cart);
+        console.log(this.state.courses);
         console.log("Calling render");
         // console.log(this.state.courses);
         // console.log(this.state.cart.indexOf(this.state.courses[0].code));
         return (
             <div className="all-course-info">
+                <h1>Course Selection</h1>
                 <ul>
                     {this.state.courses.map(course =>
                         <Course key={course.code} 
                                 code={course.code} 
                                 title={course.title}
                                 type="student"
-                                inCart={this.state.cart.indexOf(course.code) !== -1} />
+                                inCart={course.incart} />
                         )
                     }
                 </ul>
+                <button onClick={this.goToCart()} className="button">
+                    Go To Cart
+                </button>
             </div>
         );
     }

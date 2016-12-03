@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var bcrypt = require('bcrypt-nodejs');
+var reactstrap = require('reactstrap');
 
 // React (webpack) compilation
 var webpackDevMiddleware = require('webpack-dev-middleware');

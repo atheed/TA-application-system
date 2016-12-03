@@ -4,6 +4,8 @@ CREATE DATABASE tapp;
 \c tapp;
 
 CREATE TYPE OfferStatus AS ENUM ('offered', 'considered', 'rejected');
+CREATE TYPE WorkEligibilityStatus AS ENUM ('Legally Entitled', 'Student Visa');
+
 
 CREATE TABLE Login (
   StudentNumber VARCHAR PRIMARY KEY,
@@ -17,6 +19,7 @@ CREATE TABLE Applicants (
   GivenName VARCHAR,
   Year INTEGER,
   Degree VARCHAR,
+  WorkEligibility WorkEligibilityStatus,
   OtherInfo VARCHAR
 );
 
@@ -64,7 +67,7 @@ insert into login values ('1000831745', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQ
 insert into login values ('1000123456', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
 
 insert into applicants values('1000831745', 'Klein', 'Evan', 4, 'Undergrad', '');
-insert into applicants values('1000123456', 'Chaudhary', 'Rahul', 4, 'Grad', '');
+insert into applicants values('1000123456', 'Chaudhary', 'Rahul', 4, 'Grad', 'Student Visa','');
 
 insert into courses values('CSC108', 'Intro to CS', 'J Smith', 50);
 insert into courses values('CSC120', 'Intro to CS for Science', 'Prof 2', 25);
@@ -77,4 +80,4 @@ insert into coursequalifications values('CSC108', 'Able to teach 1st years patie
 insert into rankings values('1000123456', 'CSC120', 1, 0);
 insert into rankings values('1000123456', 'CSC108', 2, 0);
 
-insert into cart values('1000831745', 'CSC108', 0, 0);
+-- insert into cart values('1000831745', 'CSC108', 0, 0);

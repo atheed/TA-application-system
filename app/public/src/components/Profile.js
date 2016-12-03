@@ -32,12 +32,8 @@ class Profile extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        // TODO
-        // get the student number through some sort of request
-
         // build request for form submit
         var params = {
-            StudentNumber: "",
             FamilyName: this.refs.familyname.value,
             GivenName: this.refs.givenname.value,
             Status: this.refs.status.value,
@@ -49,9 +45,9 @@ class Profile extends Component {
         const searchParams = Object.keys(params).map((key) => {
             return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }).join('&');
-        
+
         // make form submit (POST) request
-        fetch("/TODO", {
+        fetch("/add-applicant", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

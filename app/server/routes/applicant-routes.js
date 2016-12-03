@@ -528,20 +528,38 @@ var removeCourseFromCart = function(req, res, next) {
         res.send("Error: unrecognized query");
     }
 }
-
-/* Get all the applicants for a particular course */
+/*
+    "rankings" : {
+        1 : [
+            {
+              "code": "CSC108",
+              "title": "Intro to CS",
+            }, 
+        ],
+        2 : [
+        ],
+        3 : [
+        ]
+    }
+*/
 var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
     var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
+    db.task(function*(t) {
+            let rankings = { "rankings": {} }
+            for (let i = 0; i < 6; i++) {
+                let rankedIth = yield t.any(
+                    'SELECT Courses.Code, Title \
+                    FROM Cart \
+                    JOIN Courses \
+                    ON Cart.CourseCode=Courses.Code \
+                    WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
+                rankings["rankings"][i] = rankedIth;
+            }
 
-    db.any(
-            'SELECT Courses.Code, Title, Rank, Experience \
-        FROM Cart \
-        JOIN Courses \
-        ON Cart.CourseCode=Courses.Code \
-        WHERE StudentNumber=$1',
-            [stunum])
+            return rankings;
+        })
         .then(function(data) {
             res.status(200)
                 .json({

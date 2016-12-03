@@ -1,3 +1,66 @@
 .center {
     text-align: center;
 }
+
+.wide {
+    width: 100%;
+}
+
+.lessWide {
+    width: 15%;
+}
+
+
+/* Followed tutorial from http://red-team-design.com/making-html-dropdowns-not-suck/ */
+
+.dropdown-large {
+    font-size: 1.5em;
+}
+
+.dropdown-select {
+    font-size: inherit;
+    padding: .5em;
+    margin: 0;
+    background-color: rgba(0, 109, 204, 0.7);
+    color: white;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dropdown-select {
+    padding-right: 2.5em;
+    border: 0;
+    border-radius: 3px;
+    -webkit-appearance: none;
+}
+
+.dropdown::before,
+.dropdown::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.dropdown::after {
+    content: "\25BC";
+    height: 1em;
+    font-size: .625em;
+    line-height: 1;
+    right: 1.2em;
+    top: 50%;
+    margin-top: -.5em;
+}
+
+.dropdown::before {
+    width: 2em;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0, 109, 204, 0.7);
+    border-left: 1px solid rgba(0, 0, 0, .1);
+}

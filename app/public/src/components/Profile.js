@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import Autosuggest from 'react-autosuggest';
-
 import AutosuggestBox from './AutosuggestBox';
 import Skills from './Skills';
 var styles = require('./../../client/css/profile.css');
@@ -43,7 +43,6 @@ export default class Profile extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-
         // make form submit (POST) request
         fetch("/add-applicant", {
                 method: 'POST',
@@ -78,45 +77,51 @@ export default class Profile extends Component {
                 <h1 id="profileHeading">Student Profile</h1>
                 <form onSubmit={this.handleSubmit} className="form-horizontal">
                     <div>
-                        <label className="formLabel">Family Name</label>
-                        <input type="text" className="form-control" name="familyname" ref="familyname"></input>
+                        <label className="formLabel">Family Name</label><br/>
+                        <input type="text" className="form-control lessWide" name="familyname" ref="familyname"></input>
                     </div>
                     <p></p>
                     <div>
-                        <label className="formLabel">First Name</label>
-                        <input type="text" className="form-control" name="givenname" ref="givenname"></input>
+                        <label className="formLabel">First Name</label><br/>
+                        <input type="text" className="form-control lessWide" name="givenname" ref="givenname"></input>
                     </div>
                     <p />
                     <div>
                         <label className="formLabel">Degree Status</label>
                         <br />
-                        <select name="status" ref="degree">
+                        <label><span className="dropdown dropdown-large">
+                        <select className="dropdown-select" name="status" ref="degree">
                             <option value="undergrad">Undergraduate</option>
                             <option value="grad">Graduate</option>
                         </select>
+                        </span></label>
                     </div>
                     <p />
                     <div>
                         <label className="formLabel">Year</label>
                         <br />
-                        <select name="year" ref="year">
-                            <option value="1">1</option>
+                        <label ><span className="dropdown dropdown-large">
+                        <select className="dropdown-select" name="year" ref="year">
+                            <option value="1">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
                         </select>
+                        </span></label>
                     </div>
                     <p />
                     <div>
                         <label className="formLabel">Work Eligibility</label>
                         <br />
-                        <select name="eligibility" ref="eligibility">
+                        <label ><span className="dropdown dropdown-large">
+                        <select className="dropdown-select" name="eligibility" ref="eligibility">
                             <option value="Legally Entitled">Legally Entitled</option>
                             <option value="Student Visa">Student Visa</option>
                         </select>
-                    </div>
-                    <p />
+                        </span></label>
+                        </div>
+                        <p />
                     <div>
                         <label className="formLabel">Proficient in:</label>
                         <Skills skills={skillsList} removeHandler={this.handleRemoveChoice}/>
@@ -126,10 +131,11 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Additional Info:</label>
                         <br />
-                        <textarea name="additional-info" ref="otherinfo"></textarea>
-                        </div>
+                        <textarea className="textArea" name="additional-info" ref="otherinfo"></textarea>
+                    </div>
                     <p />
-                    <button type="submit">Enter</button>
+                    <br />
+                    <Button className="lessWide" color="primary" size="lg" type="submit">Enter</Button>
                 </form>
             </div>
         );

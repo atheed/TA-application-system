@@ -44,35 +44,26 @@ export default class Profile extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        // build request for form submit
-        var params = {
-            FamilyName: this.refs.familyname.value,
-            GivenName: this.refs.givenname.value,
-            Status: this.refs.status.value,
-            Year: this.refs.year.value,
-            Eligibility: this.refs.eligibility.value,
-            Qualifications: skillsList,
-            AdditionalInfo: this.refs.additionalInfo.value
-        };
-        const searchParams = Object.keys(params).map((key) => {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-        }).join('&');
-
         // make form submit (POST) request
         fetch("/add-applicant", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: searchParams
+                body: JSON.stringify({
+                    FamilyName: this.refs.familyname.value,
+                    GivenName: this.refs.givenname.value,
+                    Degree: this.refs.degree.value,
+                    Year: this.refs.year.value,
+                    Eligibility: this.refs.eligibility.value,
+                    qualifications: skillsList,
+                    OtherInfo: this.refs.otherinfo.value
+                })
             })
             .then(json)
             .then(function(data) {
-                // if unsuccessful form submit (i.e. incorrect credentials, etc.), throw an error
-                if (!data.success)
-                    throw "error";
-
                 hashHistory.push('/courseselection');
             })
             .catch(function(err) {
@@ -98,7 +89,7 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Degree Status</label>
                         <br />
-                        <select name="status" ref="status">
+                        <select name="status" ref="degree">
                             <option value="undergrad">Undergraduate</option>
                             <option value="grad">Graduate</option>
                         </select>
@@ -120,8 +111,8 @@ export default class Profile extends Component {
                         <label className="formLabel">Work Eligibility</label>
                         <br />
                         <select name="eligibility" ref="eligibility">
-                            <option value="legal">Legally Entitled</option>
-                            <option value="student">Student Visa</option>
+                            <option value="Legally Entitled">Legally Entitled</option>
+                            <option value="Student Visa">Student Visa</option>
                         </select>
                     </div>
                     <p />
@@ -134,7 +125,7 @@ export default class Profile extends Component {
                     <div>
                         <label className="formLabel">Additional Info:</label>
                         <br />
-                        <textarea name="additional-info" ref="additionalInfo"></textarea>
+                        <textarea name="additional-info" ref="otherinfo"></textarea>
                         </div>
                     <p />
                     <button type="submit">Enter</button>

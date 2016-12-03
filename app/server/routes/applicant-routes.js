@@ -474,16 +474,21 @@ var unConsiderApplicant = function(req, res, next) {
 var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
-    // if (!req.user) {
-    //     console.log("not logged in");
-    //     res.status(401).json({ error: "You must be logged in to submit an application"});
-    //     return;      
-    // }
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in to submit an application'
+            });
+        // res.status(401).json({ error: "You must be logged in to submit an application"});
+        return;
+    }
 
     db.tx(function*(t) {
             let qualifications = req.body.qualifications;
             console.log(req.body);
-            // req.body['studentnumber'] = req.user.studentnumber;
+            req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
@@ -514,17 +519,21 @@ var addApplicant = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            if (err.code == DUPLICATE_KEY_ERR_CODE) { // duplicate key
-                res.status(409)
-                    .json({ 
-                        error: 'This student number already exists'
-                    });
-            } else {
-                console.log(err);
-                console.log(err.message);
-                return next(err);                
-            }
-
+            // if (err.code == DUPLICATE_KEY_ERR_CODE) { // duplicate key
+            //     res.status(409)
+            //         .json({
+            //             status: 'failure',
+            //             error: 'This student number already exists'
+            //         });
+            // } else {
+            //     console.log(err);
+            //     console.log(err.message);
+            //     return next(err);                
+            // }
+            // console.log(err);
+            // console.log(err.message);
+            // return next(err);                
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 

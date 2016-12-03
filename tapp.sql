@@ -37,7 +37,7 @@ CREATE TABLE CourseQualifications (
 
 CREATE TABLE StudentQualifications (
   StudentNumber VARCHAR REFERENCES Applicants(StudentNumber),
-  Qualification VARCHAR
+  Qualification VARCHAR,
   PRIMARY KEY (StudentNumber, Qualification)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE Cart (
 insert into login values ('1000831745', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
 insert into login values ('1000123456', 'student', '$2a$08$zBjiM3Df7jbt4dK0XzbNQe50UWLlvrOQ4sBLdDciEIJiu.yLmPOPa');
 
-insert into applicants values('1000831745', 'Klein', 'Evan', 4, 'Undergrad', '');
+insert into applicants values('1000831745', 'Klein', 'Evan', 4, 'Undergrad', 'Legally Entitled', '');
 insert into applicants values('1000123456', 'Chaudhary', 'Rahul', 4, 'Grad', 'Student Visa','');
 
 insert into courses values('CSC108', 'Intro to CS', 'J Smith', 50);

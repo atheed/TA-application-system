@@ -9,8 +9,9 @@ import {
 } from 'react-router';
 
 import Home from './Home';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
+import StudentEntry from './StudentEntry';
+import AdminEntry from './AdminEntry';
+import Profile from './Profile';
 import Applicants from './Applicants';
 import CourseSelection from './CourseSelection';
 import AdminDashboard from './AdminDashboard';
@@ -29,6 +30,9 @@ class App extends Component {
                 <Route path='/' component={Home}/>
                 <Route path='/login' component={LoginForm} />
                 <Route path='/signup' component={SignupForm} />
+                <Route path='/student' component={StudentEntry} />
+                <Route path='/admin' component={AdminEntry} />
+                <Route path='/profile' component={Profile} />
                 <Route path='/admin-dashboard' component={AdminDashboard} />
                 <Route path='/courseselection' component={CourseSelection} />
                 <Route path='/cart' component={Cart} />

@@ -9,6 +9,7 @@
     font-family: 'Lato', sans-serif;
     margin-bottom: 1.2%;
     left: -10%;
+    font-size: 1.5em;
 }
 
 #profileHeading {
@@ -16,7 +17,7 @@
     font-size: 36pt;
 }
 
-#profileHeading:after {
+#profileHeading::after {
     content: ' ';
     display: block;
     border: 0;
@@ -26,4 +27,15 @@
     margin-top: 2.5%;
     margin-left: 15%;
     align-content: center;
+}
+
+.textArea {
+    width: 15%;
+    border-radius: 4px;
+}
+
+input.lessWide {
+    width: 15%;
+    display: inline-block;
+    font-size: 1.5em;
 }

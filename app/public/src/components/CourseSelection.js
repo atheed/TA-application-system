@@ -36,7 +36,7 @@ class CourseSelection extends Component {
                         const cart = data.data;
                         t.setState({
                             cart: cart.map(course => {
-                                    return course.coursecode;
+                                    return course.code;
                                 }
                             ),
                             courses: courses
@@ -53,7 +53,6 @@ class CourseSelection extends Component {
                 // Error :(
                 throw err;
             });
-
     }
 
     render() {

@@ -207,11 +207,11 @@ class ApplicantRow extends Component {
 					style={styles.flexItem}
 				>{experience}</div>
 				<div>
-				{offer}
+					{offer}
 				</div>
 				<div>
-				{consider}
-				</div>				   
+					{consider}
+				</div>
 			</div>);
 
 		return (

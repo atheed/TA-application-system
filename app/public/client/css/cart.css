@@ -1,0 +1,44 @@
+form input[type="radio"] {
+    display: none;
+}
+
+form label {
+    font: inherit;
+    margin: 0;
+    display: inline-block;
+    font-weight: normal;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #0275d8;
+    border-radius: 0.25rem;
+}
+
+form label {
+    background-image: none;
+}
+
+form label:hover {
+    color: #fff;
+    background-color: #0275d8;
+    border-color: #0275d8;
+}
+
+.ranking-form,
+.experience-field {
+    padding-left: 14%;
+}
+
+.experience-field {
+    margin-top: 1%;
+}
+
+.label,
+.ranking-form {
+    font-weight: bold;
+}

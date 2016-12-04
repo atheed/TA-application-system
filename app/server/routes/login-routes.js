@@ -15,14 +15,22 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.get('/profile', isLoggedIn, function(req, res) {
-        console.log("Request user is");
-        console.log(req.user);
+    app.get('/profile', function(req, res) {
+        console.log('profile', req.user);
+        if (req.isAuthenticated())
+            return res.json({ success: true, user: req.user });
+        else
+            return res.json({ success: false, user: null });
 
-        res.json({
-            success: true,
-            user: req.user
-        });
+    });
+
+
+    app.get('/authenticate', function(req, res) {
+        console.log('authenticate', req.user);
+        if (req.isAuthenticated())
+            return res.json({ success: true, user: req.user });
+        else
+            return res.json({ success: false, user: null });
     });
 
     app.get('/logout', function(req, res) {

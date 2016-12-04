@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, ButtonGroup } from 'reactstrap';
 import CourseInfo from './CourseInfo';
 
 var utils = require('../utils.js');
@@ -25,22 +26,22 @@ class Course extends Component {
         evt.preventDefault();
         var t = this;
 
-        fetch('/add-course-to-cart', { 
-            method: 'POST', 
-            credentials: 'include',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              // stunum: "1000831745",
-              course: this.props.code,
-            })          
-        })
+        fetch('/add-course-to-cart', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // stunum: "1000831745",
+                    course: this.props.code,
+                })
+            })
             .then(json)
             .then(function(data) {
                 t.setState({
-                  inCart: true,
+                    inCart: true,
                 });
                 t.forceUpdate();
             })
@@ -54,41 +55,41 @@ class Course extends Component {
         evt.preventDefault();
         var t = this;
 
-        fetch('/remove-course-from-cart?course=' + this.props.code, { 
-            method: 'DELETE', 
-            credentials: 'include',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },          
-        })
+        fetch('/remove-course-from-cart?course=' + this.props.code, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
             .then(json)
             .then(function(data) {
                 t.setState({
-                  inCart: false,
+                    inCart: false,
                 });
             })
             .catch(function(err) {
                 // Error :(
                 throw err;
             });
-
     }
+
     render() {
 
         const { code, title } = this.props;
         let cart;
         if (this.props.type == 'student') {
             if (this.state.inCart) {
-                cart = 
-                <button onClick={this.removeFromCart}>
-                    Remove From Cart
-                </button>;
+                cart =
+                    <Button onClick={this.removeFromCart}>
+                        Remove From Cart
+                    </Button>;
             } else {
-                cart = 
-                <button onClick={this.addToCart}>
-                    Add To Cart
-                </button>;                   
+                cart =
+                    <Button onClick={this.addToCart}>
+                        Add To Cart
+                    </Button>;
             }
         } else {
             cart = null;
@@ -96,9 +97,9 @@ class Course extends Component {
         let courseHeader =
             <div className="course-header">
                 {cart}
-                <button onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                <Button onClick={() => this.setState({expanded: ! this.state.expanded})}>
                     {this.state.expanded ? "Hide" : "Show"}
-                </button>
+                </Button>
                 {this.props.code}: {this.props.title}
                 <br /><br />
             </div>;

@@ -7,18 +7,15 @@ export default class NavBar extends Component {
     constructor() {
         super();
         this.state = { studentnumber: '', type: '' };
-    }
 
-    componentDidMount() {
         var t = this;
         fetch('/authenticate', { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
                 console.log(data);
-                if (data.success) {
+                if (data.success && data.user.type == "student") {
                     t.setState({ studentnumber: data.user.studentnumber, type: data.user.type });
                 } else {
-                    // this.context.router.push('/');
                     window.location.replace('/');
                 }
 
@@ -37,13 +34,13 @@ export default class NavBar extends Component {
         };
 
         var navLinkStyle = {
-            marginRight: '10%',
+            paddingRight: '10%',
         }
 
         var navBarStyle = {
             margin: '0 auto',
-            marginLeft: '10%',
-            textAlign: 'center'
+            paddingLeft: '10%',
+            textAlign: 'center',
         };
 
         var userStyle = {
@@ -57,7 +54,11 @@ export default class NavBar extends Component {
             <div>
                 <Nav pills style={navBarStyle}>
                     <NavItem style={navLinkStyle}>
-                        <NavLink href="#" style={userStyle}>Logged in as {this.state.type}: <br />{this.state.studentnumber}</NavLink>
+                        <NavLink href="#" style={userStyle}>
+                            &nbsp;&nbsp;&nbsp;&nbsp;Logged in as&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                            {this.state.type}<br />
+                            {this.state.studentnumber}
+                        </NavLink>
                     </NavItem>
                     <NavItem style={navLinkStyle}>
                         <NavLink href="/#/profile" style={this.props.activePage == 1 ? activeLinkStyle : null}>Profile</NavLink>
@@ -72,6 +73,7 @@ export default class NavBar extends Component {
                         <NavLink href="/logout">Logout</NavLink>
                     </NavItem>
                 </Nav>
+                 <div className="navbar-border"></div>
             </div>
         );
     }

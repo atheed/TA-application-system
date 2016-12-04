@@ -30,7 +30,7 @@ class Ranking extends Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              stunum: "1000831745", // TODO: 
+              // stunum: "1000831745", // TODO: 
               course: this.props.course,
               rank: newRank
             })          

@@ -229,7 +229,7 @@ var getApplicantsForCourse = function(req, res, next) {
     if (req.query.course) {
         console.log("course");
 
-        let courseResult = t.one(
+        let courseResult = db.one(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
@@ -288,7 +288,7 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
         return;
     }
     if (req.query.course && req.query.degree) {
-        let courseResult = t.one(
+        let courseResult = db.one(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
@@ -396,10 +396,10 @@ var getApplicantInfo = function(req, res, next) {
                 let rankings = { "rankings": {} }
                 for (let i = 0; i < 6; i++) {
                     let rankedIth = yield t.any(
-                        'SELECT Courses.Code, Title \
-                        FROM Cart \
+                        'SELECT Courses.Code, Title, Experience \
+                        FROM Rankings \
                         JOIN Courses \
-                        ON Cart.CourseCode=Courses.Code \
+                        ON Rankings.CourseCode=Courses.Code \
                         WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
                     rankings["rankings"][i] = rankedIth;
                 }
@@ -454,6 +454,7 @@ var getApplicantInfo = function(req, res, next) {
 
             })
             .catch(function(err) {
+                console.log(err.message);
                 res.status(500).json({ status: 'failure', error: err.message});
             });
 

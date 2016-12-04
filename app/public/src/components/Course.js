@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import CourseInfo from './CourseInfo';
-// var bootstrap = require('./../../../../node_modules/bootstrap/dist/css/bootstrap.css');
+
 var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');

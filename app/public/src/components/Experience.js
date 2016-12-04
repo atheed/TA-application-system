@@ -1,7 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+
+var cart = require('./../../client/css/cart.css');
+var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 class Experience extends Component {
@@ -19,23 +21,23 @@ class Experience extends Component {
 
         var t = this;
 
-        fetch('/update-experience-in-course', { 
-            method: 'POST', 
-            credentials: 'include',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              // stunum: "1000831745", // TODO: 
-              course: this.props.course,
-              experience: String(newExperience)
-            })          
-        })
+        fetch('/update-experience-in-course', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // stunum: "1000831745", // TODO: 
+                    course: this.props.course,
+                    experience: String(newExperience)
+                })
+            })
             .then(json)
             .then(function(data) {
                 t.setState({
-                  experience: newExperience
+                    experience: newExperience
                 });
                 return;
             })
@@ -47,11 +49,12 @@ class Experience extends Component {
 
     render() {
         return (
-            <div>
-                <label className="experienceField">
-                    <span className="label">Experience:</span>
+            <div className="experience">
+                <label className="experience-field">
+                    <span className="label">Experience:</span>{'\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0'}
                     <input name="experience" type="number" value={this.state.experience} onChange={this.handleChange} required/>
                 </label>
+                <br /><br />
             </div>
         );
     }

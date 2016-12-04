@@ -378,10 +378,11 @@ var getApplicantInfo = function(req, res, next) {
     
     let stunum;
     if (req.user.type === 'student') {
-        stunum = req.user.stunum;
+        stunum = req.user.studentnumber;
     } else {
         stunum = req.query.stunum;
     }
+    console.log(stunum);
     if (stunum) {
         db.task(function*(t) {
                 let info = yield t.one(
@@ -402,28 +403,6 @@ var getApplicantInfo = function(req, res, next) {
                         WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
                     rankings["rankings"][i] = rankedIth;
                 }
-
-    //             let rankedFirst = yield t.any(
-    //                 "SELECT CourseCode \
-				// FROM rankings \
-    //             WHERE StudentNumber=$1 AND Rank=1", stunum);
-
-    //             let rankedSecond = yield t.any(
-    //                 "SELECT CourseCode \
-    //             FROM rankings \
-    //             WHERE StudentNumber=$1 AND Rank=2", stunum);
-
-    //             let rankedThird = yield t.any(
-    //                 "SELECT CourseCode \
-    //             FROM rankings \
-    //             WHERE StudentNumber=$1 AND Rank=3", stunum);
-
-    //             let rankings = { "rankings": {
-    //                     1 : flattenArray(rankedFirst),
-    //                     2 : flattenArray(rankedSecond),
-    //                     3 : flattenArray(rankedThird) 
-    //                 }
-    //             }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \

@@ -2,6 +2,7 @@ import update from 'react-addons-update';
 import React, { Component } from 'react';
 
 import RankGroup from './RankGroup';
+import NavBar from './NavBar';
 
 var utils = require('../utils.js');
 
@@ -112,15 +113,19 @@ class Cart extends Component {
         const rankings = this.state.rankings;
         // console.log(this.state.rankings);
         return (
-            <div className="cart">
-                <RankGroup rank={1} courses={rankings[1]} refreshRanks={this.refreshRankGroups}/>
-                <RankGroup rank={2} courses={rankings[2]} refreshRanks={this.refreshRankGroups}/>
-                <RankGroup rank={3} courses={rankings[3]} refreshRanks={this.refreshRankGroups}/>
-                <RankGroup rank={4} courses={rankings[4]} refreshRanks={this.refreshRankGroups}/>
-                <RankGroup rank={5} courses={rankings[5]} refreshRanks={this.refreshRankGroups}/>
-                <RankGroup rank={0} courses={rankings[0]} refreshRanks={this.refreshRankGroups}/>
-                <button onClick={this.submitRankings}>Submit Rankings</button>
-                {this.state.submitted ? "Your rankings have been submitted!" : null}
+            <div>
+                <NavBar activePage={3}/>
+                <br />
+                <div className="cart">
+                    <RankGroup rank={1} courses={rankings[1]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={2} courses={rankings[2]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={3} courses={rankings[3]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={4} courses={rankings[4]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={5} courses={rankings[5]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={0} courses={rankings[0]} refreshRanks={this.refreshRankGroups}/>
+                    <button onClick={this.submitRankings}>Submit Rankings</button>
+                    {this.state.submitted ? "Your rankings have been submitted!" : null}
+                </div>
             </div>
         );
     }

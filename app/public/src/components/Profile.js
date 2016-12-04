@@ -135,7 +135,7 @@ export default class Profile extends Component {
                             <label className="form-label">First Name</label><br/>
                             <input type="text" className="form-control less-wide" 
                                     name="givenname" ref="givenname"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined} required>
                             </input>
                         </div>
                         <p></p>
@@ -143,7 +143,7 @@ export default class Profile extends Component {
                             <label className="form-label">Last Name</label><br/>
                             <input type="text" className="form-control less-wide"  
                                     name="familyname" ref="familyname" 
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined} required>
                             </input>
                         </div>
                         <p />

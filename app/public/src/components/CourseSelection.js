@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-
+import { Button } from 'reactstrap';
 import Course from './Course';
 import NavBar from './NavBar';
 
+var common = require('./../../client/css/common.css');
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 function status(response) {
@@ -26,7 +26,7 @@ class CourseSelection extends Component {
 
     componentDidMount() {
         var t = this;
-        fetch('/all-courses?studentnumber=1000831745', { method: 'GET', credentials: 'include'})
+        fetch('/all-courses?studentnumber=1000831745', { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
                 const courses = data.data;
@@ -54,7 +54,9 @@ class CourseSelection extends Component {
                 <NavBar activePage={2}/>
                 <br />
                 <div className="all-course-info">
-                    <h1>Course Selection</h1>
+                    <div className="profile-heading">
+                        <h1>Course Selection</h1>
+                    </div>
                     <ul>
                         {this.state.courses.map(course =>
                             <Course key={course.code} 
@@ -65,9 +67,9 @@ class CourseSelection extends Component {
                             )
                         }
                     </ul>
-                    <button onClick={this.goToCart()} className="button">
+                    <Button color="primary" size="lg" onClick={this.goToCart()} className="button">
                         Go To Cart
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

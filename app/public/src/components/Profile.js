@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import AutosuggestBox from './AutosuggestBox';
+import NavBar from './NavBar';
+
 var styles = require('./../../client/css/profile.css');
 
 var utils = require('../utils.js');
@@ -55,69 +57,74 @@ export default class Profile extends Component {
 
     render() {
         return (
-            <div id="formEntry">
-                <h1 id="profileHeading">Student Profile</h1>
-                <form onSubmit={this.handleSubmit} className="form-horizontal">
-                    <div>
-                        <label className="formLabel">Family Name</label><br/>
-                        <input type="text" className="form-control lessWide" name="familyname" ref="familyname"></input>
-                    </div>
-                    <p></p>
-                    <div>
-                        <label className="formLabel">First Name</label><br/>
-                        <input type="text" className="form-control lessWide" name="givenname" ref="givenname"></input>
-                    </div>
-                    <p />
-                    <div>
-                        <label className="formLabel">Degree Status</label>
-                        <br />
-                        <label><span className="dropdown dropdown-large">
-                        <select className="dropdown-select" name="status" ref="degree">
-                            <option value="undergrad">Undergraduate</option>
-                            <option value="grad">Graduate</option>
-                        </select>
-                        </span></label>
-                    </div>
-                    <p />
-                    <div>
-                        <label className="formLabel">Year</label>
-                        <br />
-                        <label ><span className="dropdown dropdown-large">
-                        <select className="dropdown-select" name="year" ref="year">
-                            <option value="1">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        </span></label>
-                    </div>
-                    <p />
-                    <div>
-                        <label className="formLabel">Work Eligibility</label>
-                        <br />
-                        <label ><span className="dropdown dropdown-large">
-                        <select className="dropdown-select" name="eligibility" ref="eligibility">
-                            <option value="Legally Entitled">Legally Entitled</option>
-                            <option value="Student Visa">Student Visa</option>
-                        </select>
-                        </span></label>
+            <div>
+                <NavBar activePage={1}/>
+                <br />
+                <div id="formEntry">
+                    <h1 id="profileHeading">Student Profile</h1>
+                    <form onSubmit={this.handleSubmit} className="form-horizontal">
+                        <div>
+                            <label className="formLabel">Family Name</label><br/>
+                            <input type="text" className="form-control lessWide" name="familyname" ref="familyname"></input>
+                        </div>
+                        <p></p>
+                        <div>
+                            <label className="formLabel">First Name</label><br/>
+                            <input type="text" className="form-control lessWide" name="givenname" ref="givenname"></input>
                         </div>
                         <p />
-                    <div>
-                        <label className="formLabel">Proficient in:</label>
-                        <AutosuggestBox onSelectOption={this.updateSelectedList}/>
-                    </div>
-                    <p />
-                    <div>
-                        <label className="formLabel">Additional Info:</label>
+                        <div>
+                            <label className="formLabel">Degree Status</label>
+                            <br />
+                            <label><span className="dropdown dropdown-large">
+                            <select className="dropdown-select" name="status" ref="degree">
+                                <option value="undergrad">Undergraduate</option>
+                                <option value="grad">Graduate</option>
+                            </select>
+                            </span></label>
+                        </div>
+                        <p />
+                        <div>
+                            <label className="formLabel">Year</label>
+                            <br />
+                            <label ><span className="dropdown dropdown-large">
+                            <select className="dropdown-select" name="year" ref="year">
+                                <option value="1">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            </span></label>
+                        </div>
+                        <p />
+                        <div>
+                            <label className="formLabel">Work Eligibility</label>
+                            <br />
+                            <label ><span className="dropdown dropdown-large">
+                            <select className="dropdown-select" name="eligibility" ref="eligibility">
+                                <option value="Legally Entitled">Legally Entitled</option>
+                                <option value="Student Visa">Student Visa</option>
+                            </select>
+                            </span></label>
+                            </div>
+                            <p />
+                        <div>
+                            <label className="formLabel">Proficient in:</label>
+                            <AutosuggestBox onSelectOption={this.updateSelectedList}/>
+                        </div>
+                        <p />
                         <br />
-                        <textarea className="textArea" name="additional-info" ref="otherinfo"></textarea>
-                    </div>
-                    <p />
-                    <br />
-                    <Button className="lessWide" color="primary" size="lg" type="submit">Enter</Button>
-                </form>
+                        <div>
+                            <label className="formLabel">Additional Info:</label>
+                            <br />
+                            <textarea className="textArea" name="additional-info" ref="otherinfo"></textarea>
+                        </div>
+                        <p />
+                        <br />
+                        <Button className="lessWide" color="primary" size="lg" type="submit">Enter</Button>
+                    </form>
+                </div>
             </div>
         );
     }

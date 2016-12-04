@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Course from './Course';
+import NavBar from './NavBar';
 
 var utils = require('../utils.js');
 
@@ -49,21 +50,25 @@ class CourseSelection extends Component {
         // console.log(this.state.courses);
         // console.log(this.state.cart.indexOf(this.state.courses[0].code));
         return (
-            <div className="all-course-info">
-                <h1>Course Selection</h1>
-                <ul>
-                    {this.state.courses.map(course =>
-                        <Course key={course.code} 
-                                code={course.code} 
-                                title={course.title}
-                                type="student"
-                                inCart={course.incart} />
-                        )
-                    }
-                </ul>
-                <button onClick={this.goToCart()} className="button">
-                    Go To Cart
-                </button>
+            <div>
+                <NavBar activePage={2}/>
+                <br />
+                <div className="all-course-info">
+                    <h1>Course Selection</h1>
+                    <ul>
+                        {this.state.courses.map(course =>
+                            <Course key={course.code} 
+                                    code={course.code} 
+                                    title={course.title}
+                                    type="student"
+                                    inCart={course.incart} />
+                            )
+                        }
+                    </ul>
+                    <button onClick={this.goToCart()} className="button">
+                        Go To Cart
+                    </button>
+                </div>
             </div>
         );
     }

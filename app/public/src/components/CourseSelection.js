@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Course from './Course';
 import NavBar from './NavBar';
+import { hashHistory } from 'react-router';
 
 var common = require('./../../client/css/common.css');
 var utils = require('../utils.js');
@@ -42,6 +43,7 @@ class CourseSelection extends Component {
 
     goToCart() {
         // window.location = '/cart';
+        hashHistory.push('/cart');
     }
 
     render() {
@@ -67,7 +69,7 @@ class CourseSelection extends Component {
                             )
                         }
                     </ul>
-                    <Button color="primary" size="lg" onClick={this.goToCart()} className="button">
+                    <Button color="primary" size="lg" onClick={this.goToCart} className="button">
                         Go To Cart
                     </Button>
                 </div>

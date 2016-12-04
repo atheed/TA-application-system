@@ -132,7 +132,7 @@ export default class Profile extends Component {
                     <h1 id="profileHeading" className="profile-heading">Student Profile</h1>
                     <form onSubmit={this.handleSubmit} className="form-horizontal">
                         <div>
-                            <label className="formLabel">First Name</label><br/>
+                            <label className="form-label">First Name</label><br/>
                             <input type="text" className="form-control less-wide" 
                                     name="givenname" ref="givenname"
                                     value={this.state.isUserInDb ? this.state.userInfo.info.givenname : ""}>

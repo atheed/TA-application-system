@@ -24,6 +24,7 @@ class Cart extends Component {
         };
         this.componentDidMount = this.componentDidMount.bind(this);
         this.refreshRankGroups = this.refreshRankGroups.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
         this.submitRankings = this.submitRankings.bind(this);
     }
 
@@ -109,6 +110,28 @@ class Cart extends Component {
                 throw err;
             });
     }
+
+    handleRemove(rankToRefresh) {
+        console.log(rankToRefresh);
+        var t = this;
+        fetch('/courses-in-cart-with-rank?rank=' + rankToRefresh, 
+            { method: 'GET',
+            credentials: 'include'})
+            .then(json)
+            .then(function(data) {
+                const newRankCourses = data.data;
+                let rankings = t.state.rankings;
+                rankings[rankToRefresh] = newRankCourses;
+                console.log(rankings);
+                t.setState({
+                    rankings: rankings
+                });
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
+            });         
+    }
     render() {
         const rankings = this.state.rankings;
         // console.log(this.state.rankings);
@@ -117,12 +140,12 @@ class Cart extends Component {
                 <NavBar activePage={3}/>
                 <br />
                 <div className="cart">
-                    <RankGroup rank={1} courses={rankings[1]} refreshRanks={this.refreshRankGroups}/>
-                    <RankGroup rank={2} courses={rankings[2]} refreshRanks={this.refreshRankGroups}/>
-                    <RankGroup rank={3} courses={rankings[3]} refreshRanks={this.refreshRankGroups}/>
-                    <RankGroup rank={4} courses={rankings[4]} refreshRanks={this.refreshRankGroups}/>
-                    <RankGroup rank={5} courses={rankings[5]} refreshRanks={this.refreshRankGroups}/>
-                    <RankGroup rank={0} courses={rankings[0]} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={1} courses={rankings[1]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={2} courses={rankings[2]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={3} courses={rankings[3]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={4} courses={rankings[4]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={5} courses={rankings[5]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
+                    <RankGroup rank={0} courses={rankings[0]} handleRemove={this.handleRemove} refreshRanks={this.refreshRankGroups}/>
                     <button onClick={this.submitRankings}>Submit Rankings</button>
                     {this.state.submitted ? "Your rankings have been submitted!" : null}
                 </div>

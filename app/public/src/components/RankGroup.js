@@ -16,6 +16,7 @@ class RankGroup extends Component {
             rank: props.rank,
             courses: [],
         };
+        this.handleRemoveHelp = this.handleRemoveHelp.bind(this);
     }
 
     // componentDidMount() {
@@ -34,7 +35,11 @@ class RankGroup extends Component {
     //         });
 
     // }
-
+    handleRemoveHelp() {
+        console.log("handleRemoveHelp");
+        console.log(this.props.rank);
+        this.props.handleRemove(this.props.rank);
+    }
     render() {
         console.log("Render rank group");
         return (
@@ -56,7 +61,8 @@ class RankGroup extends Component {
                                     code={course.code} 
                                     title={course.title}
                                     type="student"
-                                    inCart={true} />
+                                    inCart={true}
+                                    handleRemove={this.handleRemoveHelp} />
                         </div>
                         )
                     }

@@ -1,9 +1,32 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, NavDropdown, DropdownItem, DropdownToggle, DropdownMenu, NavLink } from 'reactstrap';
 
+var json = require('../utils.js').json;
+
 export default class NavBar extends Component {
     constructor() {
         super();
+        this.state = { studentnumber: '', type: '' };
+    }
+
+    componentDidMount() {
+        var t = this;
+        fetch('/authenticate', { method: 'GET', credentials: 'include' })
+            .then(json)
+            .then(function(data) {
+                console.log(data);
+                if (data.success) {
+                    t.setState({ studentnumber: data.user.studentnumber, type: data.user.type });
+                } else {
+                    // this.context.router.push('/');
+                    window.location.replace('/');
+                }
+
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
+            });
     }
 
     render() {
@@ -34,7 +57,7 @@ export default class NavBar extends Component {
             <div>
                 <Nav pills style={navBarStyle}>
                     <NavItem style={navLinkStyle}>
-                        <NavLink href="#" style={userStyle}>Logged in as: <br />XXXXXXXXXX</NavLink>
+                        <NavLink href="#" style={userStyle}>Logged in as {this.state.type}: <br />{this.state.studentnumber}</NavLink>
                     </NavItem>
                     <NavItem style={navLinkStyle}>
                         <NavLink href="/#/profile" style={this.props.activePage == 1 ? activeLinkStyle : null}>Profile</NavLink>

@@ -11,7 +11,7 @@ module.exports = function(app, passport) {
     app.get('/course-info', getCourseInfo);
 
     app.get('/applicants-for-course', getApplicantsForCourse);
-    app.get('/applicants-for-course-with-degree', getApplicantsForCourseWithDegree);
+    app.get('/filter-applicants', filterApplicantsByProperty);
     app.get('/applicant-info', getApplicantInfo);
     app.post('/add-applicant', addApplicant);
 
@@ -229,7 +229,7 @@ var getApplicantsForCourse = function(req, res, next) {
     if (req.query.course) {
         console.log("course");
 
-        let courseResult = t.one(
+        let courseResult = db.one(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
@@ -275,20 +275,19 @@ var getApplicantsForCourse = function(req, res, next) {
     }
 }
 
-/* Get all the applicants for a particular course */
-var getApplicantsForCourseWithDegree = function(req, res, next) {
+var filterApplicantsByProperty = function(req, res, next) {
     var db = req.app.get('db');
     if (req.user.type !== 'admin') {
         console.log("Not authorized");
         res.status(401)
             .json({
                 status: 'failure',
-                error: 'You must be logged in as admin to see applicants'
+                error: 'You must be logged in as admin to filter applicants'
             });
         return;
     }
-    if (req.query.course && req.query.degree) {
-        let courseResult = t.one(
+    if (req.query.course && req.query.property && req.query.value) {
+        let courseResult = db.one(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
@@ -301,23 +300,31 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
                 });
             return;                   
         }
-
+        // query('SELECT ${columns^} FROM ${table~}', {
+        //     columns: columns.map(pgp.as.name).join(),
+        //     table: 'Table Name'
+        // });
         db.any(
-                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
-	    	FROM Applicants a \
-	    	INNER JOIN Rankings r \
-			ON a.StudentNumber=r.StudentNumber \
-	    	WHERE CourseCode = ${course} AND Degree = ${degree}',
+                'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Rank, Experience, Status \
+            FROM Applicants a \
+            JOIN Rankings r \
+            ON a.StudentNumber=r.StudentNumber \
+            LEFT JOIN Offers o \
+            ON r.StudentNumber=o.StudentNumber AND r.CourseCode=o.CourseCode \
+            WHERE r.CourseCode = ${course} AND ${property^} = ${value} \
+            ORDER BY RANK',
                 req.query)
             .then(function(data) {
+                console.log(data);
                 res.status(200)
                     .json({
                         status: 'success',
                         data: data,
-                        message: 'Retrieved ALL applicants for course'
+                        message: 'Retrieved ALL filtered applicants for course'
                     });
             })
             .catch(function(err) {
+                console.log(err.message);
                 res.status(500).json({ status: 'failure', error: err.message});
 
             });
@@ -326,9 +333,9 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
         res.status(400)
             .json({
                 status: 'failure',
-                error: 'Missing course code or degree in query'
+                error: 'Missing course code or property or value in query'
             });
-    }
+    }    
 }
 
 /* Returns data in the form
@@ -396,10 +403,10 @@ var getApplicantInfo = function(req, res, next) {
                 let rankings = { "rankings": {} }
                 for (let i = 0; i < 6; i++) {
                     let rankedIth = yield t.any(
-                        'SELECT Courses.Code, Title \
-                        FROM Cart \
+                        'SELECT Courses.Code, Title, Experience \
+                        FROM Rankings \
                         JOIN Courses \
-                        ON Cart.CourseCode=Courses.Code \
+                        ON Rankings.CourseCode=Courses.Code \
                         WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
                     rankings["rankings"][i] = rankedIth;
                 }
@@ -454,6 +461,7 @@ var getApplicantInfo = function(req, res, next) {
 
             })
             .catch(function(err) {
+                console.log(err.message);
                 res.status(500).json({ status: 'failure', error: err.message});
             });
 
@@ -711,7 +719,7 @@ var getCoursesInCart = function(req, res, next) {
             let rankings = { "rankings": {} }
             for (let i = 0; i < 6; i++) {
                 let rankedIth = yield t.any(
-                    'SELECT Courses.Code, Title \
+                    'SELECT Courses.Code, Title, Experience \
                     FROM Cart \
                     JOIN Courses \
                     ON Cart.CourseCode=Courses.Code \

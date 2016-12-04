@@ -12,9 +12,9 @@ class ApplicantInfo extends Component {
 			considerations: null,
 			qualifications: [],
 			rankings: {
-				first: null,
-				second: null,
-				third: null,
+				first: [],
+				second: [],
+				third: [],
 			},
 
 		}
@@ -32,9 +32,9 @@ class ApplicantInfo extends Component {
 							considerations: applicant.considerations,
 							qualifications: applicant.qualifications,
 							rankings: {
-								first: applicant.rankings[1],
-								second: applicant.rankings[2],
-								third: applicant.rankings[3],
+								first: applicant.rankings[1].map((course) => { return course.code + ' (' + course.experience + ')'}),
+								second: applicant.rankings[2].map((course) => { return course.code + ' (' + course.experience + ')'}),
+								third: applicant.rankings[3].map((course) => { return course.code + ' (' + course.experience + ')'}),
 							}
 						});
 				})
@@ -48,6 +48,16 @@ class ApplicantInfo extends Component {
 		return true;
 	}
 
+	displayCommaSeparated(arr) {
+		return arr.map((item, i) => {
+				        if (i < arr.length - 1) {
+				            return item + ", ";
+				        } else {
+				            return item;
+				        }
+				    });
+	}
+
 	render() {
 		const { offers, considerations, qualifications, rankings : { first, second, third } } = this.state;
 		return (
@@ -59,25 +69,19 @@ class ApplicantInfo extends Component {
 				Considered for: {considerations}
 				</div>
 				<div>
-				Qualifications: {qualifications.map((qualification, i) => {
-				        if (i < qualifications.length - 1) {
-				            return qualification + ", ";
-				        } else {
-				            return qualification;
-				        }
-				    })}
+				Qualifications: {this.displayCommaSeparated(qualifications)}
 				</div>
 				<div>
 				Rankings:
 				</div>
 				<div>
-					1st: {first}
+					1st: {this.displayCommaSeparated(first)}
 					</div>
 				<div>
-					2nd: {second}
+					2nd: {this.displayCommaSeparated(second)}
 					</div>
 				<div>
-					3rd: {third}
+					3rd: {this.displayCommaSeparated(third)}
 					</div>
 				<div>
 					4th:

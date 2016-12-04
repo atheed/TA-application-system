@@ -16,7 +16,7 @@ class AdminDashboard extends Component {
 
     componentDidMount() {
         var t = this;
-        fetch('/all-courses', { method: 'GET' })
+        fetch('/all-courses', { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
                 const courses = data.data;

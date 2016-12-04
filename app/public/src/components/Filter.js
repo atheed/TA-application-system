@@ -1,69 +1,68 @@
 import React, {Component} from 'react';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 var utils = require('../utils.js');
 
 var json = utils.json;
 
 class Filter extends Component {
-    constructor(props) {
-        super();
-        this.state = {
-            dropdownVisible: false,
+	constructor(props) {
+		super(props);
+
+		this.toggle = this.toggle.bind(this);
+		this.state = {
+			dropdownOpen: false,
             filtered: false,
             filteredValue: "",
         }
         // this.handleChange = this.handleChange.bind(this);
-        this.toggleDropdown = this.toggleDropdown.bind(this);
         this.filterBy = this.filterBy.bind(this);
         this.clear = this.clear.bind(this);
-    }
+	}
 
-    filterBy(event) {
-        var value = event.target.text;
-        console.log(value);
-        var dropdownVisible = this.state.dropdownVisible;
-        this.props.filter(this.props.column, value);
-        this.setState({
-            dropdownVisible: !dropdownVisible,
-            filtered: true,
-            filteredValue: value
-        });
-    }
+	toggle() {
+		this.setState({
+			dropdownOpen: !this.state.dropdownOpen
+		});
+	}
+	filterBy(event) {
+		console.log(event.target);
+	    var value = event.target.value;
+	    console.log(value);
+	    var dropdownVisible = this.state.dropdownVisible;
+	    this.props.filter(this.props.column, value);
+	    this.setState({
+	        dropdownOpen: !this.state.dropdownOpen,
+	        filtered: true,
+	        filteredValue: value
+	    });
+	}
 
-    toggleDropdown() {
-        var dropdownVisible = this.state.dropdownVisible;
-        this.setState({
-            dropdownVisible: !dropdownVisible
-        });
-    }
-    clear() {
-        var value = event.target.text;
-        console.log(value);
-        var dropdownVisible = this.state.dropdownVisible;
-        this.props.clearFilter();
-        this.setState({
-            dropdownVisible: !dropdownVisible,
-            filtered: false,
-            filteredValue: ""
-        });        
-    }
-    render() {
-
-        let dropdown = 
-        <div id="myDropdown" className="dropdown-content">
-          {this.state.filtered ? <a onClick={this.clear}>Clear</a> : null}
-          <a onClick={this.filterBy}>Undergrad</a>
-          <a onClick={this.filterBy}>Grad</a>
-        </div>
-        return (
-            <div className="filter">
-                <button onClick={this.toggleDropdown} className="dropbtn">
-                    {this.state.filtered ? this.props.column + ':' + this.state.filteredValue : this.props.column}
-                </button>
-              {this.state.dropdownVisible ? dropdown : null}
-            </div>
-        );
-    }
+	clear() {
+		console.log(event.target);
+	    var value = event.target.value;
+	    console.log(value);
+	    var dropdownVisible = this.state.dropdownVisible;
+	    this.props.clearFilter();
+	    this.setState({
+	        dropdownOpen: !this.state.dropdownOpen,
+	        filtered: false,
+	        filteredValue: ""
+	    });        
+	}
+	render() {
+		return (
+			<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+				<DropdownToggle>
+					{this.state.filtered ? this.props.column + ':' + this.state.filteredValue : this.props.column}
+				</DropdownToggle>
+				<DropdownMenu>
+				    {this.state.filtered ? <DropdownItem onClick={this.clear}>Clear</DropdownItem> : null}
+					<DropdownItem value="Undergrad" onClick={this.filterBy}>Undergrad</DropdownItem>
+					<DropdownItem value="Grad" onClick={this.filterBy}>Grad</DropdownItem>
+				</DropdownMenu>
+			</Dropdown>
+		);
+	}
 }
-
 export default Filter;

@@ -1,5 +1,6 @@
 'use strict';
 
+var DUPLICATE_KEY_ERR_CODE = '23505';
 module.exports = function(app, passport) {
     // ------ APIs FOR TA COORDINATOR -----
 
@@ -47,7 +48,7 @@ var getAllApplicants = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            return next(err);
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 
@@ -70,15 +71,25 @@ var getAllApplicants = function(req, res, next) {
 var getAllCourses = function(req, res, next) {
     console.log(req.user);
     var db = req.app.get('db');
-    let type = "student";
-    // let type = req.user.type;
+
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in to retrieve courses'
+            });
+        return;
+    }
+    // let type = "student";
+    let type = req.user.type;
 
     db.task(function*(t) {
 
             if (type === "student") {
                 // display the course info, as well as the applicants
-                let stunum = req.query.studentnumber;
                 // let stunum = req.user.studentnumber;
+                let stunum = req.user.studentnumber;
 
                 return t.any(
                     'SELECT Code, Title, NumberOfTAs, Instructor, InCart \
@@ -108,7 +119,8 @@ var getAllCourses = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            return next(err);
+            res.status(500).json({ status: 'failure', error: err.message});
+
         });
 }
 
@@ -135,6 +147,15 @@ var getCourseInfo = function(req, res, next) {
                     "SELECT * \
                 FROM Courses \
                 WHERE Code=${course}", req.query);
+
+                if (info === {}) {
+                    res.status(404)
+                        .json({
+                            status: 'failure',
+                            error: `The course ${req.query.course} does not exist`
+                        });
+                    return;                   
+                }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \
@@ -173,14 +194,20 @@ var getCourseInfo = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
+
             });
 
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        // console.log("error");
+        // res.status(400);
+        // res.send("Error: Missing course code in query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code in query'
+            });
     }
 }
 
@@ -190,8 +217,32 @@ var getCourseInfo = function(req, res, next) {
 var getApplicantsForCourse = function(req, res, next) {
     var db = req.app.get('db');
 
+    if (req.user.type !== 'admin') {
+        console.log("Not authorized");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as admin to see applicants'
+            });
+        return;
+    }
     if (req.query.course) {
         console.log("course");
+
+        let courseResult = t.one(
+            "SELECT * \
+        FROM Courses \
+        WHERE Code=${course}", req.query);
+
+        if (courseResult === {}) {
+            res.status(404)
+                .json({
+                    status: 'failure',
+                    error: `The course ${req.query.course} does not exist`
+                });
+            return;                   
+        }
+
         db.any(
                 'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Rank, Experience, Status \
 	    	FROM Applicants a \
@@ -211,21 +262,46 @@ var getApplicantsForCourse = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
+
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code in query'
+            });
     }
 }
 
 /* Get all the applicants for a particular course */
 var getApplicantsForCourseWithDegree = function(req, res, next) {
     var db = req.app.get('db');
-
+    if (req.user.type !== 'admin') {
+        console.log("Not authorized");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as admin to see applicants'
+            });
+        return;
+    }
     if (req.query.course && req.query.degree) {
+        let courseResult = t.one(
+            "SELECT * \
+        FROM Courses \
+        WHERE Code=${course}", req.query);
+
+        if (courseResult === {}) {
+            res.status(404)
+                .json({
+                    status: 'failure',
+                    error: `The course ${req.query.course} does not exist`
+                });
+            return;                   
+        }
+
         db.any(
                 'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
 	    	FROM Applicants a \
@@ -242,13 +318,16 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
+
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code or degree in query'
+            });
     }
 }
 
@@ -276,6 +355,8 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
         "considerations" : [
             "CSC108",
             "CSC120",
+        ],
+        "qualifications" : [
         ]
 	}
 }
@@ -285,171 +366,162 @@ var getApplicantsForCourseWithDegree = function(req, res, next) {
 var getApplicantInfo = function(req, res, next) {
     var db = req.app.get('db');
 
-    if (req.query.stunum) {
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in to get applicant info'
+            });
+        return;
+    }
+    
+    let stunum;
+    if (req.user.type === 'student') {
+        stunum = req.user.studentnumber;
+    } else {
+        stunum = req.query.stunum;
+    }
+    console.log(stunum);
+    if (stunum) {
         db.task(function*(t) {
                 let info = yield t.one(
                     "SELECT * \
 				FROM Applicants \
-				WHERE StudentNumber=${stunum}", req.query);
+				WHERE StudentNumber=$1", stunum);
 
-                let rankedFirst = yield t.any(
-                    "SELECT CourseCode \
-				FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=1", req.query);
-
-                let rankedSecond = yield t.any(
-                    "SELECT CourseCode \
-                FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=2", req.query);
-
-                let rankedThird = yield t.any(
-                    "SELECT CourseCode \
-                FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=3", req.query);
-
-                let rankings = { "rankings": {
-                        1 : flattenArray(rankedFirst),
-                        2 : flattenArray(rankedSecond),
-                        3 : flattenArray(rankedThird) 
-                    }
+                if (!info) {
+                    return;                    
                 }
-
-                let offerList = yield t.any(
-                    "SELECT CourseCode \
-                FROM Offers \
-                WHERE StudentNumber=${stunum} AND Status='offered'", req.query);
-
-                let offers = { "offers": flattenArray(offerList) }
-
-                let considerList = yield t.any(
-                    "SELECT CourseCode \
-                FROM Offers \
-                WHERE StudentNumber=${stunum} AND Status='considered'", req.query);
-
-                let considerations = { "considerations": flattenArray(considerList) }
+                let rankings = { "rankings": {} }
+                for (let i = 0; i < 6; i++) {
+                    let rankedIth = yield t.any(
+                        'SELECT Courses.Code, Title \
+                        FROM Cart \
+                        JOIN Courses \
+                        ON Cart.CourseCode=Courses.Code \
+                        WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
+                    rankings["rankings"][i] = rankedIth;
+                }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \
                 FROM StudentQualifications \
-                WHERE StudentNumber=${stunum}", req.query);
+                WHERE StudentNumber=$1", stunum);
 
                 let qualifications = { "qualifications": flattenArray(qualificationList) }
 
-                return Object.assign(info, rankings, offers, considerations, qualifications);
+                if (req.user.type === "admin") {
+                    // display the course info, as well as the applicants
+
+                    let offerList = yield t.any(
+                        "SELECT CourseCode \
+                    FROM Offers \
+                    WHERE StudentNumber=$1 AND Status='offered'", stunum);
+
+                    let offers = { "offers": flattenArray(offerList) }
+
+                    let considerList = yield t.any(
+                        "SELECT CourseCode \
+                    FROM Offers \
+                    WHERE StudentNumber=$1 AND Status='considered'", stunum);
+
+                    let considerations = { "considerations": flattenArray(considerList) }
+                    return Object.assign(info, rankings, offers, considerations, qualifications);
+
+                } else {
+                    return Object.assign(info, rankings, qualifications);
+                }
+
             })
             .then(function(applicantInfo) {
                 // success;
-                console.log(applicantInfo);
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        data: applicantInfo,
-                        message: 'Retrieved applicant info'
-                    });
+                if (applicantInfo) {
+                    console.log(applicantInfo);
+                    res.status(200)
+                        .json({
+                            status: 'success',
+                            data: applicantInfo,
+                            message: 'Retrieved applicant info'
+                        });                    
+                } else {
+                    res.status(404)
+                        .json({
+                            status: 'failure',
+                            error: `The student ${stunum} does not exist`
+                        });
+                }
+
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
 
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing student number in query'
+            });
     }
 }
 
 var makeOffer = function(req, res, next) {
-    var db = req.app.get('db');
-    if (req.body.stunum && req.body.course) {
-        console.log(req.body);
-        // check if there is already an entry there, if so overwrite it
-        db.none(
-                "INSERT INTO Offers \
-                VALUES(${stunum}, ${course}, 'offered')\
-                ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'offered'",
-                req.body)
-            .then(function() {
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        message: 'Made offer to applicant'
-                    });
-            })
-            .catch(function(err) {
-                return next(err);
-            });
-    } else {
-        // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
-    }
-}
-
-var unOfferApplicant = function(req, res, next) {
-    var db = req.app.get('db');
-    if (req.query.stunum && req.query.course) {
-        console.log(req.query);
-        // check if there is already an entry there, if so overwrite it
-        db.result(
-                "DELETE FROM Offers \
-                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='offered'", req.query)
-            .then(function(result) {
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        message: `Removed ${result.rowCount} course from offers`
-                    });
-            })
-            .catch(function(err) {
-                return next(err);
-            });
-    } else {
-        // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
-    }
+    return upsertOfferStatus(req, res, 'offered');
 }
 
 var considerApplicant = function(req, res, next) {
+    return upsertOfferStatus(req, res, 'considered');
+}
+
+var upsertOfferStatus = function(req, res, newStatus) {
     var db = req.app.get('db');
-    // TODO : maybe it should be req.body?
     if (req.body.stunum && req.body.course) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
         db.none(
                 "INSERT INTO Offers \
-                VALUES(${stunum}, ${course}, 'considered')\
-                ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = 'considered'",
-                req.body)
+                VALUES($1, $2, $3)\
+                ON CONFLICT (StudentNumber, CourseCode) DO UPDATE SET Status = $3",
+                [req.body.stunum, req.body.course, newStatus])
             .then(function() {
                 res.status(200)
                     .json({
                         status: 'success',
-                        message: 'Considered applicant for course'
+                        message: `Offer status for applicant is now: ${newStatus}`
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
+
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
-    }
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing student number or course code in query'
+            });
+    }    
+}
+
+var unOfferApplicant = function(req, res, next) {
+    return removeOfferStatus(req, res, 'offered');    
 }
 
 var unConsiderApplicant = function(req, res, next) {
+    return removeOfferStatus(req, res, 'considered');
+}
+
+var removeOfferStatus = function(req, res, status) {
     var db = req.app.get('db');
     if (req.query.stunum && req.query.course) {
         console.log(req.query);
         // check if there is already an entry there, if so overwrite it
         db.result(
                 "DELETE FROM Offers \
-                WHERE StudentNumber=${stunum} AND CourseCode=${course} AND Status='considered'", req.query)
+                WHERE StudentNumber=$1 AND CourseCode=$2 AND Status=$3", [req.query.stunum, req.query.course, status])
             .then(function(result) {
                 res.status(200)
                     .json({
@@ -458,36 +530,56 @@ var unConsiderApplicant = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
-    }
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing student number or course code in query'
+            });
+    }    
 }
-
 // ----------- APIs FOR APPLICANT VIEW ------------
 
 var addApplicant = function(req, res, next) {
     var db = req.app.get('db');
 
-    db.task(function*(t) {
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in to submit an application'
+            });
+        return;
+    }
+
+    db.tx(function*(t) {
             let qualifications = req.body.qualifications;
             console.log(req.body);
-            // req.body['studentnumber'] = req.user.studentnumber;
+            req.body['studentnumber'] = req.user.studentnumber;
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
-                ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})',
+                ${studentnumber}, ${FamilyName}, ${GivenName}, ${Year}, ${Degree}, ${Eligibility}, ${OtherInfo})\
+                ON CONFLICT (StudentNumber) DO UPDATE \
+                SET StudentNumber=${studentnumber}, \
+                FamilyName=${FamilyName}, \
+                GivenName=${GivenName}, \
+                Year=${Year}, \
+                Degree=${Degree}, \
+                WorkEligibility=${Eligibility}, \
+                OtherInfo=${OtherInfo}',
                 req.body);
 
-            var queries = qualifications.map(function(l) {
+            var queries = [];
+            queries.push(addInfo);
+            qualifications.forEach(function(l) {
                 console.log(l);
-                return t.none("INSERT INTO StudentQualifications VALUES($1, $2)", [req.body.studentnumber, l]);
+                queries.push(t.none("INSERT INTO StudentQualifications VALUES($1, $2) ON CONFLICT DO NOTHING", [req.body.studentnumber, l]));
             });
-            queries.unshift(addInfo);
             return t.batch(queries);
         })
         .then(function() {
@@ -497,15 +589,26 @@ var addApplicant = function(req, res, next) {
                     message: 'Inserted one applicant'
                 });
         })
-        .catch(function(err) {
-            return next(err);
+        .catch(function(err) {             
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 
 var addCourseToCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.stunum;
-    // var stunum = req.user.studentnumber;
+
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to add a course to cart'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
+
     if (req.body.course) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
@@ -521,23 +624,36 @@ var addCourseToCart = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code in query'
+            });
     }
 }
 
 var removeCourseFromCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.stunum;
+    // var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to remove a course from cart'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
     if (req.query.course) {
         console.log(req.query);
-        // check if there is already an entry there, if so overwrite it
         db.result(
                 "DELETE FROM Cart \
                 WHERE StudentNumber=$1 AND CourseCode=$2", [stunum, req.query.course])
@@ -549,13 +665,16 @@ var removeCourseFromCart = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code in query'
+            });
     }
 }
 /*
@@ -574,8 +693,20 @@ var removeCourseFromCart = function(req, res, next) {
 */
 var getCoursesInCart = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.stunum;
+    // var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to get courses in cart'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
+
     db.task(function*(t) {
             let rankings = { "rankings": {} }
             for (let i = 0; i < 6; i++) {
@@ -599,7 +730,7 @@ var getCoursesInCart = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            return next(err);
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 /* Returns data of the form
@@ -616,10 +747,22 @@ var getCoursesInCart = function(req, res, next) {
 /* Get all the applicants for a particular course */
 var getCoursesInCartWithRank = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.query.stunum;
+    // var stunum = req.query.stunum;
     // var stunum = req.user.studentnumber;
-    if (req.query.rank) {
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to get courses in cart'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
 
+    if (req.query.rank) {
+        req.query['stunum'] = stunum;
         db.any(
                 'SELECT Courses.Code, Title \
             FROM Cart \
@@ -636,21 +779,34 @@ var getCoursesInCartWithRank = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing rank in query'
+            });
     }
 }
 
-/* Get all the applicants for a particular course */
 var rankCourse = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.stunum;
+    // var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to rank a course'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
+
     if (req.body.course && req.body.rank) {
         console.log(req.body);
         // check if there is already an entry there, if so overwrite it
@@ -666,21 +822,34 @@ var rankCourse = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
-        console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code or rank in query'
+            });
     }
 }
 
-/* Get all the applicants for a particular course */
 var updateExperienceInCourse = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.studentnumber;
+    // var stunum = req.body.studentnumber;
     // var stunum = req.user.studentnumber;
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to rank a course'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
+
     if (req.body.course && req.body.experience) {
         console.log(req.body);
         db.none(
@@ -695,21 +864,36 @@ var updateExperienceInCourse = function(req, res, next) {
                     });
             })
             .catch(function(err) {
-                return next(err);
+                res.status(500).json({ status: 'failure', error: err.message});
             });
     } else {
         // unrecognized query, send 400 error code
         console.log("error");
-        res.status(400);
-        res.send("Error: unrecognized query");
+        res.status(400)
+            .json({
+                status: 'failure',
+                error: 'Missing course code or experience in query'
+            });
     }
 }
 
 var submitRankings = function(req, res, next) {
     var db = req.app.get('db');
-    var stunum = req.body.stunum;
+    // var stunum = req.body.stunum;
     // var stunum = req.user.studentnumber;
-    db.task(function*(t) {
+    if (!req.user || req.user.type !== 'student') {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in as student to submit rankings'
+            });
+        return;
+    }
+    // var stunum = req.body.stunum;
+    var stunum = req.user.studentnumber;
+
+    db.tx(function*(t) {
             let deleteRankings = t.none(
                 'DELETE FROM Rankings \
                 WHERE Rankings.StudentNumber = $1',
@@ -729,7 +913,7 @@ var submitRankings = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            return next(err);
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 
@@ -745,7 +929,7 @@ var getAllQualifications = function(req, res, next) {
                 });
         })
         .catch(function(err) {
-            return next(err);
+            res.status(500).json({ status: 'failure', error: err.message});
         });
 }
 

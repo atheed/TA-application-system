@@ -31,13 +31,13 @@ class Cart extends Component {
     refreshRankGroups(oldRank, newRank) {
         console.log(oldRank, newRank);
         var t = this;
-        fetch('/courses-in-cart-with-rank?stunum=1000831745' + '&rank=' + oldRank, 
+        fetch('/courses-in-cart-with-rank?rank=' + oldRank, 
             { method: 'GET',
             credentials: 'include'})
             .then(json)
             .then(function(oldData) {
                 const oldRankCourses = oldData.data;
-                fetch('/courses-in-cart-with-rank?stunum=1000831745' + '&rank=' + newRank, 
+                fetch('/courses-in-cart-with-rank?rank=' + newRank, 
                     { method: 'GET',
                     credentials: 'include'})
                     .then(json)
@@ -64,7 +64,7 @@ class Cart extends Component {
 
     componentDidMount() {
         var t = this;
-        fetch('/courses-in-cart?stunum=1000831745', { method: 'GET', credentials: 'include' })
+        fetch('/courses-in-cart', { method: 'GET', credentials: 'include' })
                 .then(json)
                 .then(function(data) {
                         const rankings = data.data.rankings;
@@ -94,9 +94,9 @@ class Cart extends Component {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ // TODO: remove this, it's in credentials
-              stunum: "1000831745",
-            })          
+            // body: JSON.stringify({ // TODO: remove this, it's in credentials
+            //   stunum: "1000831745",
+            // })          
         })
             .then(json)
             .then(function(data) {

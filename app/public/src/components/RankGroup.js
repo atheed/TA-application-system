@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import CartCourse from './CartCourse';
 import Course from './Course';
 import Ranking from './Ranking';
+import Experience from './Experience';
 
 var utils = require('../utils.js');
 
@@ -47,6 +48,10 @@ class RankGroup extends Component {
                                     course={course.code} 
                                     rank={this.state.rank} 
                                     refreshRanks={this.props.refreshRanks}/>
+                            <Experience 
+                                    course={course.code}
+                                    experience={course.experience} />
+
                             <Course 
                                     code={course.code} 
                                     title={course.title}

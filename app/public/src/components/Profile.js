@@ -113,6 +113,7 @@ export default class Profile extends Component {
                     hashHistory.push('/courseselection');
             })
             .catch(function(err) {
+                console.log(err);
                 throw err;
             });
     }

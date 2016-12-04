@@ -26,7 +26,7 @@ class CourseSelection extends Component {
 
     componentDidMount() {
         var t = this;
-        fetch('/all-courses?studentnumber=1000831745', { method: 'GET', credentials: 'include'})
+        fetch('/all-courses', { method: 'GET', credentials: 'include'})
             .then(json)
             .then(function(data) {
                 const courses = data.data;

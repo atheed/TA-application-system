@@ -33,7 +33,7 @@ class Course extends Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              stunum: "1000831745",
+              // stunum: "1000831745",
               course: this.props.code,
             })          
         })
@@ -54,7 +54,7 @@ class Course extends Component {
         evt.preventDefault();
         var t = this;
 
-        fetch('/remove-course-from-cart?stunum=' + "1000831745" + '&course=' + this.props.code, { 
+        fetch('/remove-course-from-cart?course=' + this.props.code, { 
             method: 'DELETE', 
             credentials: 'include',
             headers: {

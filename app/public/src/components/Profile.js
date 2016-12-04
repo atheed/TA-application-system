@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import Autosuggest from 'react-autosuggest';
 import AutosuggestBox from './AutosuggestBox';
-import Skills from './Skills';
 var styles = require('./../../client/css/profile.css');
 
 var utils = require('../utils.js');
@@ -14,35 +12,20 @@ export default class Profile extends Component {
     constructor() {
         super();
 
-        this.state = {
-            value: "",
-            suggestions: [],
-            skills: []
-        };
-
-        this.handleAutosuggestChoice = this.handleAutosuggestChoice.bind(this);
-        this.handleRemoveChoice = this.handleRemoveChoice.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.updateSelectedList = this.updateSelectedList.bind(this);
     }
 
     /**
-     * Function to handle when a new skill is chosen from the autosuggest dropdown
+     * Function responsible for updating list of selected values on click
      */
-    handleAutosuggestChoice(newSkill) {
-        skillsList.push(newSkill);
-        this.forceUpdate();
-    }
-
-    /**
-     * Function to handle when an already-chosen skill is removed
-     */
-    handleRemoveChoice(skillToRemove) {
-        let index = skillsList.indexOf(skillToRemove);
-        skillsList.splice(index, 1);
+    updateSelectedList(selected) {
+        skillsList = selected.split(",");
     }
 
     handleSubmit(event) {
         event.preventDefault();
+
         // make form submit (POST) request
         fetch("/add-applicant", {
                 method: 'POST',
@@ -123,8 +106,7 @@ export default class Profile extends Component {
                         <p />
                     <div>
                         <label className="formLabel">Proficient in:</label>
-                        <Skills skills={skillsList} removeHandler={this.handleRemoveChoice}/>
-                        <AutosuggestBox onChoose={this.handleAutosuggestChoice}/>
+                        <AutosuggestBox onSelectOption={this.updateSelectedList}/>
                     </div>
                     <p />
                     <div>

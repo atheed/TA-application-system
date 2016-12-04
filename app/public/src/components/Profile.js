@@ -135,7 +135,7 @@ export default class Profile extends Component {
                             <label className="form-label">First Name</label><br/>
                             <input type="text" className="form-control less-wide" 
                                     name="givenname" ref="givenname"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : ""}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined}>
                             </input>
                         </div>
                         <p></p>
@@ -143,7 +143,7 @@ export default class Profile extends Component {
                             <label className="form-label">Last Name</label><br/>
                             <input type="text" className="form-control less-wide"  
                                     name="familyname" ref="familyname" 
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : ""}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined}>
                             </input>
                         </div>
                         <p />
@@ -153,7 +153,7 @@ export default class Profile extends Component {
                             <label><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="status" ref="degree"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.degree : "undergrad"}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.degree : undefined}>
                                 <option value="undergrad">Undergraduate{this.state.paddingStatus}</option>
                                 <option value="grad">Graduate</option>
                             </select>
@@ -166,7 +166,7 @@ export default class Profile extends Component {
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="year" ref="year"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.year : "1"}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.year : undefined}>
                                 <option value="1">1{this.state.paddingYear}</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -182,7 +182,7 @@ export default class Profile extends Component {
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="eligibility" ref="eligibility"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.workeligibility : "Legally Entitled"}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.workeligibility : undefined}>
                                 <option value="Legally Entitled">Legally Entitled{this.state.paddingLegal}</option>
                                 <option value="Student Visa">Student Visa</option>
                             </select>
@@ -203,7 +203,7 @@ export default class Profile extends Component {
                             <p />
                             <textarea className="text-area" 
                                     name="additional-info" ref="otherinfo"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.otherinfo : ""}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.otherinfo : undefined}>
                             </textarea>
                         </div>
                         <p />

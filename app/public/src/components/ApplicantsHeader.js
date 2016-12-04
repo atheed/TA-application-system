@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Filter from './Filter';
+
 
 const styles = {
   container: {
@@ -33,10 +35,13 @@ class ApplicantsHeader extends Component {
         >Last Name</div>
         <div
           style={styles.flexItem}
-        >First Name</div>
+        >
+        First Name</div>
         <div
           style={styles.flexItem}
-        >Degree</div>
+        >
+          <Filter column="Degree" filter={this.props.filter} clearFilter={this.props.clearFilter}/>
+        </div>
         <div
           style={styles.flexItem}
         >Year</div>

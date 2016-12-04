@@ -8,7 +8,7 @@ class Experience extends Component {
     constructor(props) {
         super();
         this.state = {
-            experience: String(props.rank),
+            experience: props.experience,
         }
         this.handleChange = this.handleChange.bind(this);
     }
@@ -29,7 +29,7 @@ class Experience extends Component {
             body: JSON.stringify({
               // stunum: "1000831745", // TODO: 
               course: this.props.course,
-              experience: newExperience
+              experience: String(newExperience)
             })          
         })
             .then(json)
@@ -50,7 +50,7 @@ class Experience extends Component {
             <div>
                 <label className="experienceField">
                     <span className="label">Experience:</span>
-                    <input name="experience" type="number" onChange={this.handleChange} required/>
+                    <input name="experience" type="number" value={this.state.experience} onChange={this.handleChange} required/>
                 </label>
             </div>
         );

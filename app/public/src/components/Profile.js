@@ -42,6 +42,7 @@ export default class Profile extends Component {
             .then(json)
             .then(function(data) {
                 const userInfo = data.data;
+                console.log(userInfo);
                 if (data.status == "success") {
                     t.setState({
                         isUserInDb: true,

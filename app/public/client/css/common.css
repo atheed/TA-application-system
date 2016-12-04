@@ -65,13 +65,14 @@
     border-left: 1px solid rgba(0, 0, 0, .1);
 }
 
-.profileHeading {
+.profile-heading {
     font-family: 'Lato', sans-serif;
     font-size: 36pt;
 }
 
 .profile-heading::after,
-.navbar-border::after {
+.navbar-border::after,
+.course::after {
     content: ' ';
     display: block;
     border: 0;
@@ -81,6 +82,11 @@
     margin-top: 2.5%;
     margin-left: 15%;
     align-content: center;
+}
+
+.course::after {
+    margin-left: 13.2%;
+    box-shadow: inset 0 8px 8px -9px rgba(0, 0, 0, 0.5);
 }
 
 .navbar-border::after {

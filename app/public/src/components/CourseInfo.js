@@ -40,14 +40,16 @@ class CourseInfo extends Component {
 
         return (
             <div className="course-info">
+                <br />
                 <div>
-                Instructor: {instructor}
+                <span className="course-info-span">Instructor:</span> {instructor}
                 </div>
                 <div>
-                Number of TAs: {numberOfTAs}
+                <span className="course-info-span">Number of TAs:</span> {numberOfTAs}
                 </div>
                 <div>
-                Qualifications: {qualifications.map((qualification, i) => {
+                <span className="course-info-span">Qualifications:</span>{' '}
+                    {qualifications.map((qualification, i) => {
                         if (i < qualifications.length - 1) {
                             return qualification + ", ";
                         } else {
@@ -56,7 +58,7 @@ class CourseInfo extends Component {
                     })}
                 </div>
                 { this.props.type == 'admin' ? <Applicants code={this.props.code}/>: null }
-                <br /><br />
+                <br />
             </div>
         );
     }

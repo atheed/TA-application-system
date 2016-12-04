@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Course from './Course';
 import NavBar from './NavBar';
+import { hashHistory } from 'react-router';
 
 var utils = require('../utils.js');
 
@@ -42,6 +43,7 @@ class CourseSelection extends Component {
 
     goToCart() {
         // window.location = '/cart';
+        hashHistory.push('/cart');
     }
 
     render() {
@@ -65,7 +67,7 @@ class CourseSelection extends Component {
                             )
                         }
                     </ul>
-                    <button onClick={this.goToCart()} className="button">
+                    <button onClick={this.goToCart} className="button">
                         Go To Cart
                     </button>
                 </div>

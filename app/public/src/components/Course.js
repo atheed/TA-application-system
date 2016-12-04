@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import CourseInfo from './CourseInfo';
-var bootstrap = require('./../../../../node_modules/bootstrap/dist/css/bootstrap.css');
+// var bootstrap = require('./../../../../node_modules/bootstrap/dist/css/bootstrap.css');
 var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');
@@ -85,12 +85,12 @@ class Course extends Component {
         if (this.props.type == 'student') {
             if (this.state.inCart) {
                 cart =
-                    <Button outline color="danger" size="lg" className="btn-cart" onClick={this.removeFromCart}>
+                    <Button outline color="danger" className="btn-cart" onClick={this.removeFromCart}>
                         Remove From Cart
                     </Button>;
             } else {
                 cart =
-                    <Button outline color="primary" size="lg" className="btn-cart" onClick={this.addToCart}>
+                    <Button outline color="primary" className="btn-cart" onClick={this.addToCart}>
                         Add To Cart
                     </Button>;
             }
@@ -99,12 +99,12 @@ class Course extends Component {
         }
         if (this.state.expanded) {
             hide =
-                <Button outline color="danger" size="lg" onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                <Button outline color="danger" onClick={() => this.setState({expanded: ! this.state.expanded})}>
                     {this.state.expanded ? "Hide details" : "Show details"}
                 </Button>
         } else {
             hide =
-                <Button outline color="primary" size="lg" onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                <Button outline color="primary" onClick={() => this.setState({expanded: ! this.state.expanded})}>
                     {this.state.expanded ? "Hide details" : "Show details"}
                 </Button>
         }
@@ -114,7 +114,6 @@ class Course extends Component {
                 <br /><br/>
                 {hide}{'  '}
                 {cart}
-                <br />
             </div>;
 
         return (

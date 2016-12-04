@@ -19,7 +19,6 @@ class Home extends Component {
 
         this.studentEntry = this.studentEntry.bind(this);
         this.adminEntry = this.adminEntry.bind(this);
-        this.courseSelectionLink = this.courseSelectionLink.bind(this);
     }
 
     studentEntry() {
@@ -30,16 +29,12 @@ class Home extends Component {
         hashHistory.push('/admin');
     }
 
-    courseSelectionLink() {
-        hashHistory.push('/courseselection');
-    }
-
     render() {
         return (
             <div className="center">
                 <h1 className="heading">TA App</h1>
                 <ButtonGroup>
-                    <Button color="primary" size="lg" onClick={this.studentEntry}>
+                    <Button color="primary" size="lg" onClick={this.studentEntry} block className="wider">
                     Enter as Student
                     </Button>
                 </ButtonGroup>

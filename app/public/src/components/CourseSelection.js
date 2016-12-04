@@ -4,8 +4,8 @@ import Course from './Course';
 import NavBar from './NavBar';
 import { hashHistory } from 'react-router';
 
-var common = require('./../../client/css/course.css');
 var common = require('./../../client/css/common.css');
+var course = require('./../../client/css/course.css');
 var utils = require('../utils.js');
 var json = utils.json;
 
@@ -47,6 +47,11 @@ class CourseSelection extends Component {
         hashHistory.push('/cart');
     }
 
+    goToProfile() {
+        // window.location = '/cart';
+        hashHistory.push('/profile');
+    }
+
     render() {
         console.log(this.state.courses);
         console.log("Calling render");
@@ -71,8 +76,11 @@ class CourseSelection extends Component {
                             )
                         }
                     </ul>
-                    <div className="col-md-4 text-center"> 
-                    <Button color="primary" size="lg" className="center" onClick={this.goToCart} className="button">
+                    <div className="wide center"> 
+                    <Button color="danger" size="lg" className="wider" onClick={this.goToProfile} className="button">
+                        Go Back To Profile
+                    </Button>{' '}
+                    <Button color="primary" size="lg" className="wider" onClick={this.goToCart} className="button">
                         Go To Cart
                     </Button>
                     </div>

@@ -6,6 +6,10 @@
     width: 100%;
 }
 
+.wider {
+    width: 40%;
+}
+
 .less-wide {
     width: 25%;
 }

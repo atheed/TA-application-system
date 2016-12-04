@@ -58,7 +58,6 @@ class CourseInfo extends Component {
                     })}
                 </div>
                 { this.props.type == 'admin' ? <Applicants code={this.props.code}/>: null }
-                <br />
             </div>
         );
     }

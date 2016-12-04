@@ -81,15 +81,15 @@ var getAllCourses = function(req, res, next) {
             });
         return;
     }
-    let type = "student";
-    // let type = req.user.type;
+    // let type = "student";
+    let type = req.user.type;
 
     db.task(function*(t) {
 
             if (type === "student") {
                 // display the course info, as well as the applicants
-                let stunum = req.query.studentnumber;
                 // let stunum = req.user.studentnumber;
+                let stunum = req.user.studentnumber;
 
                 return t.any(
                     'SELECT Code, Title, NumberOfTAs, Instructor, InCart \
@@ -387,38 +387,48 @@ var getApplicantInfo = function(req, res, next) {
                 let info = yield t.one(
                     "SELECT * \
 				FROM Applicants \
-				WHERE StudentNumber=${stunum}", req.query);
+				WHERE StudentNumber=$1", stunum);
 
                 if (!info) {
                     return;                    
                 }
-
-                let rankedFirst = yield t.any(
-                    "SELECT CourseCode \
-				FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=1", req.query);
-
-                let rankedSecond = yield t.any(
-                    "SELECT CourseCode \
-                FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=2", req.query);
-
-                let rankedThird = yield t.any(
-                    "SELECT CourseCode \
-                FROM rankings \
-                WHERE StudentNumber=${stunum} AND Rank=3", req.query);
-
-                let rankings = { "rankings": {
-                        1 : flattenArray(rankedFirst),
-                        2 : flattenArray(rankedSecond),
-                        3 : flattenArray(rankedThird) 
-                    }
+                let rankings = { "rankings": {} }
+                for (let i = 0; i < 6; i++) {
+                    let rankedIth = yield t.any(
+                        'SELECT Courses.Code, Title \
+                        FROM Cart \
+                        JOIN Courses \
+                        ON Cart.CourseCode=Courses.Code \
+                        WHERE StudentNumber=$1 AND Rank=$2', [stunum, i]);
+                    rankings["rankings"][i] = rankedIth;
                 }
+
+    //             let rankedFirst = yield t.any(
+    //                 "SELECT CourseCode \
+				// FROM rankings \
+    //             WHERE StudentNumber=$1 AND Rank=1", stunum);
+
+    //             let rankedSecond = yield t.any(
+    //                 "SELECT CourseCode \
+    //             FROM rankings \
+    //             WHERE StudentNumber=$1 AND Rank=2", stunum);
+
+    //             let rankedThird = yield t.any(
+    //                 "SELECT CourseCode \
+    //             FROM rankings \
+    //             WHERE StudentNumber=$1 AND Rank=3", stunum);
+
+    //             let rankings = { "rankings": {
+    //                     1 : flattenArray(rankedFirst),
+    //                     2 : flattenArray(rankedSecond),
+    //                     3 : flattenArray(rankedThird) 
+    //                 }
+    //             }
 
                 let qualificationList = yield t.any(
                     "SELECT Qualification \
                 FROM StudentQualifications \
-                WHERE StudentNumber=${stunum}", req.query);
+                WHERE StudentNumber=$1", stunum);
 
                 let qualifications = { "qualifications": flattenArray(qualificationList) }
 
@@ -428,14 +438,14 @@ var getApplicantInfo = function(req, res, next) {
                     let offerList = yield t.any(
                         "SELECT CourseCode \
                     FROM Offers \
-                    WHERE StudentNumber=${stunum} AND Status='offered'", req.query);
+                    WHERE StudentNumber=$1 AND Status='offered'", stunum);
 
                     let offers = { "offers": flattenArray(offerList) }
 
                     let considerList = yield t.any(
                         "SELECT CourseCode \
                     FROM Offers \
-                    WHERE StudentNumber=${stunum} AND Status='considered'", req.query);
+                    WHERE StudentNumber=$1 AND Status='considered'", stunum);
 
                     let considerations = { "considerations": flattenArray(considerList) }
                     return Object.assign(info, rankings, offers, considerations, qualifications);
@@ -773,7 +783,7 @@ var getCoursesInCartWithRank = function(req, res, next) {
     var stunum = req.user.studentnumber;
 
     if (req.query.rank) {
-
+        req.query['stunum'] = stunum;
         db.any(
                 'SELECT Courses.Code, Title \
             FROM Cart \

@@ -50,10 +50,10 @@ class Form extends Component {
                 if (!data.success)
                     throw "error";
 
-                if (action == '/login')
+                if (type == 'student')
                     hashHistory.push('/profile');
-                else // if == '/signup'
-                    hashHistory.push('/');
+                else
+                    hashHistory.push('/admin-dashboard');
             })
             .catch(function(err) {
                 // if error is thrown, handle appropriately

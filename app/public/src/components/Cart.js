@@ -166,7 +166,7 @@ class Cart extends Component {
                     <br /><br />
                     {this.state.submitted ? "Your rankings have been submitted!" : null}
                     </div>
-                    <br /><br />
+                    <br />
                 </div>
             </div>
         );

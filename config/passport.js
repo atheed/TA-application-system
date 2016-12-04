@@ -20,12 +20,6 @@ module.exports = function(passport, bcrypt) {
         });
     });
 
-    // =========================================================================
-    // LOCAL SIGNUP ============================================================
-    // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
-
     passport.use('local-signup', new LocalStrategy({
             usernameField: 'studentnumber',
             passwordField: 'password',
@@ -59,6 +53,7 @@ module.exports = function(passport, bcrypt) {
                                 throw err;
                             return done(null, newUser);
                         });
+                        return done(null, newUser);
                     }
 
                 });

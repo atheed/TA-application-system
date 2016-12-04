@@ -2,7 +2,7 @@ form input[type="radio"] {
     display: none;
 }
 
-form label {
+form.ranking-form label {
     font: inherit;
     margin: 0;
     display: inline-block;
@@ -19,11 +19,11 @@ form label {
     border-radius: 0.25rem;
 }
 
-form label {
+form.ranking-form label {
     background-image: none;
 }
 
-form label:hover {
+form.ranking-form label:hover {
     color: #fff;
     background-color: #0275d8;
     border-color: #0275d8;

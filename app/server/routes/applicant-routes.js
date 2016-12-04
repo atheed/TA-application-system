@@ -711,7 +711,7 @@ var getCoursesInCart = function(req, res, next) {
             let rankings = { "rankings": {} }
             for (let i = 0; i < 6; i++) {
                 let rankedIth = yield t.any(
-                    'SELECT Courses.Code, Title \
+                    'SELECT Courses.Code, Title, Experience \
                     FROM Cart \
                     JOIN Courses \
                     ON Cart.CourseCode=Courses.Code \

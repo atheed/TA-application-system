@@ -69,6 +69,8 @@ class Course extends Component {
                 t.setState({
                     inCart: false,
                 });
+                console.log("remove from cart");
+                t.props.handleRemove();
             })
             .catch(function(err) {
                 // Error :(

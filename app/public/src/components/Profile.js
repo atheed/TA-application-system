@@ -72,7 +72,7 @@ export default class Profile extends Component {
                     familyname: "Thameem",
                     givenname: "Atheed",
                     year: "4",
-                    degree: "undergrad",
+                    degree: "Undergrad",
                     workeligibility: "Student Visa",
                     qualifications: ["C", "Haskell"],
                     otherinfo: "eeee"
@@ -136,7 +136,7 @@ export default class Profile extends Component {
                             <label className="form-label">First Name</label><br/>
                             <input type="text" className="form-control less-wide" 
                                     name="givenname" ref="givenname"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined} required>
                             </input>
                         </div>
                         <p></p>
@@ -144,7 +144,7 @@ export default class Profile extends Component {
                             <label className="form-label">Last Name</label><br/>
                             <input type="text" className="form-control less-wide"  
                                     name="familyname" ref="familyname" 
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined} required>
                             </input>
                         </div>
                         <p />
@@ -155,8 +155,8 @@ export default class Profile extends Component {
                             <select className="dropdown-select" 
                                     name="status" ref="degree"
                                     value={this.state.isUserInDb ? this.state.userInfo.info.degree : undefined}>
-                                <option value="undergrad">Undergraduate{this.state.paddingStatus}</option>
-                                <option value="grad">Graduate</option>
+                                <option value="Undergrad">Undergraduate{this.state.paddingStatus}</option>
+                                <option value="Grad">Graduate</option>
                             </select>
                             </span></label>
                         </div>

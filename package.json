@@ -10,7 +10,7 @@
     "bcrypt-nodejs": "latest",
     "bluebird": "^3.3.4",
     "body-parser": "~1.15.2",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.0.0-alpha.5",
     "connect-flash": "~0.1.1",
     "cookie-parser": "~1.4.3",
     "css-loader": "^0.26.1",

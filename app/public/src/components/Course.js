@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import CourseInfo from './CourseInfo';
+var bootstrap = require('./../../../../node_modules/bootstrap/dist/css/bootstrap.css');
+var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 class Course extends Component {
@@ -80,36 +81,47 @@ class Course extends Component {
     render() {
 
         const { code, title } = this.props;
-        let cart;
+        let cart, hide;
         if (this.props.type == 'student') {
             if (this.state.inCart) {
                 cart =
-                    <Button onClick={this.removeFromCart}>
+                    <Button outline color="danger" size="lg" className="btn-cart" onClick={this.removeFromCart}>
                         Remove From Cart
                     </Button>;
             } else {
                 cart =
-                    <Button onClick={this.addToCart}>
+                    <Button outline color="primary" size="lg" className="btn-cart" onClick={this.addToCart}>
                         Add To Cart
                     </Button>;
             }
         } else {
             cart = null;
         }
+        if (this.state.expanded) {
+            hide =
+                <Button outline color="danger" size="lg" onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                    {this.state.expanded ? "Hide details" : "Show details"}
+                </Button>
+        } else {
+            hide =
+                <Button outline color="primary" size="lg" onClick={() => this.setState({expanded: ! this.state.expanded})}>
+                    {this.state.expanded ? "Hide details" : "Show details"}
+                </Button>
+        }
         let courseHeader =
             <div className="course-header">
+                <span className="course-code">{this.props.code}: </span><span className="course-title">{this.props.title}</span>
+                <br /><br/>
+                {hide}{'  '}
                 {cart}
-                <Button onClick={() => this.setState({expanded: ! this.state.expanded})}>
-                    {this.state.expanded ? "Hide" : "Show"}
-                </Button>
-                {this.props.code}: {this.props.title}
-                <br /><br />
+                <br />
             </div>;
 
         return (
             <div className="course">
                 {courseHeader}
                 { this.state.expanded ? <CourseInfo code={code} type={this.props.type}/>: null }
+                <br/>
             </div>
         );
     }

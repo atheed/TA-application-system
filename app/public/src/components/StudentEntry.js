@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import { Button, ButtonGroup } from 'reactstrap';
+
+var common = require('./../../client/css/common.css');
 
 export default class StudentEntry extends Component {
     constructor() {
@@ -19,9 +22,11 @@ export default class StudentEntry extends Component {
 
     render() {
         return (
-            <div>
+            <div className="center">
+                <br />
                 <h1>Student</h1>
-                <button onClick={this.entryTypeHandler}>Login</button> | <button onClick={this.entryTypeHandler}>Sign Up</button>
+                <br />
+                <Button color="primary" onClick={this.entryTypeHandler}>Login</Button> | <Button color="primary" onClick={this.entryTypeHandler}>Sign Up</Button>
                 <p />
                 {
                     this.state.entryType === "Login" ? 

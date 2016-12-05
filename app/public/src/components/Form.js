@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
+import { Button, ButtonGroup } from 'reactstrap';
 
 var styles = require('./../../client/css/form.css');
+var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');
 var json = utils.json;
@@ -80,20 +82,23 @@ class Form extends Component {
     render() {
         const { action, type } = this.props;
         return (
-            <form id="loginform" onSubmit={this.handleSubmit}>
+            <form id="loginform" onSubmit={this.handleSubmit} className="center">
                 <div>
                     <label>{type == "student" ? "Student Number" : "Admin Username"}</label>
-                    <input type="text" className="form-control" name="studentnumber" ref="studentnumber"></input>
+                    <br />
+                    <input type="text" className="form-control less-wide" name="studentnumber" ref="studentnumber"></input>
                 </div>
+                <br />
                 <div>
                     <label>Password</label>
-                    <input type="password" className="form-control" name="password" ref="password"></input>
+                    <br />
+                    <input type="password" className="form-control less-wide" name="password" ref="password"></input>
                 </div>
                 <div>
                     <input type="hidden" className="form-control" name="type" value={type} ref="type"></input>
                 </div>
                 <div id="errorText">{this.errorHandle()}</div>
-                <button type="submit">Enter</button>
+                <Button color="primary" type="submit">Enter</Button>
             </form>
         );
     }

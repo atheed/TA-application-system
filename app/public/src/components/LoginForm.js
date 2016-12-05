@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Form from './Form';
 
+var common = require('./../../client/css/common.css');
+
 class LoginForm extends Component {
     constructor() {
         super();
@@ -8,9 +10,11 @@ class LoginForm extends Component {
 
     render() {
         return (
-            <div>
-                Welcome back!
+            <div className="center">
+                <br />
+                <b>Welcome back!</b>
                 <p />
+                <br />
                 <Form 
                     action="/login"
                     type={ this.props.type }

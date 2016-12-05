@@ -21,7 +21,7 @@ export default class Profile extends Component {
             year: undefined,
             degree: undefined,
             eligibility: undefined,
-            qualifications: undefined,
+            qualifications: [""],
             otherinfo: undefined,
         }
 
@@ -106,7 +106,7 @@ export default class Profile extends Component {
                         year: undefined,
                         degree: undefined,
                         eligibility: undefined,
-                        qualifications: "",
+                        qualifications: [""],
                         otherinfo: undefined,
                     });
                 } else {
@@ -129,7 +129,7 @@ export default class Profile extends Component {
                     year: undefined,
                     degree: undefined,
                     eligibility: undefined,
-                    qualifications: "",
+                    qualifications: [""],
                     otherinfo: undefined,
                 });
                 throw err;
@@ -245,11 +245,11 @@ export default class Profile extends Component {
                             </div>
                             <p />
                         <div>
-                            {console.log(this.state.qualifications)}
                             <label className="form-label">Proficient in:</label>
                             <AutosuggestBox 
                                 onSelectOption={this.updateSelectedList}
-                                selected={!this.state.qualifications ? "" : "Erlang,Perl,Java"}
+                                selected={this.state.qualifications == undefined ? "" : this.state.qualifications.join()}
+                                onChange={this.handleQualificationsChange}
                             />
                         </div>
                         <p />

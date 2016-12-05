@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import { Button } from 'reactstrap';
 
 export default class StudentEntry extends Component {
     constructor() {

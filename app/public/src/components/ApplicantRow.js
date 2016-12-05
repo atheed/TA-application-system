@@ -147,6 +147,7 @@ class ApplicantRow extends Component {
 		        throw err;
 		    });
 	}
+
 	render() {
 		console.log(this.props);
 		const { 
@@ -217,7 +218,7 @@ class ApplicantRow extends Component {
 		return (
 			<div className="applicant-row">
 				{basicInfo}
-				{ this.state.expanded ? <ApplicantInfo studentNumber={studentnumber}/>: null }
+				{ this.state.expanded ? <ApplicantInfo offerStatus={this.state.offerStatus} studentNumber={studentnumber}/>: null }
 			</div>
 		);
 	}

@@ -27,7 +27,9 @@ class AdminDashboard extends Component {
                 throw err;
             });
     }
-
+    updateApplicants() {
+        
+    }
     render() {
         return (
             <div className="admin-dashboard">

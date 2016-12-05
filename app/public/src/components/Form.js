@@ -94,7 +94,7 @@ class Form extends Component {
                     <input type="hidden" className="form-control less-wide" name="type" value={type} ref="type"></input>
                 </div>
                 <div id="errorText">{this.errorHandle()}</div>
-                <button type="submit">Enter</button>
+                <Button color="primary" size="lg" type="submit">Enter</Button>
             </form>
         );
     }

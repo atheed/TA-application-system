@@ -1,7 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Button } from 'reactstrap';
+
+var cart = require('./../../client/css/cart.css');
+var common = require('./../../client/css/common.css');
 
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 class Ranking extends Component {
@@ -18,23 +21,23 @@ class Ranking extends Component {
         let oldRank = this.state.rank;
         let newRank = event.target.value;
         this.setState({
-          rank: newRank
+            rank: newRank
         });
         var t = this;
 
-        fetch('/rank-course', { 
-            method: 'POST', 
-            credentials: 'include',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              // stunum: "1000831745", // TODO: 
-              course: this.props.course,
-              rank: newRank
-            })          
-        })
+        fetch('/rank-course', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // stunum: "1000831745", // TODO: 
+                    course: this.props.course,
+                    rank: newRank
+                })
+            })
             .then(json)
             .then(function(data) {
                 t.props.refreshRanks(oldRank, newRank);
@@ -47,29 +50,36 @@ class Ranking extends Component {
     }
 
     render() {
+        console.log(this.props);
         return (
             <form className="ranking-form">
+              Change preference:{'\xa0\xa0\xa0\xa0'}
               <input type="radio" name="rank" value="1" 
                     checked={this.state.rank === '1'}
-                    onChange={this.handleChange}/>
-                <label htmlFor="1">1st</label>
+                    onChange={this.handleChange}
+                    id={this.props.course + "r1"}/>
+                <label htmlFor={this.props.course + "r1"}>1st</label>{' '}
               <input type="radio" name="rank" value="2" 
                     checked={this.state.rank === '2'} 
-                    onChange={this.handleChange}/>
-                <label htmlFor="2">2nd</label>
+                    onChange={this.handleChange}
+                    id={this.props.course + "r2"}/>
+                <label htmlFor={this.props.course + "r2"}>2nd</label>{' '}
               <input type="radio" name="rank" value="3" 
                     checked={this.state.rank === '3'} 
-                    onChange={this.handleChange}/>
-                <label htmlFor="3">3rd</label>
+                    onChange={this.handleChange}
+                    id={this.props.course + "r3"}/>
+                <label htmlFor={this.props.course + "r3"}>3rd</label>{' '}
               <input type="radio" name="rank" value="4" 
                     checked={this.state.rank === '4'} 
-                    onChange={this.handleChange}/>
-                <label htmlFor="preferred">Preferred</label>
+                    onChange={this.handleChange}
+                    id={this.props.course + "r4"}/>
+                <label htmlFor={this.props.course + "r4"}>Preferred</label>{' '}
               <input type="radio" name="rank" value="5" 
                     checked={this.state.rank === '5'} 
-                    onChange={this.handleChange}/>
-                <label htmlFor="willing">Willing</label>
-            </form> 
+                    onChange={this.handleChange}
+                    id={this.props.course + "r5"}/>
+                <label htmlFor={this.props.course + "r5"}>Willing</label>
+            </form>
         );
     }
 }

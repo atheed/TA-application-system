@@ -44,11 +44,18 @@ class RankGroup extends Component {
         console.log("Render rank group");
         return (
             <div>
-                <h2>{this.props.rank === 0 ? "Unranked" : this.props.rank}</h2>
+                <h2>{this.props.rank === 0 ? "Unranked" : "Rank " + this.props.rank}</h2>
                 <hr/>
                 <ul>
                     {this.props.courses.map(course =>
                         <div key={course.code} className="cart-course">
+                            <Course 
+                                    code={course.code} 
+                                    title={course.title}
+                                    type="student"
+                                    inCart={true}
+                                    handleRemove={this.handleRemoveHelp} />
+                                    
                             <Ranking 
                                     course={course.code} 
                                     rank={this.state.rank} 
@@ -57,12 +64,6 @@ class RankGroup extends Component {
                                     course={course.code}
                                     experience={course.experience} />
 
-                            <Course 
-                                    code={course.code} 
-                                    title={course.title}
-                                    type="student"
-                                    inCart={true}
-                                    handleRemove={this.handleRemoveHelp} />
                         </div>
                         )
                     }

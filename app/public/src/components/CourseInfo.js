@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-
 import Applicants from './Applicants';
 
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 class CourseInfo extends Component {
@@ -58,7 +56,6 @@ class CourseInfo extends Component {
                     })}
                 </div>
                 { this.props.type == 'admin' ? <Applicants code={this.props.code}/>: null }
-                <br />
             </div>
         );
     }

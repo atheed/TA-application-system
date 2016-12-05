@@ -18,12 +18,13 @@ class CartCourse extends Component {
     render() {
         return (
             <div>
-                <Ranking course={this.props.code} 
-                        rank={this.props.rank} />
                 <Course code={this.props.code} 
                         title={this.props.title}
                         type="student"
                         inCart={true} />
+                        
+                <Ranking course={this.props.code} 
+                        rank={this.props.rank} />
             </div>
         );
     }

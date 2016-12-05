@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-
 import Course from './Course';
 
-var utils = require('../utils.js');
+var admincss = require('./../../client/css/admindashboard.css');
+var common = require('./../../client/css/common.css');
 
+var utils = require('../utils.js');
 var json = utils.json;
 
 class AdminDashboard extends Component {
@@ -33,7 +34,7 @@ class AdminDashboard extends Component {
     render() {
         return (
             <div className="admin-dashboard">
-                <h1>Dashboard</h1>
+                <h1 className="profile-heading center">Dashboard</h1>
                 <div className="all-course-info">
                     <ul>
                         {this.state.courses.map(course =>

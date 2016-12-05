@@ -1,10 +1,10 @@
 .course-header {
-    border-left: 15%;
-    margin-left: 15%;
+    border-left: 14%;
+    margin-left: 14%;
 }
 
 .course-code {
-    font-size: 1.7em;
+    font-size: 1.4em;
     font-weight: bold;
 }
 
@@ -14,10 +14,10 @@
 
 .btn-cart {
     float: right;
-    margin-right: 18%;
+    margin-right: 21%;
 }
 
 .course-info-span {
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
 }

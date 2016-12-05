@@ -26,7 +26,7 @@ export default class AdminEntry extends Component {
                 <br />
                 <h1>Admin</h1>
                 <br />
-                <Button color="primary" onClick={this.entryTypeHandler}>Login</Button> | <Button color="primary" onClick={this.entryTypeHandler}>Sign Up</Button>
+                <Button color="primary" size="lg" onClick={this.entryTypeHandler}>Login</Button> | <Button color="primary" size="lg" onClick={this.entryTypeHandler}>Sign Up</Button>
                 <p />
                 {
                     this.state.entryType === "Login" ? 

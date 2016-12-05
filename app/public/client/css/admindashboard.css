@@ -1,0 +1,30 @@
+.admin-dashboard table {
+    width: 88.5%;
+    margin-left: -5%;
+    border-collapse: collapse;
+}
+
+.admin-dashboard table,
+.admin-dashboard th,
+.admin-dashboard td {
+    border: 1px solid #0275d8;
+}
+
+.admin-dashboard table {
+    border-radius: 4px;
+}
+
+.admin-dashboard th {
+    height: 50px;
+}
+
+.admin-dashboard th,
+.admin-dashboard td {
+    vertical-align: top;
+    text-align: center;
+}
+
+
+/*.table-info .btn-link {
+    color: #d9534f
+}*/

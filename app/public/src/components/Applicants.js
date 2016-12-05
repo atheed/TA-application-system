@@ -4,12 +4,12 @@ import ApplicantsHeader from './ApplicantsHeader';
 import ApplicantRow from './ApplicantRow';
 
 const styles = {
-  container: {
-    marginLeft: '2rem',
-    marginRight: '2rem',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-  },
+    container: {
+        marginLeft: '2rem',
+        marginRight: '2rem',
+        marginTop: '1rem',
+        marginBottom: '1rem',
+    },
 };
 
 function json(response) {
@@ -17,81 +17,68 @@ function json(response) {
 }
 
 class Applicants extends Component {
-  constructor() {
-    super();
-    this.state = {
-      applicants: []
+    constructor() {
+        super();
+        this.state = {
+            applicants: []
+        }
+        this.filter = this.filter.bind(this);
+        this.clearFilter = this.clearFilter.bind(this);
+        this.getAllApplicants = this.getAllApplicants.bind(this);
     }
-    this.filter = this.filter.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
-    this.getAllApplicants = this.getAllApplicants.bind(this);
-  }
 
-  componentDidMount() {
-    return this.getAllApplicants();
-    // var t = this;
-    // fetch('/applicants-for-course?course=' + this.props.code, { method: 'GET', credentials: 'include' })
-    //     .then(json)
-    //     .then(function(data) {
-    //         const applicants = data.data;
-    //         t.setState({
-    //           applicants: applicants,
-    //         });
-    //     })
-    //     .catch(function(err) {
-    //         // Error :(
-    //         throw err;
-    //     });
-  }
+    componentDidMount() {
+        return this.getAllApplicants();
+    }
 
-  filter(property, value) {
-    var t = this;
-    fetch('/filter-applicants?course=' + this.props.code + '&property=' + property + '&value=' + value, 
-      { method: 'GET', credentials: 'include' })
-        .then(json)
-        .then(function(data) {
-            const applicants = data.data;
-            console.log(applicants);
-            t.setState({
-              applicants: applicants,
+    filter(property, value) {
+        var t = this;
+        fetch('/filter-applicants?course=' + this.props.code + '&property=' + property + '&value=' + value, {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(json)
+            .then(function(data) {
+                const applicants = data.data;
+                console.log(applicants);
+                t.setState({
+                    applicants: applicants,
+                });
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
             });
-        })
-        .catch(function(err) {
-            // Error :(
-            throw err;
-        });
-  }
+    }
 
-  getAllApplicants() {
-    var t = this;
-    fetch('/applicants-for-course?course=' + this.props.code, { method: 'GET', credentials: 'include' })
-        .then(json)
-        .then(function(data) {
-            const applicants = data.data;
-            t.setState({
-              applicants: applicants,
+    getAllApplicants() {
+        var t = this;
+        fetch('/applicants-for-course?course=' + this.props.code, { method: 'GET', credentials: 'include' })
+            .then(json)
+            .then(function(data) {
+                const applicants = data.data;
+                t.setState({
+                    applicants: applicants,
+                });
+            })
+            .catch(function(err) {
+                // Error :(
+                throw err;
             });
-        })
-        .catch(function(err) {
-            // Error :(
-            throw err;
-        });    
-  }
+    }
 
-  clearFilter() {
-    return this.getAllApplicants();
-  }
+    clearFilter() {
+        return this.getAllApplicants();
+    }
 
-  render() {
+    render() {
 
-    const applicants = this.state.applicants;
-    // const course = "CSC108";
-    const course = this.props.code;
-    return (
-      <div
-        style={styles.container}
-      >
-        <h1>Applicants</h1>
+        const applicants = this.state.applicants;
+        const course = this.props.code;
+        return (
+            <div>
+            <br /><h1>Applicants</h1><br/>
+        <table>
         <ApplicantsHeader filter={this.filter} clearFilter={this.clearFilter}/>
         {
           Object.values(applicants).map((applicant, i) => {
@@ -104,9 +91,10 @@ class Applicants extends Component {
             );
           })
         }
+        </table>
       </div>
-    );
-  }
+        );
+    }
 }
 
 export default Applicants;

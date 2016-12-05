@@ -82,15 +82,16 @@ class Form extends Component {
         return (
             <form id="loginform" onSubmit={this.handleSubmit}>
                 <div>
-                    <label>{type == "student" ? "Student Number" : "Admin Username"}</label>
-                    <input type="text" className="form-control" name="studentnumber" ref="studentnumber"></input>
+                    <label>{type == "student" ? "Student Number" : "Admin Username"}</label><br/>
+                    <input type="text" className="form-control less-wide" name="studentnumber" ref="studentnumber"></input>
                 </div>
                 <div>
                     <label>Password</label>
-                    <input type="password" className="form-control" name="password" ref="password"></input>
+                    <br/>
+                    <input type="password" className="form-control less-wide" name="password" ref="password"></input>
                 </div>
                 <div>
-                    <input type="hidden" className="form-control" name="type" value={type} ref="type"></input>
+                    <input type="hidden" className="form-control less-wide" name="type" value={type} ref="type"></input>
                 </div>
                 <div id="errorText">{this.errorHandle()}</div>
                 <button type="submit">Enter</button>

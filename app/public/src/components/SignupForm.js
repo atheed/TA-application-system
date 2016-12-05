@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Form from './Form';
 
 class SignupForm extends Component {
@@ -9,8 +9,9 @@ class SignupForm extends Component {
     render() {
         return (
             <div>
+                <br />
                 Sign Up Below!
-                <p />
+                <br /><br />
                 <Form 
                     action="/signup"
                     type={ this.props.type }

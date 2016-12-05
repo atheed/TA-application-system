@@ -166,22 +166,22 @@ class ApplicantRow extends Component {
         let offer, consider;
 
         offer =
-            <Button color="link"  onClick={this.makeApplicantOffer}>
+            <Button color="success"  onClick={this.makeApplicantOffer}>
 				Make Offer
 			</Button>;
         consider =
-            <Button color="link" onClick={this.considerApplicantForCourse}>
+            <Button color="info" onClick={this.considerApplicantForCourse}>
 				Consider
 			</Button>;
 
         if (offerStatus === 'offered') {
             offer =
-                <Button color="link" onClick={this.unOffer}>
+                <Button color="danger" onClick={this.unOffer}>
 				Unoffer
 			</Button>;
         } else if (offerStatus === 'considered') {
             consider =
-                <Button color="link" onClick={this.unConsiderApplicantForCourse}>
+                <Button color="warning" onClick={this.unConsiderApplicantForCourse}>
 				Unconsider
 			</Button>;
         }

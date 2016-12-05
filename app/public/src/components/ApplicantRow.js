@@ -166,28 +166,32 @@ class ApplicantRow extends Component {
         let offer, consider;
 
         offer =
-            <Button color="link"  onClick={this.makeApplicantOffer}>
+            <Button color="success"  onClick={this.makeApplicantOffer}>
 				Make Offer
 			</Button>;
         consider =
-            <Button color="link" onClick={this.considerApplicantForCourse}>
+            <Button color="info" onClick={this.considerApplicantForCourse}>
 				Consider
 			</Button>;
-
+		let rowStyle;
         if (offerStatus === 'offered') {
+        	rowStyle = {fontWeight: "bold", fontStyle: "normal"};
             offer =
-                <Button color="link" onClick={this.unOffer}>
+                <Button color="danger" onClick={this.unOffer}>
 				Unoffer
 			</Button>;
         } else if (offerStatus === 'considered') {
+        	rowStyle = {fontStyle: "italic",  fontWeight: "normal"};
             consider =
-                <Button color="link" onClick={this.unConsiderApplicantForCourse}>
+                <Button color="warning" onClick={this.unConsiderApplicantForCourse}>
 				Unconsider
 			</Button>;
+        } else {
+        	rowStyle = {};
         }
 
         let basicInfo =
-            (<tr>
+            (<tr style={rowStyle}>
 				<td>{familyname}</td>
 				<td>{givenname}</td>
 				<td>{degree}</td>
@@ -196,7 +200,7 @@ class ApplicantRow extends Component {
 				<td>{experience}</td>
 				<td>{offer}</td>
 				<td>{consider}</td>
-				<td>
+				<td  style={{textAlign:"left"}}>
 					<Button color="link" onClick={() => this.setState(
 						{expanded: ! this.state.expanded})} > 
 						{this.state.expanded ? "Hide" : "Show"}

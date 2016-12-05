@@ -15,6 +15,8 @@ class ApplicantInfo extends Component {
                 first: [],
                 second: [],
                 third: [],
+                preferred: [],
+                willing: [],
             },
             shouldUpdate: true
 
@@ -54,9 +56,11 @@ class ApplicantInfo extends Component {
                     considerations: applicant.considerations,
                     qualifications: applicant.qualifications,
                     rankings: {
-                        first: applicant.rankings[1].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        second: applicant.rankings[2].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        third: applicant.rankings[3].map((course) => { return course.code + ' (' + course.experience + ')' }),
+                        first: applicant.rankings[1].map((course) => { return course.code }),
+                        second: applicant.rankings[2].map((course) => { return course.code }),
+                        third: applicant.rankings[3].map((course) => { return course.code }),
+                        preferred: applicant.rankings[4].map((course) => { return course.code }),
+                        willing: applicant.rankings[5].map((course) => { return course.code }),
                     },
                     // shouldUpdate: false
                 });
@@ -80,7 +84,7 @@ class ApplicantInfo extends Component {
 
     render() {
         console.log(this.props.course, "render");
-        const { offers, considerations, qualifications, rankings: { first, second, third } } = this.state;
+        const { offers, considerations, qualifications, rankings: { first, second, third, preferred, willing } } = this.state;
         return (
             <div className="applicant-info">
 				<div><strong>Offers: </strong>{offers}</div>
@@ -90,8 +94,8 @@ class ApplicantInfo extends Component {
 				<div>1st: {this.displayCommaSeparated(first)}</div>
 				<div>2nd: {this.displayCommaSeparated(second)}</div>
 				<div>3rd: {this.displayCommaSeparated(third)}</div>
-				<div>4th: </div>
-				<div>5th: </div>
+				<div>Preferred: {this.displayCommaSeparated(preferred)}</div>
+				<div>Willing: {this.displayCommaSeparated(willing)}</div>
 			</div>
         );
     }

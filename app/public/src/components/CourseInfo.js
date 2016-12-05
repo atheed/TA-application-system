@@ -33,6 +33,8 @@ class CourseInfo extends Component {
             });
     }
 
+    
+
     render() {
         const { instructor, numberOfTAs, qualifications } = this.state;
 

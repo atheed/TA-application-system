@@ -1,6 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+
+var commoncss = require('./../../client/css/common.css');
 
 export default class AdminEntry extends Component {
     constructor() {
@@ -14,14 +17,16 @@ export default class AdminEntry extends Component {
     }
 
     entryTypeHandler(event) {
-        this.setState({entryType: event.target.innerText});
+        this.setState({ entryType: event.target.innerText });
     }
 
     render() {
         return (
             <div>
-                <h1>Admin</h1>
-                <button onClick={this.entryTypeHandler}>Login</button> | <button onClick={this.entryTypeHandler}>Sign Up</button>
+                <br />
+                <h1 className="profile-heading center">Admin</h1>
+                <div className="center">
+                <Button color="primary" size="lg" onClick={this.entryTypeHandler}>Login</Button> | <Button color="primary" size="lg"  onClick={this.entryTypeHandler}>Sign Up</Button>
                 <p />
                 {
                     this.state.entryType === "Login" ? 
@@ -33,6 +38,7 @@ export default class AdminEntry extends Component {
                         type={"admin"}
                     />
                 }
+                </div>
             </div>
         );
     }

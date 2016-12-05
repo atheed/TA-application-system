@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 
@@ -14,14 +14,16 @@ export default class StudentEntry extends Component {
     }
 
     entryTypeHandler(event) {
-        this.setState({entryType: event.target.innerText});
+        this.setState({ entryType: event.target.innerText });
     }
 
     render() {
         return (
             <div>
-                <h1>Student</h1>
-                <button onClick={this.entryTypeHandler}>Login</button> | <button onClick={this.entryTypeHandler}>Sign Up</button>
+                <br />
+                <h1 className="profile-heading center">Student</h1>
+                <div className="center">
+                <Button color="primary" size="lg" onClick={this.entryTypeHandler}>Login</Button> |  <Button color="primary" size="lg" onClick={this.entryTypeHandler}>Sign Up</Button>
                 <p />
                 {
                     this.state.entryType === "Login" ? 
@@ -33,6 +35,7 @@ export default class StudentEntry extends Component {
                         type={"student"}
                     />
                 }
+                </div>
             </div>
         );
     }

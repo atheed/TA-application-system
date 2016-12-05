@@ -10,7 +10,7 @@ import {
     browserHistory
 } from 'react-router';
 
-var commoncss = require('./../../client/css/common.css')
+var commoncss = require('./../../client/css/common.css');
 var homecss = require('./../../client/css/home.css');
 
 class Home extends Component {

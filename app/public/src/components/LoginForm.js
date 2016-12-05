@@ -1,5 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Form from './Form';
+
+var commoncss = require('./../../client/css/common.css');
 
 class LoginForm extends Component {
     constructor() {
@@ -9,8 +11,9 @@ class LoginForm extends Component {
     render() {
         return (
             <div>
-                Welcome back!
-                <p />
+                <br />
+                Please login below!
+                <br /><br />
                 <Form 
                     action="/login"
                     type={ this.props.type }

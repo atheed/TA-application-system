@@ -4,8 +4,8 @@ import AutosuggestBox from './AutosuggestBox';
 import NavBar from './NavBar';
 import { hashHistory } from 'react-router';
 
+var common = require('./../../client/css/common.css');
 var styles = require('./../../client/css/profile.css');
-
 var utils = require('../utils.js');
 var json = utils.json;
 
@@ -23,6 +23,11 @@ export default class Profile extends Component {
         this.componentWillMount = this.componentWillMount.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateSelectedList = this.updateSelectedList.bind(this);
+        this.state = {
+            paddingYear: Array(52).join('\xa0'),
+            paddingStatus: Array(28).join('\xa0'),
+            paddingLegal: Array(28).join('\xa0')
+        }
     }
 
     componentWillMount() {
@@ -30,13 +35,14 @@ export default class Profile extends Component {
 
         // make fetch() request to see if user has already added their information
         // earlier. if yes, set the state variables appropriately
-        fetch('/applicant-info', { 
-            method: 'GET', 
-            credentials: 'include' 
-        })
+        fetch('/applicant-info', {
+                method: 'GET',
+                credentials: 'include'
+            })
             .then(json)
             .then(function(data) {
                 const userInfo = data.data;
+                console.log(userInfo);
                 if (data.status == "success") {
                     t.setState({
                         isUserInDb: true,
@@ -55,7 +61,7 @@ export default class Profile extends Component {
                     userInfo: {}
                 });
                 throw err;
-        });
+            });
 
         /**
          * For the fetch() call above, expecting a response in data.data to look
@@ -66,7 +72,7 @@ export default class Profile extends Component {
                     familyname: "Thameem",
                     givenname: "Atheed",
                     year: "4",
-                    degree: "undergrad",
+                    degree: "Undergrad",
                     workeligibility: "Student Visa",
                     qualifications: ["C", "Haskell"],
                     otherinfo: "eeee"
@@ -124,45 +130,45 @@ export default class Profile extends Component {
                 <NavBar activePage={1}/>
                 <br />
                 <div id="formEntry">
-                    <h1 id="profileHeading">Student Profile</h1>
+                    <h1 id="profileHeading" className="profile-heading">Student Profile</h1>
                     <form onSubmit={this.handleSubmit} className="form-horizontal">
                         <div>
-                            <label className="formLabel">Family Name</label><br/>
-                            <input type="text" className="form-control lessWide" 
-                                    name="familyname" ref="familyname" 
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : ""}>
+                            <label className="form-label">First Name</label><br/>
+                            <input type="text" className="form-control less-wide" 
+                                    name="givenname" ref="givenname"
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined} required>
                             </input>
                         </div>
                         <p></p>
                         <div>
-                            <label className="formLabel">First Name</label><br/>
-                            <input type="text" className="form-control lessWide" 
-                                    name="givenname" ref="givenname"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : ""}>
+                            <label className="form-label">Last Name</label><br/>
+                            <input type="text" className="form-control less-wide"  
+                                    name="familyname" ref="familyname" 
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined} required>
                             </input>
                         </div>
                         <p />
                         <div>
-                            <label className="formLabel">Degree Status</label>
+                            <label className="form-label">Degree Status</label>
                             <br />
                             <label><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="status" ref="degree"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.degree : "undergrad"}>
-                                <option value="undergrad">Undergraduate</option>
-                                <option value="grad">Graduate</option>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.degree : undefined}>
+                                <option value="Undergrad">Undergraduate{this.state.paddingStatus}</option>
+                                <option value="Grad">Graduate</option>
                             </select>
                             </span></label>
                         </div>
                         <p />
                         <div>
-                            <label className="formLabel">Year</label>
+                            <label className="form-label">Year</label>
                             <br />
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="year" ref="year"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.year : "1"}>
-                                <option value="1">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.year : undefined}>
+                                <option value="1">1{this.state.paddingYear}</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
@@ -172,20 +178,20 @@ export default class Profile extends Component {
                         </div>
                         <p />
                         <div>
-                            <label className="formLabel">Work Eligibility</label>
+                            <label className="form-label">Work Eligibility</label>
                             <br />
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="eligibility" ref="eligibility"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.workeligibility : "Legally Entitled"}>
-                                <option value="Legally Entitled">Legally Entitled</option>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.workeligibility : undefined}>
+                                <option value="Legally Entitled">Legally Entitled{this.state.paddingLegal}</option>
                                 <option value="Student Visa">Student Visa</option>
                             </select>
                             </span></label>
                             </div>
                             <p />
                         <div>
-                            <label className="formLabel">Proficient in:</label>
+                            <label className="form-label">Proficient in:</label>
                             <AutosuggestBox 
                                 onSelectOption={this.updateSelectedList}
                                 selected={this.state.isUserInDb ? this.state.userInfo.qualifications.join() : ""}
@@ -194,18 +200,19 @@ export default class Profile extends Component {
                         <p />
                         <br />
                         <div>
-                            <label className="formLabel">Additional Info:</label>
-                            <br />
-                            <textarea className="textArea" 
+                            <label className="form-label">Additional Info:</label>
+                            <p />
+                            <textarea className="text-area" 
                                     name="additional-info" ref="otherinfo"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.otherinfo : ""}>
+                                    value={this.state.isUserInDb ? this.state.userInfo.info.otherinfo : undefined}>
                             </textarea>
                         </div>
                         <p />
                         <br />
-                        <Button className="lessWide" color="primary" size="lg" type="submit">Enter</Button>
+                        <Button className="less-wide" color="primary" size="lg" type="submit">Enter</Button>
                     </form>
                 </div>
+                <br />
             </div>
         );
     }

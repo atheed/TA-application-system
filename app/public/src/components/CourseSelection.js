@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-
+import { Button } from 'reactstrap';
 import Course from './Course';
 import NavBar from './NavBar';
+import { hashHistory } from 'react-router';
 
+var common = require('./../../client/css/course.css');
+var common = require('./../../client/css/common.css');
 var utils = require('../utils.js');
-
 var json = utils.json;
 
 function status(response) {
@@ -26,7 +28,7 @@ class CourseSelection extends Component {
 
     componentDidMount() {
         var t = this;
-        fetch('/all-courses', { method: 'GET', credentials: 'include'})
+        fetch('/all-courses', { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
                 const courses = data.data;
@@ -42,6 +44,7 @@ class CourseSelection extends Component {
 
     goToCart() {
         // window.location = '/cart';
+        hashHistory.push('/cart');
     }
 
     render() {
@@ -54,7 +57,10 @@ class CourseSelection extends Component {
                 <NavBar activePage={2}/>
                 <br />
                 <div className="all-course-info">
-                    <h1>Course Selection</h1>
+                    <div className="profile-heading center">
+                        <h1>Course Selection</h1>
+                    </div>
+                    <br /><br /><br />
                     <ul>
                         {this.state.courses.map(course =>
                             <Course key={course.code} 
@@ -65,9 +71,11 @@ class CourseSelection extends Component {
                             )
                         }
                     </ul>
-                    <button onClick={this.goToCart()} className="button">
+                    <div className="col-md-4 text-center"> 
+                    <Button color="primary" size="lg" className="center" onClick={this.goToCart} className="button">
                         Go To Cart
-                    </button>
+                    </Button>
+                    </div>
                 </div>
             </div>
         );

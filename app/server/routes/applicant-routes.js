@@ -138,22 +138,28 @@ var getAllCourses = function(req, res, next) {
 var getCourseInfo = function(req, res, next) {
     var db = req.app.get('db');
     console.log(req.user);
-    let type = "student";
-    // let type = req.user.type;
+    
+    if (!req.user) {
+        console.log("not logged in");
+        res.status(401)
+            .json({
+                status: 'failure',
+                error: 'You must be logged in to retrieve course info'
+            });
+        return;
+    }
+
+    let type = req.user.type;
+
     if (req.query.course) {
         db.task(function*(t) {
 
-                let info = yield t.one(
+                let info = yield t.oneOrNone(
                     "SELECT * \
                 FROM Courses \
                 WHERE Code=${course}", req.query);
 
-                if (info === {}) {
-                    res.status(404)
-                        .json({
-                            status: 'failure',
-                            error: `The course ${req.query.course} does not exist`
-                        });
+                if (!info) {
                     return;                   
                 }
 
@@ -164,38 +170,29 @@ var getCourseInfo = function(req, res, next) {
 
                 let qualifications = { "qualifications": flattenArray(qualificationList) }
 
-                if (type === "admin") {
-                    // display the course info, as well as the applicants
-
-                    let applicantList = yield t.any(
-                        'SELECT a.StudentNumber, FamilyName, GivenName, Year, Degree, Qualifications, Rank, Experience \
-                        FROM Applicants a \
-                        INNER JOIN Rankings r \
-                        ON a.StudentNumber=r.StudentNumber \
-                        WHERE CourseCode = ${course} \
-                        ORDER BY Rank', // TODO: order by something else probably
-                        req.query);
-
-                    let applicants = { "applicants": applicantList }
-                    return Object.assign(info, qualifications, applicants);
-
-                } else {
-                    return Object.assign(info, qualifications);
-                }
+                return Object.assign(info, qualifications);
             })
             .then(function(applicantInfo) {
                 // success;
                 console.log(applicantInfo);
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        data: applicantInfo,
-                        message: 'Retrieved applicant info'
-                    });
+
+                if (applicantInfo) {
+                    res.status(200).
+                        json({
+                            status: 'success',
+                            data: applicantInfo,
+                            message: 'Retrieved applicant info'
+                        });
+                } else {
+                    res.status(404)
+                        .json({
+                            status: 'failure',
+                            error: `The course ${req.query.course} does not exist`
+                        });
+                }
             })
             .catch(function(err) {
                 res.status(500).json({ status: 'failure', error: err.message});
-
             });
 
     } else {
@@ -229,12 +226,12 @@ var getApplicantsForCourse = function(req, res, next) {
     if (req.query.course) {
         console.log("course");
 
-        let courseResult = db.one(
+        let courseResult = db.oneOrNone(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
 
-        if (courseResult === {}) {
+        if (!courseResult) {
             res.status(404)
                 .json({
                     status: 'failure',
@@ -277,7 +274,7 @@ var getApplicantsForCourse = function(req, res, next) {
 
 var filterApplicantsByProperty = function(req, res, next) {
     var db = req.app.get('db');
-    if (req.user.type !== 'admin') {
+    if (!req.user || req.user.type !== 'admin') {
         console.log("Not authorized");
         res.status(401)
             .json({
@@ -287,12 +284,12 @@ var filterApplicantsByProperty = function(req, res, next) {
         return;
     }
     if (req.query.course && req.query.property && req.query.value) {
-        let courseResult = db.one(
+        let courseResult = db.oneOrNone(
             "SELECT * \
         FROM Courses \
         WHERE Code=${course}", req.query);
 
-        if (courseResult === {}) {
+        if (!courseResult) {
             res.status(404)
                 .json({
                     status: 'failure',
@@ -392,7 +389,7 @@ var getApplicantInfo = function(req, res, next) {
     console.log(stunum);
     if (stunum) {
         db.task(function*(t) {
-                let info = yield t.one(
+                let info = yield t.oneOrNone(
                     "SELECT * \
 				FROM Applicants \
 				WHERE StudentNumber=$1", stunum);
@@ -452,10 +449,12 @@ var getApplicantInfo = function(req, res, next) {
                             message: 'Retrieved applicant info'
                         });                    
                 } else {
-                    res.status(404)
+                    // applicant is not in the database
+                    res.status(200)
                         .json({
-                            status: 'failure',
-                            error: `The student ${stunum} does not exist`
+                            status: 'success',
+                            data: {},
+                            message: `The student ${stunum} does not exist`
                         });
                 }
 
@@ -566,8 +565,8 @@ var addApplicant = function(req, res, next) {
 
     db.tx(function*(t) {
             let qualifications = req.body.qualifications;
-            console.log(req.body);
             req.body['studentnumber'] = req.user.studentnumber;
+            console.log(req.body);
             let addInfo = t.none(
                 'INSERT INTO Applicants \
             VALUES(\
@@ -597,7 +596,8 @@ var addApplicant = function(req, res, next) {
                     message: 'Inserted one applicant'
                 });
         })
-        .catch(function(err) {             
+        .catch(function(err) {
+            console.log(err.message);   
             res.status(500).json({ status: 'failure', error: err.message});
         });
 }

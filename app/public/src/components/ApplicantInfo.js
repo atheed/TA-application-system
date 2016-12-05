@@ -16,17 +16,39 @@ class ApplicantInfo extends Component {
                 second: [],
                 third: [],
             },
+            shouldUpdate: true
 
         }
+        this.getApplicantInfo = this.getApplicantInfo.bind(this);
     }
 
     componentDidMount() {
+        console.log("did mount");
+        return this.getApplicantInfo();
+    }
+    shouldComponentUpdate() {
+        return true;
+    }
+    componentDidUpdate() {
+        console.log(this.props.course, "did update");
+        // this.state.shouldUpdate = false;
+        if (this.state.shouldUpdate) {
+            this.state.shouldUpdate = false;
+            return this.getApplicantInfo();
+        } else {
+            this.state.shouldUpdate = true;
+        }
+
+    }
+
+    getApplicantInfo() {
         var t = this;
         fetch('/applicant-info?stunum=' + this.props.studentNumber, { method: 'GET', credentials: 'include' })
             .then(json)
             .then(function(data) {
                 const applicant = data.data;
                 console.log(applicant);
+                console.log(t.props.course, "setting state");
                 t.setState({
                     offers: applicant.offers,
                     considerations: applicant.considerations,
@@ -35,17 +57,15 @@ class ApplicantInfo extends Component {
                         first: applicant.rankings[1].map((course) => { return course.code + ' (' + course.experience + ')' }),
                         second: applicant.rankings[2].map((course) => { return course.code + ' (' + course.experience + ')' }),
                         third: applicant.rankings[3].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                    }
+                    },
+                    // shouldUpdate: false
                 });
+                console.log(t.props.course, "finished setting state");
             })
             .catch(function(err) {
                 // Error :(
                 throw err;
             });
-    }
-
-    shouldComponentUpdate() {
-        return true;
     }
 
     displayCommaSeparated(arr) {
@@ -58,7 +78,10 @@ class ApplicantInfo extends Component {
         });
     }
 
+    << << << << <<
+    HEAD
     render() {
+        console.log(this.props.course, "render");
         const { offers, considerations, qualifications, rankings: { first, second, third } } = this.state;
         return (
             <div className="applicant-info">

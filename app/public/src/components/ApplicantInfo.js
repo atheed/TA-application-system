@@ -78,8 +78,6 @@ class ApplicantInfo extends Component {
         });
     }
 
-    << << << << <<
-    HEAD
     render() {
         console.log(this.props.course, "render");
         const { offers, considerations, qualifications, rankings: { first, second, third } } = this.state;
@@ -89,9 +87,9 @@ class ApplicantInfo extends Component {
 				<div><strong>Considered for: </strong>{considerations}</div>
 				<div><strong>Qualifications: </strong>{this.displayCommaSeparated(qualifications)}</div>
 				<div><strong>Rankings: </strong></div>
-				<div>1st: {this.displayCommaSeparated(first)}</div><br/>
-				<div>2nd: {this.displayCommaSeparated(second)}</div><br/>
-				<div>3rd: {this.displayCommaSeparated(third)}</div><br/>
+				<div>1st: {this.displayCommaSeparated(first)}</div>
+				<div>2nd: {this.displayCommaSeparated(second)}</div>
+				<div>3rd: {this.displayCommaSeparated(third)}</div>
 				<div>4th: </div>
 				<div>5th: </div>
 			</div>

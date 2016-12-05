@@ -200,7 +200,7 @@ class ApplicantRow extends Component {
 				<td>{experience}</td>
 				<td>{offer}</td>
 				<td>{consider}</td>
-				<td  style={{textAlign:"left"}}>
+				<td  style={{textAlign:"left", fontWeight: "normal"}}>
 					<Button color="link" onClick={() => this.setState(
 						{expanded: ! this.state.expanded})} > 
 						{this.state.expanded ? "Hide" : "Show"}

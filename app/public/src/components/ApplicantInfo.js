@@ -56,11 +56,11 @@ class ApplicantInfo extends Component {
                     considerations: applicant.considerations,
                     qualifications: applicant.qualifications,
                     rankings: {
-                        first: applicant.rankings[1].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        second: applicant.rankings[2].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        third: applicant.rankings[3].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        preferred: applicant.rankings[4].map((course) => { return course.code + ' (' + course.experience + ')' }),
-                        willing: applicant.rankings[5].map((course) => { return course.code + ' (' + course.experience + ')' }),
+                        first: applicant.rankings[1].map((course) => { return course.code }),
+                        second: applicant.rankings[2].map((course) => { return course.code }),
+                        third: applicant.rankings[3].map((course) => { return course.code }),
+                        preferred: applicant.rankings[4].map((course) => { return course.code }),
+                        willing: applicant.rankings[5].map((course) => { return course.code }),
                     },
                     // shouldUpdate: false
                 });

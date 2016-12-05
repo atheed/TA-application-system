@@ -249,7 +249,7 @@ export default class Profile extends Component {
                             <label className="form-label">Proficient in:</label>
                             <AutosuggestBox 
                                 onSelectOption={this.updateSelectedList}
-                                selected={!this.state.qualifications ? "" : "Erlang,Perl,Java"}
+                                selected={this.state.qualifications ? "" : ""}
                             />
                         </div>
                         <p />

@@ -16,8 +16,13 @@ export default class Profile extends Component {
         super();
 
         this.state = {
-            isUserInDb: false,
-            userInfo: {}
+            familyname: undefined,
+            givenname: undefined,
+            year: undefined,
+            degree: undefined,
+            eligibility: undefined,
+            qualifications: undefined,
+            otherinfo: undefined,
         }
 
         this.componentWillMount = this.componentWillMount.bind(this);
@@ -28,11 +33,61 @@ export default class Profile extends Component {
             paddingStatus: Array(28).join('\xa0'),
             paddingLegal: Array(28).join('\xa0')
         }
+
+        this.handleGNameChange = this.handleGNameChange.bind(this);
+        this.handleLNameChange = this.handleLNameChange.bind(this);
+        this.handleDegreeChange = this.handleDegreeChange.bind(this);
+        this.handleYearChange = this.handleYearChange.bind(this);
+        this.handleEligibilityChange = this.handleEligibilityChange.bind(this);
+        this.handleQualificationsChange = this.handleQualificationsChange.bind(this);
+        this.handleAdditionalInfoChange = this.handleAdditionalInfoChange.bind(this);
+    }
+
+    handleGNameChange(event) {
+        this.setState({
+            givenname: event.target.value
+        });
+    }
+
+    handleLNameChange(event) {
+        this.setState({
+            familyname: event.target.value
+        });
+    }
+
+    handleDegreeChange(event) {
+        this.setState({
+            degree: event.target.value
+        });
+    }
+
+    handleYearChange(event) {
+        this.setState({
+            year: event.target.value
+        });
+    }
+
+    handleEligibilityChange(event) {
+        this.setState({
+            eligibility: event.target.value
+        });
+    }
+
+    handleQualificationsChange(event) {
+        console.log(event.target.value);
+        this.setState({
+            qualifications: event.target.value
+        });
+    }
+
+    handleAdditionalInfoChange(event) {
+        this.setState({
+            otherinfo: event.target.value
+        });
     }
 
     componentWillMount() {
         var t = this;
-
         // make fetch() request to see if user has already added their information
         // earlier. if yes, set the state variables appropriately
         fetch('/applicant-info', {
@@ -42,47 +97,43 @@ export default class Profile extends Component {
             .then(json)
             .then(function(data) {
                 const userInfo = data.data;
-                console.log(userInfo);
-                if (data.status == "success") {
+
+                // if this is an empty object, the student is not in the db
+                if (Object.keys(userInfo).length === 0 && userInfo.constructor === Object) {
                     t.setState({
-                        isUserInDb: true,
-                        userInfo: userInfo
+                        familyname: undefined,
+                        givenname: undefined,
+                        year: undefined,
+                        degree: undefined,
+                        eligibility: undefined,
+                        qualifications: "",
+                        otherinfo: undefined,
                     });
                 } else {
+                    // in this case, the student *is* in the db
                     t.setState({
-                        isUserInDb: false,
-                        userInfo: {}
+                        familyname: userInfo.familyname,
+                        givenname: userInfo.givenname,
+                        year: userInfo.year,
+                        degree: userInfo.degree,
+                        eligibility: userInfo.workeligibility,
+                        qualifications: userInfo.qualifications,
+                        otherinfo: userInfo.otherinfo,
                     });
                 }
             })
             .catch(function(err) {
                 t.setState({
-                    isUserInDb: false,
-                    userInfo: {}
+                    familyname: undefined,
+                    givenname: undefined,
+                    year: undefined,
+                    degree: undefined,
+                    eligibility: undefined,
+                    qualifications: "",
+                    otherinfo: undefined,
                 });
                 throw err;
             });
-
-        /**
-         * For the fetch() call above, expecting a response in data.data to look
-         * somewhat like this (when the user *is* in the db):
-         * userInfo: {
-                info: {
-                    studentnumber: "1000887926",
-                    familyname: "Thameem",
-                    givenname: "Atheed",
-                    year: "4",
-                    degree: "Undergrad",
-                    workeligibility: "Student Visa",
-                    qualifications: ["C", "Haskell"],
-                    otherinfo: "eeee"
-                },
-                . ,
-                . ,
-                . ,
-                qualifications: ["C", "Haskell"]
-            }
-         */
     }
 
     /**
@@ -136,7 +187,7 @@ export default class Profile extends Component {
                             <label className="form-label">First Name</label><br/>
                             <input type="text" className="form-control less-wide" 
                                     name="givenname" ref="givenname"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.givenname : undefined} required>
+                                    value={this.state.givenname} onChange={this.handleGNameChange} required>
                             </input>
                         </div>
                         <p></p>
@@ -144,7 +195,7 @@ export default class Profile extends Component {
                             <label className="form-label">Last Name</label><br/>
                             <input type="text" className="form-control less-wide"  
                                     name="familyname" ref="familyname" 
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.familyname : undefined} required>
+                                    value={this.state.familyname} onChange={this.handleLNameChange} required>
                             </input>
                         </div>
                         <p />
@@ -154,7 +205,8 @@ export default class Profile extends Component {
                             <label><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="status" ref="degree"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.degree : undefined}>
+                                    value={this.state.degree}
+                                    onChange={this.handleDegreeChange}>
                                 <option value="Undergrad">Undergraduate{this.state.paddingStatus}</option>
                                 <option value="Grad">Graduate</option>
                             </select>
@@ -167,7 +219,8 @@ export default class Profile extends Component {
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="year" ref="year"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.year : undefined}>
+                                    value={this.state.year}
+                                    onChange={this.handleYearChange}>
                                 <option value="1">1{this.state.paddingYear}</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -183,7 +236,8 @@ export default class Profile extends Component {
                             <label ><span className="dropdown dropdown-large">
                             <select className="dropdown-select" 
                                     name="eligibility" ref="eligibility"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.workeligibility : undefined}>
+                                    value={this.state.eligibility}
+                                    onChange={this.handleEligibilityChange}>
                                 <option value="Legally Entitled">Legally Entitled{this.state.paddingLegal}</option>
                                 <option value="Student Visa">Student Visa</option>
                             </select>
@@ -191,10 +245,11 @@ export default class Profile extends Component {
                             </div>
                             <p />
                         <div>
+                            {console.log(this.state.qualifications)}
                             <label className="form-label">Proficient in:</label>
                             <AutosuggestBox 
                                 onSelectOption={this.updateSelectedList}
-                                selected={this.state.isUserInDb ? this.state.userInfo.qualifications.join() : ""}
+                                selected={!this.state.qualifications ? "" : "Erlang,Perl,Java"}
                             />
                         </div>
                         <p />
@@ -204,7 +259,8 @@ export default class Profile extends Component {
                             <p />
                             <textarea className="text-area" 
                                     name="additional-info" ref="otherinfo"
-                                    value={this.state.isUserInDb ? this.state.userInfo.info.otherinfo : undefined}>
+                                    value={this.state.otherinfo}
+                                    onChange={this.handleAdditionalInfoChange}>
                             </textarea>
                         </div>
                         <p />

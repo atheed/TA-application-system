@@ -15,4 +15,4 @@ The app employs React for improved readability and reusability of code, leverage
 * React + ES6 + Babel
 * NodeJS (with Express)
 * PostgreSQL
-* Some Reactstrap
+* react-router, radium, reactstrap, and a range of other support libraries
